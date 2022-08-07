@@ -20,7 +20,8 @@
 tt_videos <- function(video_urls,
                       save_video = FALSE,
                       dir = ".",
-                      sleep_pool = 1:10) {
+                      sleep_pool = 1:10,
+                      ...) {
 
   purrr::map_df(video_urls, function(u) {
     video_id = extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)|(?<=https://vm.tiktok.com/).+?(?=/|$)")
@@ -55,7 +56,8 @@ tt_videos <- function(video_urls,
 #' }
 tt_comments <- function(video_urls,
                         max_comments = Inf,
-                        sleep_pool = 1:10) {
+                        sleep_pool = 1:10,
+                        ...) {
 
   purrr::map_df(video_urls, function(u) {
     video_id = extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)")
@@ -88,12 +90,13 @@ tt_comments <- function(video_urls,
 #' tt_user_videos("https://www.tiktok.com/@tiktok")
 #' }
 tt_user_videos <- function(user_url,
-                           sleep_pool = 1:10) {
+                           sleep_pool = 1:10,
+                           ...) {
 
   purrr::map_df(user_url, function(u) {
     video_id = extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)")
     message("Getting user videos from ", video_id, "...")
-    out <- get_account_video_urls(u)
+    out <- get_account_video_urls(u, ...)
     sleep <- stats::runif(1) * sample(sleep_pool, 1L)
     message("\t...waiting ", sleep, " seconds")
     Sys.sleep(sleep)
@@ -103,16 +106,28 @@ tt_user_videos <- function(user_url,
 }
 
 
-#' @noRd
-get_tiktok_json <- function(video_url,
-                            cookiefile = getOption("cookiefile")) {
+
+#' Get json file from a TikTok URL
+#'
+#' @param url a URL to a TikTok video or account
+#' @param cookiefile path to your cookiefile. See details.
+#'
+#' @details To get a valid cookiefile, you need to visit TikTok in your browser
+#'   and then use, for example, the Browser extension "Get cookies.txt"
+#'   (available for Chromium based Browsers an Firefox). If you experience
+#'   errors, the cokkies might have expired. Just open TikTok in your browser
+#'   again and export a new file in this case.
+#'
+#' @export
+tt_json <- function(url,
+                    cookiefile = getOption("cookiefile")) {
 
   cookies <- tt_read_cookies(cookiefile)
   cookies_str <- vapply(cookies, curl::curl_escape, FUN.VALUE = character(1))
   cookie <- paste(names(cookies), cookies_str, sep = "=", collapse = ";")
   headers <- getOption("headers")
 
-  req <- httr2::request(video_url) |>
+  req <- httr2::request(url) |>
     httr2::req_headers(
       'Accept-Encoding' = 'gzip, deflate, sdch',
       'Accept-Language' = 'en-US,en;q=0.8',
@@ -140,9 +155,10 @@ get_tiktok_json <- function(video_url,
 #' @noRd
 save_tiktok <- function(video_url,
                         save_video = TRUE,
-                        dir = ".") {
+                        dir = ".",
+                        ...) {
 
-  tt_json = get_tiktok_json(video_url)
+  tt_json = tt_json(video_url, ...)
 
   if (tt_json$url_full == "https://www.tiktok.com/") {
 
@@ -204,7 +220,7 @@ save_video_comments <- function(video_url,
 
   cursor = cursor_resume
 
-  tt_json = get_tiktok_json(video_url)
+  tt_json = tt_json(video_url, cookiefile = cookiefile)
   video_url <- tt_json$url_full
   video_url = extract_regex(video_url, "(.+?)(?=\\?|$)")
   video_id = extract_regex(video_url, "(?<=/video/)(.+?)(?=\\?|$)")
@@ -274,8 +290,9 @@ save_video_comments <- function(video_url,
 
 
 #' @noRd
-get_account_video_urls <- function(user_url) {
-  tt_json = get_tiktok_json(user_url)
+get_account_video_urls <- function(user_url,
+                                   ...) {
+  tt_json = tt_json(user_url, ...)
   video_ids = tt_json[["ItemList"]][["user-post"]][["list"]]
   user_id = tt_json[["UserPage"]][["uniqueId"]]
 
