@@ -1,0 +1,24 @@
+Package: traktok
+Type: Package
+Title: Collecting Tiktok Data
+Version: 0.1.0
+Authors@R: person("Johannes", "Gruber", email = "Gruber@europa-uni.de", 
+  role = c("aut", "cre"))
+Description: An R port of Deen Freelons Pyktok 
+  (<https://github.com/dfreelon/pyktok>) Python module that scrapes videos, 
+  metadata and comments from TikTok (<https://tiktok.com/>).
+License: GPL-3
+Imports:
+    httr2,
+    rvest,
+    curl,
+    jsonlite,
+    tibble,
+    purrr
+Suggests:
+    knitr
+URL: https://github.com/JBGruber/traktok
+BugReports: https://github.com/JBGruber/traktok/issues
+Encoding: UTF-8
+RoxygenNote: 7.2.1
+Language: en-GB
