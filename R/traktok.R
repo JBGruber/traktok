@@ -1,7 +1,113 @@
+#' Get video URLs and metadata from videos
+#'
+#' @param video_urls vector of URLs to TikTok videos.
+#' @param save_video logical. Should the videos be downloaded.
+#' @param dir directory to save videos files to.
+#' @param sleep_pool a vector of numbers from which a waiting period is randomly
+#'   drawn.
+#'
+#' @details The function will wait between scraping two videos to make it less
+#'   obvious that a scraper is accessing the site. The period is drawn randomly
+#'   from the `sleep_pool` and multiplied by a random fraction.
+#'
+#' @return a data.frame
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' tt_videos("https://www.tiktok.com/@tiktok/video/7106594312292453675")
+#' }
+tt_videos <- function(video_urls,
+                      save_video = FALSE,
+                      dir = ".",
+                      sleep_pool = 1:10) {
+
+  purrr::map_df(video_urls, function(u) {
+    video_id = extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)|(?<=https://vm.tiktok.com/).+?(?=/|$)")
+    message("Getting video ", video_id)
+    out <- save_tiktok(u, save_video = save_video, dir = dir)
+    sleep <- stats::runif(1) * sample(sleep_pool, 1L)
+    message("\t...waiting ", sleep, " seconds")
+    Sys.sleep(sleep)
+    return(out)
+  })
+
+}
+
+
+#' Get comments under a video.
+#'
+#' @param video_urls vector of URLs to TikTok videos.
+#' @param max_comments number of comments to return.
+#' @param sleep_pool a vector of numbers from which a waiting period is randomly
+#'   drawn.
+#'
+#' @details The function will wait between scraping two videos to make it less
+#'   obvious that a scraper is accessing the site. The period is drawn randomly
+#'   from the `sleep_pool` and multiplied by a random fraction.
+#'
+#' @return a data.frame
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' tt_comments("https://www.tiktok.com/@tiktok/video/7106594312292453675")
+#' }
+tt_comments <- function(video_urls,
+                        max_comments = Inf,
+                        sleep_pool = 1:10) {
+
+  purrr::map_df(video_urls, function(u) {
+    video_id = extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)")
+    message("Getting comments for video ", video_id, "...")
+    out <- save_video_comments(u, max_comments = max_comments, sleep_pool = sleep_pool)
+    sleep <- stats::runif(1) * sample(sleep_pool, 1L)
+    message("\t...waiting ", sleep, " seconds")
+    Sys.sleep(sleep)
+    return(out)
+  })
+
+}
+
+
+#' Get user videos
+#'
+#' @param user_url vector of URLs to TikTok accounts.
+#' @param sleep_pool a vector of numbers from which a waiting period is randomly
+#'   drawn.
+#'
+#' @details The function will wait between scraping two accounts to make it less
+#'   obvious that a scraper is accessing the site. The period is drawn randomly
+#'   from the `sleep_pool` and multiplied by a random fraction.
+#'
+#' @return a data.frame
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' tt_user_videos("https://www.tiktok.com/@tiktok")
+#' }
+tt_user_videos <- function(user_url,
+                           sleep_pool = 1:10) {
+
+  purrr::map_df(user_url, function(u) {
+    video_id = extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)")
+    message("Getting user videos from ", video_id, "...")
+    out <- get_account_video_urls(u)
+    sleep <- stats::runif(1) * sample(sleep_pool, 1L)
+    message("\t...waiting ", sleep, " seconds")
+    Sys.sleep(sleep)
+    return(out)
+  })
+
+}
+
+
+#' @noRd
 get_tiktok_json <- function(video_url,
                             cookiefile = getOption("cookiefile")) {
 
-  cookies <- tik_read_cookies(cookiefile)
+  cookies <- tt_read_cookies(cookiefile)
   cookies_str <- vapply(cookies, curl::curl_escape, FUN.VALUE = character(1))
   cookie <- paste(names(cookies), cookies_str, sep = "=", collapse = ";")
   headers <- getOption("headers")
@@ -31,19 +137,7 @@ get_tiktok_json <- function(video_url,
 }
 
 
-get_account_video_urls <- function(user_url) {
-  tt_json = get_tiktok_json(user_url)
-  video_ids = tt_json[["ItemList"]][["user-post"]][["list"]]
-  tt_account = tt_json[["UserPage"]][["uniqueId"]]
-  video_urls <- paste0(
-    'https://www.tiktok.com/@',
-    tt_account,
-    '/video/',
-    video_ids
-  )
-  return(video_urls)
-}
-
+#' @noRd
 save_tiktok <- function(video_url,
                         save_video = TRUE,
                         dir = ".") {
@@ -100,23 +194,8 @@ save_tiktok <- function(video_url,
 
 }
 
-save_tiktok_multi <- function(video_urls,
-                              save_video = TRUE,
-                              dir = ".",
-                              sleep_pool = 1:10) {
 
-  purrr::map_df(video_urls, function(u) {
-    video_id = extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)|(?<=https://vm.tiktok.com/).+?(?=/|$)")
-    message("Getting video ", video_id)
-    out <- save_tiktok(u, save_video = save_video, dir = dir)
-    sleep <- runif(1) * sample(sleep_pool, 1L)
-    message("\t...waiting ", sleep, " seconds")
-    Sys.sleep(sleep)
-    return(out)
-  })
-
-}
-
+#' @noRd
 save_video_comments <- function(video_url,
                                 cursor_resume = 0,
                                 max_comments = Inf,
@@ -130,7 +209,7 @@ save_video_comments <- function(video_url,
   video_url = extract_regex(video_url, "(.+?)(?=\\?|$)")
   video_id = extract_regex(video_url, "(?<=/video/)(.+?)(?=\\?|$)")
 
-  cookies <- tik_read_cookies(cookiefile)
+  cookies <- tt_read_cookies(cookiefile)
   cookies_str <- vapply(cookies, curl::curl_escape, FUN.VALUE = character(1))
   cookie <- paste(names(cookies), cookies_str, sep = "=", collapse = ";")
   data_list <- list()
@@ -158,7 +237,7 @@ save_video_comments <- function(video_url,
     res <- try(httr2::req_perform(req) |>
                  httr2::resp_body_json())
 
-    if (class(res) != "try-error") {
+    if (!methods::is(res, "try-error")) {
 
       data_df <- tibble::tibble(
         comment_id = vapply(res[["comments"]], function(x) x[["cid"]], FUN.VALUE = character(1)),
@@ -181,7 +260,7 @@ save_video_comments <- function(video_url,
 
       if (nrow(data_df) == 0) max_comments <-  0
 
-      Sys.sleep(runif(1) * sample(sleep_pool, 1L))
+      Sys.sleep(stats::runif(1) * sample(sleep_pool, 1L))
 
     } else {
       max_comments <-  0
@@ -193,17 +272,27 @@ save_video_comments <- function(video_url,
 
 }
 
-save_comments_multi <- function(video_urls,
-                                max_comments = Inf,
-                                sleep_pool = 1:10) {
 
-  purrr::map_df(video_urls, function(u) {
-    video_id = extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)")
-    message("Getting comments for video ", video_id, "...")
-    out <- save_video_comments(u, max_comments = max_comments, sleep_pool = sleep_pool)
-    Sys.sleep(runif(1) * sample(sleep_pool, 1L))
-    return(out)
-  })
+#' @noRd
+get_account_video_urls <- function(user_url) {
+  tt_json = get_tiktok_json(user_url)
+  video_ids = tt_json[["ItemList"]][["user-post"]][["list"]]
+  user_id = tt_json[["UserPage"]][["uniqueId"]]
+
+  tibble::tibble(
+    user_id = user_id,
+    user_name = tt_json[["UserModule"]][["users"]][["jordanalmani"]][["uniqueId"]],
+    user_nickname = tt_json[["UserModule"]][["users"]][["jordanalmani"]][["nickname"]],
+    user_signature = tt_json[["UserModule"]][["users"]][["jordanalmani"]][["signature"]],
+    user_avatar = tt_json[["UserModule"]][["users"]][["jordanalmani"]][["avatarThumb"]],
+    user_commercial = tt_json[["UserModule"]][["users"]][["jordanalmani"]][["commerceUserInfo"]][["commerceUser"]],
+    user_region = tt_json[["UserModule"]][["users"]][["jordanalmani"]][["region"]],
+    video_urls <- paste0(
+      'https://www.tiktok.com/@',
+      user_id,
+      '/video/',
+      video_ids
+    )
+  )
 
 }
-
