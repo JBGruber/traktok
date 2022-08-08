@@ -26,7 +26,7 @@ tt_videos <- function(video_urls,
   purrr::map_df(video_urls, function(u) {
     video_id = extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)|(?<=https://vm.tiktok.com/).+?(?=/|$)")
     message("Getting video ", video_id)
-    out <- save_tiktok(u, save_video = save_video, dir = dir)
+    out <- save_tiktok(u, save_video = save_video, dir = dir, ...)
     sleep <- stats::runif(1) * sample(sleep_pool, 1L)
     message("\t...waiting ", sleep, " seconds")
     Sys.sleep(sleep)
@@ -122,9 +122,7 @@ tt_user_videos <- function(user_url,
 tt_json <- function(url,
                     cookiefile = getOption("cookiefile")) {
 
-  cookies <- tt_read_cookies(cookiefile)
-  cookies_str <- vapply(cookies, curl::curl_escape, FUN.VALUE = character(1))
-  cookie <- paste(names(cookies), cookies_str, sep = "=", collapse = ";")
+  cookie <- tt_read_cookies(cookiefile)
   headers <- getOption("headers")
 
   req <- httr2::request(url) |>
@@ -225,9 +223,7 @@ save_video_comments <- function(video_url,
   video_url = extract_regex(video_url, "(.+?)(?=\\?|$)")
   video_id = extract_regex(video_url, "(?<=/video/)(.+?)(?=\\?|$)")
 
-  cookies <- tt_read_cookies(cookiefile)
-  cookies_str <- vapply(cookies, curl::curl_escape, FUN.VALUE = character(1))
-  cookie <- paste(names(cookies), cookies_str, sep = "=", collapse = ";")
+  cookie <- tt_read_cookies(cookiefile)
   data_list <- list()
 
   while (cursor < max_comments) {
@@ -339,9 +335,7 @@ get_hashtag_video_urls <- function(hashtag,
   data_list <- list(parse_search(data1, api = FALSE))
   cursor <- nrow(data_list[[1]])
 
-  cookies <- tt_read_cookies(cookiefile)
-  cookies_str <- vapply(cookies, curl::curl_escape, FUN.VALUE = character(1))
-  cookie <- paste(names(cookies), cookies_str, sep = "=", collapse = ";")
+  cookie <- tt_read_cookies(cookiefile)
 
   while (cursor < max_videos) {
 
