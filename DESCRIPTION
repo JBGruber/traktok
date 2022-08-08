@@ -19,6 +19,7 @@ Imports:
     methods,
     stats
 Suggests:
+    covr,
     knitr,
     spelling,
     testthat (>= 3.0.0)

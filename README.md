@@ -3,9 +3,11 @@
 
 # traktok
 
+<!-- badges: start -->
+
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![R-CMD-check](https://github.com/JBGruber/traktok/workflows/R-CMD-check/badge.svg)](https://github.com/JBGruber/traktok/actions)
+[![R-CMD-check](https://github.com/JBGruber/traktok/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JBGruber/traktok/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/JBGruber/traktok/branch/main/graph/badge.svg)](https://codecov.io/gh/JBGruber/traktok?branch=main)
 [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/JohannesBGruber.svg?style=social&label=Follow%20%40JohannesBGruber)](https://twitter.com/JohannesBGruber)
@@ -81,14 +83,14 @@ example_urls <- c(
 )
 tt_videos(example_urls, save_video = FALSE)
 #> Getting video 7106594312292453675
-#>  ...waiting 3.99941234849393 seconds
+#>  ...waiting 3.7 seconds
 #> Getting video 7125860750463094058
-#>  ...waiting 0.943884672597051 seconds
+#>  ...waiting 1.6 seconds
 #> # A tibble: 2 × 19
 #>   video_id       video…¹ video…² video…³ video…⁴ video…⁵ video…⁶ video…⁷ video…⁸
 #>   <chr>            <dbl>   <int> <chr>   <chr>     <int>   <int>   <int>   <int>
-#> 1 7106594312292…  1.65e9      24 how ma… US        21300     113    1803  480000
-#> 2 7125860750463…  1.66e9      15 the #R… US        17000     342    3153  537400
+#> 1 7106594312292…  1.65e9      24 how ma… US        21500     113    1798  482400
+#> 2 7125860750463…  1.66e9      15 the #R… US        17800     360    3207  559400
 #> # … with 10 more variables: video_description <chr>, video_is_ad <lgl>,
 #> #   video_fn <chr>, author_username <chr>, author_name <lgl>,
 #> #   author_followercount <int>, author_followingcount <int>,
@@ -107,14 +109,14 @@ by exporting the URLs and downloading them with an external tool.
 ``` r
 tt_videos(example_urls, save_video = FALSE)
 #> Getting video 7106594312292453675
-#>  ...waiting 0.347432994749397 seconds
+#>  ...waiting 0.6 seconds
 #> Getting video 7125860750463094058
-#>  ...waiting 0.451099459081888 seconds
+#>  ...waiting 2.2 seconds
 #> # A tibble: 2 × 19
 #>   video_id       video…¹ video…² video…³ video…⁴ video…⁵ video…⁶ video…⁷ video…⁸
 #>   <chr>            <dbl>   <int> <chr>   <chr>     <int>   <int>   <int>   <int>
-#> 1 7106594312292…  1.65e9      24 how ma… US        21300     113    1803  480000
-#> 2 7125860750463…  1.66e9      15 the #R… US        17000     342    3153  537400
+#> 1 7106594312292…  1.65e9      24 how ma… US        21500     113    1798  482400
+#> 2 7125860750463…  1.66e9      15 the #R… US        17800     360    3207  559400
 #> # … with 10 more variables: video_description <chr>, video_is_ad <lgl>,
 #> #   video_fn <chr>, author_username <chr>, author_name <lgl>,
 #> #   author_followercount <int>, author_followingcount <int>,
@@ -130,7 +132,7 @@ tt_videos(example_urls, save_video = FALSE)
 ``` r
 tt_user_videos("https://www.tiktok.com/@tiktok")
 #> Getting user videos from ...
-#>  ...waiting 2.91516251768917 seconds
+#>  ...waiting 6.9 seconds
 #> # A tibble: 30 × 2
 #>    user_id `video_urls <- ...`                                     
 #>    <chr>   <chr>                                                   
