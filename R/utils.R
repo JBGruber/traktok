@@ -5,6 +5,9 @@ tt_read_cookies <- function(cookiefile) {
   if (grepl("(.+?=.+;){2,}", cookiefile, perl = TRUE)) {
     cookie <- cookiefile
   } else {
+    if (!file.exists(cookiefile))
+      stop("cookiefile ", cookiefile, " does not exist")
+
     lines <- readLines(cookiefile, warn = FALSE)
 
     df <- utils::read.delim(text = lines[grep("\t", lines)], header = FALSE)

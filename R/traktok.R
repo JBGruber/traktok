@@ -270,7 +270,7 @@ save_video_comments <- function(video_url,
 
       if (nrow(data_df) == 0) max_comments <-  0
 
-      wait(sleep_pool)
+      if (cursor < max_comments) wait(sleep_pool)
 
     } else {
       max_comments <-  0
@@ -278,7 +278,7 @@ save_video_comments <- function(video_url,
 
   }
 
-  return(do.call("rbind", data_list))
+  return(data_list)
 
 }
 
@@ -371,7 +371,7 @@ get_hashtag_video_urls <- function(hashtag,
     }
   }
 
-  return(do.call("rbind", data_list))
+  return(data_list)
 
 }
 

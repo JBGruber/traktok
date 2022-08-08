@@ -16,6 +16,7 @@ Imports:
     jsonlite,
     tibble,
     purrr,
+    dplyr,
     methods,
     stats
 Suggests:
