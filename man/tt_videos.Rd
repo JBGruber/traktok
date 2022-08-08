@@ -4,7 +4,7 @@
 \alias{tt_videos}
 \title{Get video URLs and metadata from videos}
 \usage{
-tt_videos(video_urls, save_video = FALSE, dir = ".", sleep_pool = 1:10)
+tt_videos(video_urls, save_video = FALSE, dir = ".", sleep_pool = 1:10, ...)
 }
 \arguments{
 \item{video_urls}{vector of URLs to TikTok videos.}
@@ -15,6 +15,8 @@ tt_videos(video_urls, save_video = FALSE, dir = ".", sleep_pool = 1:10)
 
 \item{sleep_pool}{a vector of numbers from which a waiting period is randomly
 drawn.}
+
+\item{...}{handed to \link{tt_json}.}
 }
 \value{
 a data.frame

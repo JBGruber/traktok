@@ -1,4 +1,4 @@
-skip_if(Sys.getenv("TT_COOKIES1") == "")
+skip_if(Sys.getenv("TT_COOKIES") == "")
 df <- tt_user_videos(user_url = c("https://www.tiktok.com/@tiktok"),
                      cookiefile = Sys.getenv("TT_COOKIES"))
 

@@ -48,9 +48,9 @@ remotes::install_github("JBGruber/traktok")
 Pyktok uses the module
 [browser_cookie3](https://github.com/borisbabic/browser_cookie3) to
 directly access the cookies saved in your browser. Such an
-infrasturcture does not exists, to my knowledge, in `R`. Instead, you
-can export the neccesary cookies from your browser using a browser
-extension (after visitng TikTok.com at least once). I can recommend
+infrastructure does not exists, to my knowledge, in `R`. Instead, you
+can export the necessary cookies from your browser using a browser
+extension (after visiting TikTok.com at least once). I can recommend
 [“Get
 cookies.txt”](https://chrome.google.com/webstore/detail/get-cookiestxt/bgaddhkoddajcdgocldbbfleckgcbcid)
 for Chromium based browsers or
@@ -83,14 +83,14 @@ example_urls <- c(
 )
 tt_videos(example_urls, save_video = FALSE)
 #> Getting video 7106594312292453675
-#>  ...waiting 3.7 seconds
+#>  ...waiting 1.9 seconds
 #> Getting video 7125860750463094058
-#>  ...waiting 1.6 seconds
+#>  ...waiting 2.6 seconds
 #> # A tibble: 2 × 19
 #>   video_id       video…¹ video…² video…³ video…⁴ video…⁵ video…⁶ video…⁷ video…⁸
 #>   <chr>            <dbl>   <int> <chr>   <chr>     <int>   <int>   <int>   <int>
-#> 1 7106594312292…  1.65e9      24 how ma… US        21500     113    1798  482400
-#> 2 7125860750463…  1.66e9      15 the #R… US        17800     360    3207  559400
+#> 1 7106594312292…  1.65e9      24 how ma… US        21500     113    1798  482500
+#> 2 7125860750463…  1.66e9      15 the #R… US        17800     360    3207  559900
 #> # … with 10 more variables: video_description <chr>, video_is_ad <lgl>,
 #> #   video_fn <chr>, author_username <chr>, author_name <lgl>,
 #> #   author_followercount <int>, author_followingcount <int>,
@@ -109,14 +109,14 @@ by exporting the URLs and downloading them with an external tool.
 ``` r
 tt_videos(example_urls, save_video = FALSE)
 #> Getting video 7106594312292453675
-#>  ...waiting 0.6 seconds
+#>  ...waiting 1.5 seconds
 #> Getting video 7125860750463094058
-#>  ...waiting 2.2 seconds
+#>  ...waiting 3.5 seconds
 #> # A tibble: 2 × 19
 #>   video_id       video…¹ video…² video…³ video…⁴ video…⁵ video…⁶ video…⁷ video…⁸
 #>   <chr>            <dbl>   <int> <chr>   <chr>     <int>   <int>   <int>   <int>
-#> 1 7106594312292…  1.65e9      24 how ma… US        21500     113    1798  482400
-#> 2 7125860750463…  1.66e9      15 the #R… US        17800     360    3207  559400
+#> 1 7106594312292…  1.65e9      24 how ma… US        21500     113    1798  482500
+#> 2 7125860750463…  1.66e9      15 the #R… US        17800     360    3207  559900
 #> # … with 10 more variables: video_description <chr>, video_is_ad <lgl>,
 #> #   video_fn <chr>, author_username <chr>, author_name <lgl>,
 #> #   author_followercount <int>, author_followingcount <int>,
@@ -132,7 +132,7 @@ tt_videos(example_urls, save_video = FALSE)
 ``` r
 tt_user_videos("https://www.tiktok.com/@tiktok")
 #> Getting user videos from ...
-#>  ...waiting 6.9 seconds
+#>  ...waiting 0.3 seconds
 #> # A tibble: 30 × 2
 #>    user_id `video_urls <- ...`                                     
 #>    <chr>   <chr>                                                   

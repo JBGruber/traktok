@@ -5,6 +5,7 @@
 #' @param dir directory to save videos files to.
 #' @param sleep_pool a vector of numbers from which a waiting period is randomly
 #'   drawn.
+#' @param ... handed to \link{tt_json}.
 #'
 #' @details The function will wait between scraping two videos to make it less
 #'   obvious that a scraper is accessing the site. The period is drawn randomly
@@ -40,6 +41,8 @@ tt_videos <- function(video_urls,
 #' @param max_comments number of comments to return.
 #' @param sleep_pool a vector of numbers from which a waiting period is randomly
 #'   drawn.
+#' @param ... handed to \link{tt_json}.
+#'
 #'
 #' @details The function will wait between scraping two videos to make it less
 #'   obvious that a scraper is accessing the site. The period is drawn randomly
@@ -73,6 +76,7 @@ tt_comments <- function(video_urls,
 #' @param user_url vector of URLs to TikTok accounts.
 #' @param sleep_pool a vector of numbers from which a waiting period is randomly
 #'   drawn.
+#' @param ... handed to \link{tt_json}.
 #'
 #' @details The function will wait between scraping two accounts to make it less
 #'   obvious that a scraper is accessing the site. The period is drawn randomly
@@ -109,7 +113,7 @@ tt_user_videos <- function(user_url,
 #' @details To get a valid cookiefile, you need to visit TikTok in your browser
 #'   and then use, for example, the Browser extension "Get cookies.txt"
 #'   (available for Chromium based Browsers an Firefox). If you experience
-#'   errors, the cokkies might have expired. Just open TikTok in your browser
+#'   errors, the cookies might have expired. Just open TikTok in your browser
 #'   again and export a new file in this case.
 #'
 #' @export
@@ -312,7 +316,7 @@ get_hashtag_video_urls <- function(hashtag,
                                    cookiefile = getOption("cookiefile"),
                                    ...) {
 
-  if (length(hashtag) != 1 & !is(hashtag, "character"))
+  if (length(hashtag) != 1 & !methods::is(hashtag, "character"))
     stop("Please provide exactly one hashtag")
 
   search_url <- paste0("https://www.tiktok.com/tag/", hashtag)
@@ -361,7 +365,7 @@ get_hashtag_video_urls <- function(hashtag,
         data_list,
         list(parse_search(res, api = TRUE))
       )
-      cursor <- cursor + nrow(tail(data_list, 1)[[1]])
+      cursor <- cursor + nrow(utils::tail(data_list, 1)[[1]])
     } else {
       max_videos <- 0
     }

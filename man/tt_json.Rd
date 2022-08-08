@@ -18,6 +18,6 @@ Get json file from a TikTok URL
 To get a valid cookiefile, you need to visit TikTok in your browser
   and then use, for example, the Browser extension "Get cookies.txt"
   (available for Chromium based Browsers an Firefox). If you experience
-  errors, the cokkies might have expired. Just open TikTok in your browser
+  errors, the cookies might have expired. Just open TikTok in your browser
   again and export a new file in this case.
 }

@@ -4,13 +4,15 @@
 \alias{tt_user_videos}
 \title{Get user videos}
 \usage{
-tt_user_videos(user_url, sleep_pool = 1:10)
+tt_user_videos(user_url, sleep_pool = 1:10, ...)
 }
 \arguments{
 \item{user_url}{vector of URLs to TikTok accounts.}
 
 \item{sleep_pool}{a vector of numbers from which a waiting period is randomly
 drawn.}
+
+\item{...}{handed to \link{tt_json}.}
 }
 \value{
 a data.frame

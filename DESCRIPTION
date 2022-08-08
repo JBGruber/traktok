@@ -29,4 +29,4 @@ Encoding: UTF-8
 RoxygenNote: 7.2.1
 Language: en-US
 Config/testthat/edition: 3
-Config/testthat/parallel: true
+Config/testthat/parallel: false

@@ -4,7 +4,7 @@
 \alias{tt_comments}
 \title{Get comments under a video.}
 \usage{
-tt_comments(video_urls, max_comments = Inf, sleep_pool = 1:10)
+tt_comments(video_urls, max_comments = Inf, sleep_pool = 1:10, ...)
 }
 \arguments{
 \item{video_urls}{vector of URLs to TikTok videos.}
@@ -13,6 +13,8 @@ tt_comments(video_urls, max_comments = Inf, sleep_pool = 1:10)
 
 \item{sleep_pool}{a vector of numbers from which a waiting period is randomly
 drawn.}
+
+\item{...}{handed to \link{tt_json}.}
 }
 \value{
 a data.frame

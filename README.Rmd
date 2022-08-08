@@ -48,8 +48,8 @@ remotes::install_github("JBGruber/traktok")
 
 ### Authentication
 
-Pyktok uses the module [browser_cookie3](https://github.com/borisbabic/browser_cookie3) to directly access the cookies saved in your browser. Such an infrasturcture does not exists, to my knowledge, in `R`.
-Instead, you can export the neccesary cookies from your browser using a browser extension (after visitng TikTok.com at least once).
+Pyktok uses the module [browser_cookie3](https://github.com/borisbabic/browser_cookie3) to directly access the cookies saved in your browser. Such an infrastructure does not exists, to my knowledge, in `R`.
+Instead, you can export the necessary cookies from your browser using a browser extension (after visiting TikTok.com at least once).
 I can recommend ["Get cookies.txt"](https://chrome.google.com/webstore/detail/get-cookiestxt/bgaddhkoddajcdgocldbbfleckgcbcid) for Chromium based browsers or ["cookies.txt"](https://addons.mozilla.org/en-US/firefox/addon/cookies-txt/) for Firefox.
 
 ![](man/figures/cookies.png)
