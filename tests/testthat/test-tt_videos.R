@@ -1,3 +1,4 @@
+skip_if(Sys.getenv("TT_COOKIES") == "")
 df <- tt_videos(video_urls = c("https://www.tiktok.com/@tiktok/video/7125860750463094058?is_copy_url=1&is_from_webapp=v1",
                                "https://www.tiktok.com/@tiktok/video/7125860750463094058?is_copy_url=1&is_from_webapp=v1"),
                 save_video = FALSE,
