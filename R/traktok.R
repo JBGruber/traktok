@@ -27,9 +27,7 @@ tt_videos <- function(video_urls,
     video_id = extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)|(?<=https://vm.tiktok.com/).+?(?=/|$)")
     message("Getting video ", video_id)
     out <- save_tiktok(u, save_video = save_video, dir = dir, ...)
-    sleep <- stats::runif(1) * sample(sleep_pool, 1L)
-    message("\t...waiting ", sleep, " seconds")
-    Sys.sleep(sleep)
+    wait(sleep_pool)
     return(out)
   })
 
@@ -62,10 +60,8 @@ tt_comments <- function(video_urls,
   purrr::map_df(video_urls, function(u) {
     video_id = extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)")
     message("Getting comments for video ", video_id, "...")
-    out <- save_video_comments(u, max_comments = max_comments, sleep_pool = sleep_pool)
-    sleep <- stats::runif(1) * sample(sleep_pool, 1L)
-    message("\t...waiting ", sleep, " seconds")
-    Sys.sleep(sleep)
+    out <- save_video_comments(u, max_comments = max_comments, sleep_pool = sleep_pool, ...)
+    wait(sleep_pool)
     return(out)
   })
 
@@ -97,9 +93,7 @@ tt_user_videos <- function(user_url,
     video_id = extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)")
     message("Getting user videos from ", video_id, "...")
     out <- get_account_video_urls(u, ...)
-    sleep <- stats::runif(1) * sample(sleep_pool, 1L)
-    message("\t...waiting ", sleep, " seconds")
-    Sys.sleep(sleep)
+    wait(sleep_pool)
     return(out)
   })
 
@@ -272,7 +266,7 @@ save_video_comments <- function(video_url,
 
       if (nrow(data_df) == 0) max_comments <-  0
 
-      Sys.sleep(stats::runif(1) * sample(sleep_pool, 1L))
+      wait(sleep_pool)
 
     } else {
       max_comments <-  0

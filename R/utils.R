@@ -26,3 +26,9 @@ extract_regex <- function(str, pattern) {
     regexpr(pattern, str, perl = TRUE)
   )
 }
+
+wait <- function(sleep_pool) {
+  sleep <- stats::runif(1) * sample(sleep_pool, 1L)
+  message("\t...waiting ", round(sleep, 1), " seconds")
+  Sys.sleep(sleep)
+}
