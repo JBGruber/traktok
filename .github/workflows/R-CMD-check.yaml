@@ -43,10 +43,6 @@ jobs:
         with:
           extra-packages: any::rcmdcheck
           needs: check
-      - name: Create and populate .Renviron file
-        run: |
-          echo TT_COOKIES="$TT_COOKIES" >> ~/.Renviron
-          shell: bash
 
       - uses: r-lib/actions/check-r-package@v2
         with:
