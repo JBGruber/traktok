@@ -10,17 +10,17 @@ Description: An R port of Deen Freelons Pyktok
   you can track TikTok).
 License: GPL-3
 Imports:
-    httr2,
-    rvest,
     curl,
+    httr2,
     jsonlite,
-    tibble,
-    purrr,
-    dplyr,
     methods,
-    stats
+    purrr,
+    rvest,
+    stats,
+    tibble
 Suggests:
     covr,
+    dplyr,
     knitr,
     spelling,
     testthat (>= 3.0.0)
