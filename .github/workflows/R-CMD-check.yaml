@@ -27,7 +27,7 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
-      RTWEET_ACCESS_SECRET: ${{ secrets.TT_COOKIES }}
+      TT_COOKIES: ${{ secrets.TT_COOKIES }}
 
     steps:
       - uses: actions/checkout@v2
