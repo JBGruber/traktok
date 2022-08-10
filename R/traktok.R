@@ -25,7 +25,7 @@ tt_videos <- function(video_urls,
                       ...) {
 
   purrr::map_df(video_urls, function(u) {
-    video_id = extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)|(?<=https://vm.tiktok.com/).+?(?=/|$)")
+    video_id <- extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)|(?<=https://vm.tiktok.com/).+?(?=/|$)")
     message("Getting video ", video_id)
     out <- save_tiktok(u, save_video = save_video, dir = dir, ...)
     wait(sleep_pool)
@@ -61,7 +61,7 @@ tt_comments <- function(video_urls,
                         ...) {
 
   purrr::map_df(video_urls, function(u) {
-    video_id = extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)")
+    video_id <- extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)")
     message("Getting comments for video ", video_id, "...")
     out <- save_video_comments(u, max_comments = max_comments, sleep_pool = sleep_pool, ...)
     wait(sleep_pool)
@@ -94,7 +94,7 @@ tt_user_videos <- function(user_url,
                            ...) {
 
   purrr::map_df(user_url, function(u) {
-    video_id = extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)")
+    video_id <- extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)")
     message("Getting user videos from ", video_id, "...")
     out <- get_account_video_urls(u, ...)
     wait(sleep_pool)
@@ -125,13 +125,13 @@ tt_json <- function(url,
 
   req <- httr2::request(url) |>
     httr2::req_headers(
-      'Accept-Encoding' = 'gzip, deflate, sdch',
-      'Accept-Language' = 'en-US,en;q=0.8',
-      'Upgrade-Insecure-Requests' = '1',
-      'User-Agent' = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36',
-      'Accept' = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-      'Cache-Control' = 'max-age=0',
-      'Connection' = 'keep-alive'
+      "Accept-Encoding" = "gzip, deflate, sdch",
+      "Accept-Language" = "en-US,en;q=0.8",
+      "Upgrade-Insecure-Requests" = "1",
+      "User-Agent" = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36",
+      "Accept" = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+      "Cache-Control" = "max-age=0",
+      "Connection" = "keep-alive"
     ) |>
     httr2::req_options(cookie = cookie) |>
     httr2::req_timeout(seconds = 30L)
@@ -154,7 +154,7 @@ save_tiktok <- function(video_url,
                         dir = ".",
                         ...) {
 
-  tt_json = tt_json(video_url, ...)
+  tt_json <- tt_json(video_url, ...)
 
   if (tt_json$url_full == "https://www.tiktok.com/") {
 
@@ -164,12 +164,13 @@ save_tiktok <- function(video_url,
   } else {
 
     video_url <- tt_json$url_full
-    regex_url = extract_regex(video_url, "(?<=@).+?(?=\\?|$)")
-    video_fn <- paste0(gsub('/', '_', regex_url), '.mp4')
-    video_id = vapply(tt_json[["ItemModule"]], function(x) x[["video"]][["id"]],
-                      FUN.VALUE = character(1))
+    regex_url <- extract_regex(video_url, "(?<=@).+?(?=\\?|$)")
+    video_fn <- paste0(gsub("/", "_", regex_url), ".mp4")
+    video_id <- vapply(tt_json[["ItemModule"]], function(x) x[["video"]][["id"]],
+      FUN.VALUE = character(1)
+    )
 
-    tt_video_url = tt_json[["ItemList"]][["video"]][["preloadList"]][["url"]]
+    tt_video_url <- tt_json[["ItemList"]][["video"]][["preloadList"]][["url"]]
 
 
     video_timestamp <- tt_json[["ItemModule"]][[video_id]][["createTime"]] |>
@@ -180,22 +181,22 @@ save_tiktok <- function(video_url,
       video_id = video_id,
       video_timestamp = video_timestamp,
       video_length = tt_json[["ItemModule"]][[video_id]][["video"]][["duration"]],
-      video_title = tt_json[['ItemModule']][[video_id]][['desc']],
-      video_locationcreated = tt_json[['ItemModule']][[video_id]][['locationCreated']],
-      video_diggcount = tt_json[['ItemModule']][[video_id]][['stats']][['diggCount']],
-      video_sharecount = tt_json[['ItemModule']][[video_id]][['stats']][['shareCount']],
-      video_commentcount = tt_json[['ItemModule']][[video_id]][['stats']][['commentCount']],
-      video_playcount = tt_json[['ItemModule']][[video_id]][['stats']][['playCount']],
-      video_description = tt_json[['ItemModule']][[video_id]][['desc']],
-      video_is_ad = tt_json[['ItemModule']][[video_id]][['isAd']],
+      video_title = tt_json[["ItemModule"]][[video_id]][["desc"]],
+      video_locationcreated = tt_json[["ItemModule"]][[video_id]][["locationCreated"]],
+      video_diggcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["diggCount"]],
+      video_sharecount = tt_json[["ItemModule"]][[video_id]][["stats"]][["shareCount"]],
+      video_commentcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["commentCount"]],
+      video_playcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["playCount"]],
+      video_description = tt_json[["ItemModule"]][[video_id]][["desc"]],
+      video_is_ad = tt_json[["ItemModule"]][[video_id]][["isAd"]],
       video_fn = video_fn,
-      author_username = tt_json[['ItemModule']][[video_id]][['author']],
-      author_name = tt_json[['ItemModule']][[video_id]][['authorName']],
-      author_followercount = tt_json[['ItemModule']][[video_id]][['authorStats']][['followerCount']],
-      author_followingcount = tt_json[['ItemModule']][[video_id]][['authorStats']][['followingCount']],
-      author_heartcount = tt_json[['ItemModule']][[video_id]][['authorStats']][['heartCount']],
-      author_videocount = tt_json[['ItemModule']][[video_id]][['authorStats']][['videoCount']],
-      author_diggcount = tt_json[['ItemModule']][[video_id]][['authorStats']][['diggCount']]
+      author_username = tt_json[["ItemModule"]][[video_id]][["author"]],
+      author_name = tt_json[["ItemModule"]][[video_id]][["authorName"]],
+      author_followercount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["followerCount"]],
+      author_followingcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["followingCount"]],
+      author_heartcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["heartCount"]],
+      author_videocount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["videoCount"]],
+      author_diggcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["diggCount"]]
     )
 
     if (save_video) curl::curl_download(tt_video_url, paste0(dir, "/", video_fn), quiet = FALSE)
@@ -213,13 +214,13 @@ save_video_comments <- function(video_url,
                                 max_comments = Inf,
                                 sleep_pool = 1:10,
                                 cookiefile = getOption("cookiefile")) {
+  cursor <- cursor_resume
 
-  cursor = cursor_resume
 
-  tt_json = tt_json(video_url, cookiefile = cookiefile)
+  tt_json <- tt_json(video_url, cookiefile = cookiefile)
   video_url <- tt_json$url_full
-  video_url = extract_regex(video_url, "(.+?)(?=\\?|$)")
-  video_id = extract_regex(video_url, "(?<=/video/)(.+?)(?=\\?|$)")
+  video_url <- extract_regex(video_url, "(.+?)(?=\\?|$)")
+  video_id <- extract_regex(video_url, "(?<=/video/)(.+?)(?=\\?|$)")
 
   cookie <- tt_read_cookies(cookiefile)
   data_list <- list()
@@ -227,25 +228,27 @@ save_video_comments <- function(video_url,
   while (cursor < max_comments) {
     message("\t...retrieving comments ", cursor, "+")
 
-    req <- httr2::request('https://www.tiktok.com/api/comment/list/') |>
+    req <- httr2::request("https://www.tiktok.com/api/comment/list/") |>
       httr2::req_headers(
-        'Accept-Encoding' = 'gzip, deflate, sdch',
-        'Accept-Language' = 'en-US,en;q=0.8',
-        'Upgrade-Insecure-Requests' = '1',
-        'User-Agent' = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36',
-        'Accept' = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Cache-Control' = 'max-age=0',
-        'Connection' = 'keep-alive',
+        "Accept-Encoding" = "gzip, deflate, sdch",
+        "Accept-Language" = "en-US,en;q=0.8",
+        "Upgrade-Insecure-Requests" = "1",
+        "User-Agent" = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36",
+        "Accept" = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Cache-Control" = "max-age=0",
+        "Connection" = "keep-alive",
         referer = video_url
       ) |>
       httr2::req_options(cookie = cookie) |>
-      httr2::req_url_query('aweme_id' = video_id,
-                           'count' = '20',
-                           'cursor' = as.character(cursor)) |>
+      httr2::req_url_query(
+        "aweme_id" = video_id,
+        "count" = "20",
+        "cursor" = as.character(cursor)
+      ) |>
       httr2::req_timeout(seconds = 30L)
 
     res <- try(httr2::req_perform(req) |>
-                 httr2::resp_body_json())
+      httr2::resp_body_json())
 
     if (!methods::is(res, "try-error")) {
 
@@ -268,12 +271,12 @@ save_video_comments <- function(video_url,
         list(data_df)
       )
 
-      if (nrow(data_df) == 0) max_comments <-  0
+      if (nrow(data_df) == 0) max_comments <- 0
 
       if (cursor < max_comments) wait(sleep_pool)
 
     } else {
-      max_comments <-  0
+      max_comments <- 0
     }
 
   }
@@ -287,9 +290,9 @@ save_video_comments <- function(video_url,
 get_account_video_urls <- function(user_url,
                                    ...) {
 
-  tt_json = tt_json(user_url, ...)
-  video_ids = tt_json[["ItemList"]][["user-post"]][["list"]]
-  user_id = tt_json[["UserPage"]][["uniqueId"]]
+  tt_json <- tt_json(user_url, ...)
+  video_ids <- tt_json[["ItemList"]][["user-post"]][["list"]]
+  user_id <- tt_json[["UserPage"]][["uniqueId"]]
 
   tibble::tibble(
     user_id = user_id,
@@ -300,9 +303,9 @@ get_account_video_urls <- function(user_url,
     user_commercial = tt_json[["UserModule"]][["users"]][["jordanalmani"]][["commerceUserInfo"]][["commerceUser"]],
     user_region = tt_json[["UserModule"]][["users"]][["jordanalmani"]][["region"]],
     video_urls <- paste0(
-      'https://www.tiktok.com/@',
+      "https://www.tiktok.com/@",
       user_id,
-      '/video/',
+      "/video/",
       video_ids
     )
   )
@@ -316,8 +319,9 @@ get_hashtag_video_urls <- function(hashtag,
                                    cookiefile = getOption("cookiefile"),
                                    ...) {
 
-  if (length(hashtag) != 1 & !methods::is(hashtag, "character"))
+  if (length(hashtag) != 1 & !methods::is(hashtag, "character")) {
     stop("Please provide exactly one hashtag")
+  }
 
   search_url <- paste0("https://www.tiktok.com/tag/", hashtag)
   # first page
@@ -339,25 +343,27 @@ get_hashtag_video_urls <- function(hashtag,
 
     message("\t...retrieving videos ", cursor, "+")
 
-    req <- httr2::request('https://www.tiktok.com/api/challenge/item_list/') |>
+    req <- httr2::request("https://www.tiktok.com/api/challenge/item_list/") |>
       httr2::req_headers(
-        'Accept-Encoding' = 'gzip, deflate, sdch',
-        'Accept-Language' = 'en-US,en;q=0.8',
-        'Upgrade-Insecure-Requests' = '1',
-        'User-Agent' = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36',
-        'Accept' = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Cache-Control' = 'max-age=0',
-        'Connection' = 'keep-alive'
+        "Accept-Encoding" = "gzip, deflate, sdch",
+        "Accept-Language" = "en-US,en;q=0.8",
+        "Upgrade-Insecure-Requests" = "1",
+        "User-Agent" = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36",
+        "Accept" = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Cache-Control" = "max-age=0",
+        "Connection" = "keep-alive"
       ) |>
       httr2::req_options(cookie = cookie) |>
-      httr2::req_url_query("aid"="1988",
-                           'count' = '30',
-                           "challengeID" = challengeID,
-                           'cursor' = as.character(cursor)) |>
+      httr2::req_url_query(
+        "aid" = "1988",
+        "count" = "30",
+        "challengeID" = challengeID,
+        "cursor" = as.character(cursor)
+      ) |>
       httr2::req_timeout(seconds = 30L)
 
     res <- try(httr2::req_perform(req) |>
-                 httr2::resp_body_json())
+      httr2::resp_body_json())
 
     if (!methods::is(res, "try-error")) {
 
@@ -382,12 +388,11 @@ parse_search <- function(json, api) {
   if (api) {
     entries <- "itemList"
     date_class <- integer(1)
-    auth_name <- function(x) x[['author']][["uniqueId"]]
+    auth_name <- function(x) x[["author"]][["uniqueId"]]
   } else {
     entries <- "ItemModule"
     date_class <- character(1)
-    auth_name <- function(x) x[['author']]
-
+    auth_name <- function(x) x[["author"]]
   }
 
   video_timestamp <- vapply(json[[entries]], function(x) x[["createTime"]], FUN.VALUE = date_class) |>
@@ -399,19 +404,19 @@ parse_search <- function(json, api) {
     video_timestamp = video_timestamp,
     video_url = vapply(json[[entries]], function(x) x[["video"]][["downloadAddr"]], FUN.VALUE = character(1)),
     video_length = vapply(json[[entries]], function(x) x[["video"]][["duration"]], FUN.VALUE = integer(1)),
-    video_title = vapply(json[[entries]], function(x) x[['desc']], FUN.VALUE = character(1)),
-    video_diggcount = vapply(json[[entries]], function(x) x[['stats']][['diggCount']], FUN.VALUE = integer(1)),
-    video_sharecount = vapply(json[[entries]], function(x) x[['stats']][['shareCount']], FUN.VALUE = integer(1)),
-    video_commentcount = vapply(json[[entries]], function(x) x[['stats']][['commentCount']], FUN.VALUE = integer(1)),
-    video_playcount = vapply(json[[entries]], function(x) x[['stats']][['playCount']], FUN.VALUE = integer(1)),
-    video_description = vapply(json[[entries]], function(x) x[['desc']], FUN.VALUE = character(1)),
-    video_is_ad = vapply(json[[entries]], function(x) x[['isAd']], FUN.VALUE = logical(1)),
+    video_title = vapply(json[[entries]], function(x) x[["desc"]], FUN.VALUE = character(1)),
+    video_diggcount = vapply(json[[entries]], function(x) x[["stats"]][["diggCount"]], FUN.VALUE = integer(1)),
+    video_sharecount = vapply(json[[entries]], function(x) x[["stats"]][["shareCount"]], FUN.VALUE = integer(1)),
+    video_commentcount = vapply(json[[entries]], function(x) x[["stats"]][["commentCount"]], FUN.VALUE = integer(1)),
+    video_playcount = vapply(json[[entries]], function(x) x[["stats"]][["playCount"]], FUN.VALUE = integer(1)),
+    video_description = vapply(json[[entries]], function(x) x[["desc"]], FUN.VALUE = character(1)),
+    video_is_ad = vapply(json[[entries]], function(x) x[["isAd"]], FUN.VALUE = logical(1)),
     author_name = vapply(json[[entries]], auth_name, FUN.VALUE = character(1)),
-    author_followercount = vapply(json[[entries]], function(x) x[['authorStats']][['followerCount']], FUN.VALUE = integer(1)),
-    author_followingcount = vapply(json[[entries]], function(x) x[['authorStats']][['followingCount']], FUN.VALUE = integer(1)),
-    author_heartcount = vapply(json[[entries]], function(x) x[['authorStats']][['heartCount']], FUN.VALUE = integer(1)),
-    author_videocount = vapply(json[[entries]], function(x) x[['authorStats']][['videoCount']], FUN.VALUE = integer(1)),
-    author_diggcount = vapply(json[[entries]], function(x) x[['authorStats']][['diggCount']], FUN.VALUE = integer(1))
+    author_followercount = vapply(json[[entries]], function(x) x[["authorStats"]][["followerCount"]], FUN.VALUE = integer(1)),
+    author_followingcount = vapply(json[[entries]], function(x) x[["authorStats"]][["followingCount"]], FUN.VALUE = integer(1)),
+    author_heartcount = vapply(json[[entries]], function(x) x[["authorStats"]][["heartCount"]], FUN.VALUE = integer(1)),
+    author_videocount = vapply(json[[entries]], function(x) x[["authorStats"]][["videoCount"]], FUN.VALUE = integer(1)),
+    author_diggcount = vapply(json[[entries]], function(x) x[["authorStats"]][["diggCount"]], FUN.VALUE = integer(1))
   )
 
 }

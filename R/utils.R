@@ -5,15 +5,16 @@ tt_read_cookies <- function(cookiefile) {
   if (grepl("(.+?=.+;){2,}", cookiefile, perl = TRUE)) {
     cookie <- cookiefile
   } else {
-    if (!file.exists(cookiefile))
+    if (!file.exists(cookiefile)) {
       stop("cookiefile ", cookiefile, " does not exist")
+    }
 
     lines <- readLines(cookiefile, warn = FALSE)
 
     df <- utils::read.delim(text = lines[grep("\t", lines)], header = FALSE)
 
     cookies <- df[, 7]
-    names(cookies)  <- df[, 6]
+    names(cookies) <- df[, 6]
 
     cookies_str <- vapply(cookies, curl::curl_escape, FUN.VALUE = character(1))
     cookie <- paste(names(cookies), cookies_str, sep = "=", collapse = ";")
