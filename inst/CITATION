@@ -6,8 +6,8 @@ citEntry(
   author   = "Johannes B. Gruber",
   year     = 2022,
   url      = "https://github.com/JBGruber/traktok",
-  note     = "R package version 0.0.1.9000"
+  note     = "R package version 0.0.1.9000",
   textVersion = paste(
-    Gruber, Johannes B. (2022). traktok. An R package to scrape data from TikTok. R package version 0.0.1.9000. https://github.com/JBGruber/traktok.
+    "Gruber, Johannes B. (2022). traktok. An R package to scrape data from TikTok. R package version 0.0.1.9000. https://github.com/JBGruber/traktok."
   )
 )
