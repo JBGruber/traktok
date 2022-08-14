@@ -28,7 +28,7 @@ tt_videos <- function(video_urls,
     video_id <- extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)|(?<=https://vm.tiktok.com/).+?(?=/|$)")
     message("Getting video ", video_id)
     out <- save_tiktok(u, save_video = save_video, dir = dir, ...)
-    wait(sleep_pool)
+    if (u != utils::tail(video_urls, 1)) wait(sleep_pool)
     return(out)
   })
 
@@ -165,7 +165,7 @@ save_tiktok <- function(video_url,
 
     video_url <- tt_json$url_full
     regex_url <- extract_regex(video_url, "(?<=@).+?(?=\\?|$)")
-    video_fn <- paste0(gsub("/", "_", regex_url), ".mp4")
+    video_fn <- paste0(dir, "/", paste0(gsub("/", "_", regex_url), ".mp4"))
     video_id <- vapply(tt_json[["ItemModule"]], function(x) x[["video"]][["id"]],
       FUN.VALUE = character(1)
     )
@@ -199,7 +199,7 @@ save_tiktok <- function(video_url,
       author_diggcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["diggCount"]]
     )
 
-    if (save_video) curl::curl_download(tt_video_url, paste0(dir, "/", video_fn), quiet = FALSE)
+    if (save_video) curl::curl_download(tt_video_url, video_fn, quiet = FALSE)
 
     return(tibble::tibble(data.frame(lapply(data_list, function(x) ifelse(is.null(x), NA, x)))))
 
@@ -242,7 +242,7 @@ save_video_comments <- function(video_url,
       httr2::req_options(cookie = cookie) |>
       httr2::req_url_query(
         "aweme_id" = video_id,
-        "count" = "20",
+        "count" = "50",
         "cursor" = as.character(cursor)
       ) |>
       httr2::req_timeout(seconds = 30L)

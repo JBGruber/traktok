@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 <!-- badges: end -->
 
 
-The goal of traktok is to provide easy access to TikTok data. This package is an R port of Deen Freelons [Pyktok](https://github.com/dfreelon/pyktok) Python module. It can
+The goal of traktok is to provide easy access to TikTok data. This package is an R port of Deen Freelon's [Pyktok](https://github.com/dfreelon/pyktok) Python module. It can
 
  - [Download TikTok videos](#videos)
  - [Download video metadata](#videos)
@@ -34,6 +34,8 @@ The goal of traktok is to provide easy access to TikTok data. This package is an
 The same disclaimer as for Pyktok applies: 
 
 > This program may stop working suddenly if TikTok changes how it stores its data ([see Freelon, 2018](https://osf.io/preprints/socarxiv/56f4q/)).
+
+I check automatically every day if the approach is still working. Current status: [![Still-Working?](https://github.com/JBGruber/traktok/actions/workflows/still-working.yaml/badge.svg)](https://github.com/JBGruber/traktok/actions/workflows/still-working.yaml)
 
 ## Installation
 

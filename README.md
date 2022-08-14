@@ -14,7 +14,7 @@ coverage](https://codecov.io/gh/JBGruber/traktok/branch/main/graph/badge.svg)](h
 <!-- badges: end -->
 
 The goal of traktok is to provide easy access to TikTok data. This
-package is an R port of Deen Freelons
+package is an R port of Deen Freelon’s
 [Pyktok](https://github.com/dfreelon/pyktok) Python module. It can
 
 -   [Download TikTok videos](#videos)
@@ -30,6 +30,10 @@ The same disclaimer as for Pyktok applies:
 > This program may stop working suddenly if TikTok changes how it stores
 > its data ([see Freelon,
 > 2018](https://osf.io/preprints/socarxiv/56f4q/)).
+
+I check automatically every day if the approach is still working.
+Current status:
+[![Still-Working?](https://github.com/JBGruber/traktok/actions/workflows/still-working.yaml/badge.svg)](https://github.com/JBGruber/traktok/actions/workflows/still-working.yaml)
 
 ## Installation
 
@@ -83,14 +87,13 @@ example_urls <- c(
 )
 tt_videos(example_urls, save_video = FALSE)
 #> Getting video 7106594312292453675
-#>  ...waiting 1.9 seconds
+#>  ...waiting 1.4 seconds
 #> Getting video 7125860750463094058
-#>  ...waiting 2.6 seconds
 #> # A tibble: 2 × 19
 #>   video_id       video…¹ video…² video…³ video…⁴ video…⁵ video…⁶ video…⁷ video…⁸
 #>   <chr>            <dbl>   <int> <chr>   <chr>     <int>   <int>   <int>   <int>
-#> 1 7106594312292…  1.65e9      24 how ma… US        21500     113    1798  482500
-#> 2 7125860750463…  1.66e9      15 the #R… US        17800     360    3207  559900
+#> 1 7106594312292…  1.65e9      24 how ma… US        21800     115    1804  488800
+#> 2 7125860750463…  1.66e9      15 the #R… US        20600     399    3339  643900
 #> # … with 10 more variables: video_description <chr>, video_is_ad <lgl>,
 #> #   video_fn <chr>, author_username <chr>, author_name <lgl>,
 #> #   author_followercount <int>, author_followingcount <int>,
@@ -109,14 +112,13 @@ by exporting the URLs and downloading them with an external tool.
 ``` r
 tt_videos(example_urls, save_video = FALSE)
 #> Getting video 7106594312292453675
-#>  ...waiting 1.5 seconds
+#>  ...waiting 3.9 seconds
 #> Getting video 7125860750463094058
-#>  ...waiting 3.5 seconds
 #> # A tibble: 2 × 19
 #>   video_id       video…¹ video…² video…³ video…⁴ video…⁵ video…⁶ video…⁷ video…⁸
 #>   <chr>            <dbl>   <int> <chr>   <chr>     <int>   <int>   <int>   <int>
-#> 1 7106594312292…  1.65e9      24 how ma… US        21500     113    1798  482500
-#> 2 7125860750463…  1.66e9      15 the #R… US        17800     360    3207  559900
+#> 1 7106594312292…  1.65e9      24 how ma… US        21800     115    1804  488800
+#> 2 7125860750463…  1.66e9      15 the #R… US        20600     399    3339  643900
 #> # … with 10 more variables: video_description <chr>, video_is_ad <lgl>,
 #> #   video_fn <chr>, author_username <chr>, author_name <lgl>,
 #> #   author_followercount <int>, author_followingcount <int>,
@@ -136,16 +138,16 @@ tt_user_videos("https://www.tiktok.com/@tiktok")
 #> # A tibble: 30 × 2
 #>    user_id `video_urls <- ...`                                     
 #>    <chr>   <chr>                                                   
-#>  1 tiktok  https://www.tiktok.com/@tiktok/video/7128463908439969066
-#>  2 tiktok  https://www.tiktok.com/@tiktok/video/7128155484149992750
-#>  3 tiktok  https://www.tiktok.com/@tiktok/video/7128107997653486894
-#>  4 tiktok  https://www.tiktok.com/@tiktok/video/7125860750463094058
-#>  5 tiktok  https://www.tiktok.com/@tiktok/video/7125593394075667758
-#>  6 tiktok  https://www.tiktok.com/@tiktok/video/7125125909417315626
-#>  7 tiktok  https://www.tiktok.com/@tiktok/video/7124806195411586350
-#>  8 tiktok  https://www.tiktok.com/@tiktok/video/7122964215211691310
-#>  9 tiktok  https://www.tiktok.com/@tiktok/video/7120348773460790574
-#> 10 tiktok  https://www.tiktok.com/@tiktok/video/7119937676341726510
+#>  1 tiktok  https://www.tiktok.com/@tiktok/video/7130652239370145070
+#>  2 tiktok  https://www.tiktok.com/@tiktok/video/7130013216473746731
+#>  3 tiktok  https://www.tiktok.com/@tiktok/video/7129960151368387886
+#>  4 tiktok  https://www.tiktok.com/@tiktok/video/7129906377987837227
+#>  5 tiktok  https://www.tiktok.com/@tiktok/video/7128463908439969066
+#>  6 tiktok  https://www.tiktok.com/@tiktok/video/7128155484149992750
+#>  7 tiktok  https://www.tiktok.com/@tiktok/video/7128107997653486894
+#>  8 tiktok  https://www.tiktok.com/@tiktok/video/7125860750463094058
+#>  9 tiktok  https://www.tiktok.com/@tiktok/video/7125593394075667758
+#> 10 tiktok  https://www.tiktok.com/@tiktok/video/7125125909417315626
 #> # … with 20 more rows
 #> # ℹ Use `print(n = ...)` to see more rows
 ```
