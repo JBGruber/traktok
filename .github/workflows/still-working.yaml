@@ -2,7 +2,7 @@
 # changed anything
 on:
   schedule:
-    - cron: '59 07 * * *'
+    - cron: '30 10 * * *'
 
 name: Still-Working?
 
