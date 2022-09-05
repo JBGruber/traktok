@@ -17,13 +17,13 @@ The goal of traktok is to provide easy access to TikTok data. This
 package is an R port of Deen Freelon’s
 [Pyktok](https://github.com/dfreelon/pyktok) Python module. It can
 
--   [Download TikTok videos](#videos)
--   [Download video metadata](#videos)
--   [Download all available video comments](#comments)
--   [Download up to 30 most recent user video URLs](#user-accounts)
--   [Download full TikTok JSON data objects (in case you want to extract
-    data from parts of the object not included in the above
-    functions)](#json-data)
+- [Download TikTok videos](#videos)
+- [Download video metadata](#videos)
+- [Download all available video comments](#comments)
+- [Download up to 30 most recent user video URLs](#user-accounts)
+- [Download full TikTok JSON data objects (in case you want to extract
+  data from parts of the object not included in the above
+  functions)](#json-data)
 
 The same disclaimer as for Pyktok applies:
 
@@ -82,18 +82,17 @@ You can get data from videos like this:
 ``` r
 library(traktok)
 example_urls <- c(
-  "https://www.tiktok.com/@tiktok/video/7106594312292453675?is_copy_url=1&is_from_webapp=v1",
-  "https://www.tiktok.com/@tiktok/video/7125860750463094058?is_copy_url=1&is_from_webapp=v1"
+  "https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1",
+  "https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1"
 )
 tt_videos(example_urls, save_video = FALSE)
-#> Getting video 7106594312292453675
-#>  ...waiting 1.4 seconds
-#> Getting video 7125860750463094058
+#> Getting video 6584647400055377158
+#> Getting video 6584647400055377158
 #> # A tibble: 2 × 19
 #>   video_id       video…¹ video…² video…³ video…⁴ video…⁵ video…⁶ video…⁷ video…⁸
 #>   <chr>            <dbl>   <int> <chr>   <chr>     <int>   <int>   <int>   <int>
-#> 1 7106594312292…  1.65e9      24 how ma… US        21800     115    1804  488800
-#> 2 7125860750463…  1.66e9      15 the #R… US        20600     399    3339  643900
+#> 1 6584647400055…  1.53e9      14 #MakeE… US       392800    5261   34300 3500000
+#> 2 6584647400055…  1.53e9      14 #MakeE… US       392800    5261   34300 3500000
 #> # … with 10 more variables: video_description <chr>, video_is_ad <lgl>,
 #> #   video_fn <chr>, author_username <chr>, author_name <lgl>,
 #> #   author_followercount <int>, author_followingcount <int>,
@@ -101,7 +100,6 @@ tt_videos(example_urls, save_video = FALSE)
 #> #   and abbreviated variable names ¹​video_timestamp, ²​video_length,
 #> #   ³​video_title, ⁴​video_locationcreated, ⁵​video_diggcount, ⁶​video_sharecount,
 #> #   ⁷​video_commentcount, ⁸​video_playcount
-#> # ℹ Use `colnames()` to see all variable names
 ```
 
 You can download the videos by either setting `save_video` to `TRUE` or
@@ -111,14 +109,13 @@ by exporting the URLs and downloading them with an external tool.
 
 ``` r
 tt_videos(example_urls, save_video = FALSE)
-#> Getting video 7106594312292453675
-#>  ...waiting 3.9 seconds
-#> Getting video 7125860750463094058
+#> Getting video 6584647400055377158
+#> Getting video 6584647400055377158
 #> # A tibble: 2 × 19
 #>   video_id       video…¹ video…² video…³ video…⁴ video…⁵ video…⁶ video…⁷ video…⁸
 #>   <chr>            <dbl>   <int> <chr>   <chr>     <int>   <int>   <int>   <int>
-#> 1 7106594312292…  1.65e9      24 how ma… US        21800     115    1804  488800
-#> 2 7125860750463…  1.66e9      15 the #R… US        20600     399    3339  643900
+#> 1 6584647400055…  1.53e9      14 #MakeE… US       392800    5261   34300 3500000
+#> 2 6584647400055…  1.53e9      14 #MakeE… US       392800    5261   34300 3500000
 #> # … with 10 more variables: video_description <chr>, video_is_ad <lgl>,
 #> #   video_fn <chr>, author_username <chr>, author_name <lgl>,
 #> #   author_followercount <int>, author_followingcount <int>,
@@ -126,7 +123,6 @@ tt_videos(example_urls, save_video = FALSE)
 #> #   and abbreviated variable names ¹​video_timestamp, ²​video_length,
 #> #   ³​video_title, ⁴​video_locationcreated, ⁵​video_diggcount, ⁶​video_sharecount,
 #> #   ⁷​video_commentcount, ⁸​video_playcount
-#> # ℹ Use `colnames()` to see all variable names
 ```
 
 ### User accounts
@@ -134,22 +130,21 @@ tt_videos(example_urls, save_video = FALSE)
 ``` r
 tt_user_videos("https://www.tiktok.com/@tiktok")
 #> Getting user videos from ...
-#>  ...waiting 0.3 seconds
+#>  ...waiting 0.9 seconds
 #> # A tibble: 30 × 2
 #>    user_id `video_urls <- ...`                                     
 #>    <chr>   <chr>                                                   
-#>  1 tiktok  https://www.tiktok.com/@tiktok/video/7130652239370145070
-#>  2 tiktok  https://www.tiktok.com/@tiktok/video/7130013216473746731
-#>  3 tiktok  https://www.tiktok.com/@tiktok/video/7129960151368387886
-#>  4 tiktok  https://www.tiktok.com/@tiktok/video/7129906377987837227
-#>  5 tiktok  https://www.tiktok.com/@tiktok/video/7128463908439969066
-#>  6 tiktok  https://www.tiktok.com/@tiktok/video/7128155484149992750
-#>  7 tiktok  https://www.tiktok.com/@tiktok/video/7128107997653486894
-#>  8 tiktok  https://www.tiktok.com/@tiktok/video/7125860750463094058
-#>  9 tiktok  https://www.tiktok.com/@tiktok/video/7125593394075667758
-#> 10 tiktok  https://www.tiktok.com/@tiktok/video/7125125909417315626
+#>  1 tiktok  https://www.tiktok.com/@tiktok/video/7138498200901553454
+#>  2 tiktok  https://www.tiktok.com/@tiktok/video/7138179998615227690
+#>  3 tiktok  https://www.tiktok.com/@tiktok/video/7138154231256730922
+#>  4 tiktok  https://www.tiktok.com/@tiktok/video/7137824586028272942
+#>  5 tiktok  https://www.tiktok.com/@tiktok/video/7137427772913290538
+#>  6 tiktok  https://www.tiktok.com/@tiktok/video/7137409975189687598
+#>  7 tiktok  https://www.tiktok.com/@tiktok/video/7137396335946353966
+#>  8 tiktok  https://www.tiktok.com/@tiktok/video/7136319934375873838
+#>  9 tiktok  https://www.tiktok.com/@tiktok/video/7136224506342853931
+#> 10 tiktok  https://www.tiktok.com/@tiktok/video/7135966049140264238
 #> # … with 20 more rows
-#> # ℹ Use `print(n = ...)` to see more rows
 ```
 
 ### Json data

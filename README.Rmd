@@ -72,8 +72,8 @@ You can get data from videos like this:
 ```{r VideoExample}
 library(traktok)
 example_urls <- c(
-  "https://www.tiktok.com/@tiktok/video/7106594312292453675?is_copy_url=1&is_from_webapp=v1",
-  "https://www.tiktok.com/@tiktok/video/7125860750463094058?is_copy_url=1&is_from_webapp=v1"
+  "https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1",
+  "https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1"
 )
 tt_videos(example_urls, save_video = FALSE)
 ```
