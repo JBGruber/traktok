@@ -2,7 +2,7 @@ Package: traktok
 Type: Package
 Title: Collecting TikTok Data
 Version: 0.0.1.9000
-Authors@R: person("Johannes", "Gruber", email = "Gruber@europa-uni.de", 
+Authors@R: person("Johannes", "Gruber", email = "johannesb.gruber@gmail.com",
   role = c("aut", "cre"))
 Description: An R port of Deen Freelons Pyktok 
   (<https://github.com/dfreelon/pyktok>) Python module. traktok scrapes videos, 

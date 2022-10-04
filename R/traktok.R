@@ -371,7 +371,12 @@ get_hashtag_video_urls <- function(hashtag,
         data_list,
         list(parse_search(res, api = TRUE))
       )
-      cursor <- cursor + nrow(utils::tail(data_list, 1)[[1]])
+      new <- nrow(utils::tail(data_list, 1)[[1]])
+      if (new > 0) {
+        cursor <- cursor + new
+      } else {
+        max_videos <- 0
+      }
     } else {
       max_videos <- 0
     }
