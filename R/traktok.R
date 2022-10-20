@@ -339,7 +339,7 @@ tt_search_hashtag <- function(hashtag,
 
   search_url <- paste0("https://www.tiktok.com/tag/", hashtag)
   # first page
-  data1 <- tt_json(search_url)
+  data1 <- tt_json(search_url, cookiefile = cookiefile)
   challengeID <- data1[["ChallengePage"]][["challengeInfo"]][["challenge"]][["id"]]
   video_count <- data1[["ChallengePage"]][["challengeInfo"]][["challenge"]][["stats"]][["videoCount"]]
   max_videos <- min(c(

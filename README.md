@@ -21,6 +21,7 @@ package is an R port of Deen Freelon’s
 - [Download video metadata](#videos)
 - [Download all available video comments](#comments)
 - [Download up to 30 most recent user video URLs](#user-accounts)
+- [Search for videos by hashtag](#search-for-hashtags)
 - [Download full TikTok JSON data objects (in case you want to extract
   data from parts of the object not included in the above
   functions)](#json-data)
@@ -111,10 +112,10 @@ by exporting the URLs and downloading them with an external tool.
 tt_comments(example_urls, max_comments = 50L)
 #> Getting comments for video 6584647400055377158...
 #>  ...retrieving comments 0+
-#>  ...waiting 6.8 seconds
+#>  ...waiting 2.8 seconds
 #> Getting comments for video 6584647400055377158...
 #>  ...retrieving comments 0+
-#>  ...waiting 3 seconds
+#>  ...waiting 0.3 seconds
 #> # A tibble: 100 × 8
 #>    comment…¹ comme…² comment_create_time comme…³ video…⁴ user_id user_…⁵ user_…⁶
 #>    <chr>     <chr>   <dttm>                <int> <chr>   <chr>   <chr>   <chr>  
@@ -138,7 +139,7 @@ tt_comments(example_urls, max_comments = 50L)
 ``` r
 tt_user_videos("https://www.tiktok.com/@tiktok")
 #> Getting user videos from ...
-#>  ...waiting 1.3 seconds
+#>  ...waiting 0.8 seconds
 #> # A tibble: 30 × 2
 #>    user_id `video_urls <- ...`                                     
 #>    <chr>   <chr>                                                   
@@ -155,7 +156,7 @@ tt_user_videos("https://www.tiktok.com/@tiktok")
 #> # … with 20 more rows
 ```
 
-### Search for hashtags
+### Search for Hashtags
 
 ``` r
 tt_search_hashtag("rstats", max_videos = 15L)
