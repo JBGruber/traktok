@@ -327,7 +327,9 @@ get_account_video_urls <- function(user_url,
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' tt_search_hashtag("rstats", max_videos = 5L)
+#' }
 tt_search_hashtag <- function(hashtag,
                               max_videos = Inf,
                               cookiefile = getOption("cookiefile"),
