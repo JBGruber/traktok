@@ -260,8 +260,10 @@ save_video_comments <- function(video_url,
         comment_diggcount = vapply(res[["comments"]], function(x) x[["digg_count"]], FUN.VALUE = integer(1)),
         video_url = video_url,
         user_id = vapply(res[["comments"]], function(x) x[["user"]][["uid"]], FUN.VALUE = character(1)),
-        user_nickname = vapply(res[["comments"]], function(x) x[["user"]][["nickname"]], FUN.VALUE = character(1)),
-        user_signature = vapply(res[["comments"]], function(x) x[["user"]][["signature"]], FUN.VALUE = character(1))
+        user_nickname = vapply(res[["comments"]], function(x) ifelse(is.null(x[["user"]][["nickname"]]), "", x[["user"]][["nickname"]]),
+                               FUN.VALUE = character(1)),
+        user_signature = vapply(res[["comments"]], function(x) ifelse(is.null(x[["user"]][["signature"]]), "", x[["user"]][["signature"]]),
+                                                                      FUN.VALUE = character(1))
       )
 
       cursor <- cursor + nrow(data_df)

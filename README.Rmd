@@ -83,7 +83,7 @@ You can download the videos by either setting `save_video` to `TRUE` or by expor
 ### Comments
 
 ```{r CommentsExample}
-tt_videos(example_urls, save_video = FALSE)
+tt_comments(example_urls, max_comments = 50L)
 ```
 
 ### User accounts
