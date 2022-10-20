@@ -2,5 +2,6 @@
 
 export(tt_comments)
 export(tt_json)
+export(tt_search_hashtag)
 export(tt_user_videos)
 export(tt_videos)

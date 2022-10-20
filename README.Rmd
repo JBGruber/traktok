@@ -92,6 +92,12 @@ tt_comments(example_urls, max_comments = 50L)
 tt_user_videos("https://www.tiktok.com/@tiktok")
 ```
 
+### Search for hashtags
+
+```{r HashtagExample}
+tt_search_hashtag("rstats", max_videos = 15L)
+```
+
 ### Json data
 
 ```{r JsonExample, eval=FALSE}

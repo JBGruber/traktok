@@ -11,6 +11,7 @@ Description: An R port of Deen Freelons Pyktok
 License: GPL-3
 Imports:
     curl,
+    dplyr,
     httr2,
     jsonlite,
     methods,

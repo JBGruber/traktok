@@ -38,7 +38,7 @@ tt_videos <- function(video_urls,
 #' Get comments under a video.
 #'
 #' @param video_urls vector of URLs to TikTok videos.
-#' @param max_comments number of comments to return.
+#' @param max_comments max number of comments to return.
 #' @param sleep_pool a vector of numbers from which a waiting period is randomly
 #'   drawn.
 #' @param ... handed to \link{tt_json}.
@@ -315,11 +315,23 @@ get_account_video_urls <- function(user_url,
 }
 
 
-#' @noRd
-get_hashtag_video_urls <- function(hashtag,
-                                   max_videos = Inf,
-                                   cookiefile = getOption("cookiefile"),
-                                   ...) {
+
+#' Search videos using hashtag
+#'
+#' @param hashtag hashtag to query
+#' @param max_videos max number of videos to return.
+#' @param cookiefile path to your cookiefile. See details in \link{tt_json}.
+#' @param ... handed to \link{tt_json}.
+#'
+#' @return a data.frame
+#' @export
+#'
+#' @examples
+#' tt_search_hashtag("rstats", max_videos = 5L)
+tt_search_hashtag <- function(hashtag,
+                              max_videos = Inf,
+                              cookiefile = getOption("cookiefile"),
+                              ...) {
 
   if (length(hashtag) != 1 & !methods::is(hashtag, "character")) {
     stop("Please provide exactly one hashtag")
@@ -384,7 +396,7 @@ get_hashtag_video_urls <- function(hashtag,
     }
   }
 
-  return(data_list)
+  return(dplyr::bind_rows(data_list))
 
 }
 

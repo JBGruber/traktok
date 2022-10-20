@@ -111,10 +111,10 @@ by exporting the URLs and downloading them with an external tool.
 tt_comments(example_urls, max_comments = 50L)
 #> Getting comments for video 6584647400055377158...
 #>  ...retrieving comments 0+
-#>  ...waiting 3.4 seconds
+#>  ...waiting 6.8 seconds
 #> Getting comments for video 6584647400055377158...
 #>  ...retrieving comments 0+
-#>  ...waiting 0.3 seconds
+#>  ...waiting 3 seconds
 #> # A tibble: 100 × 8
 #>    comment…¹ comme…² comment_create_time comme…³ video…⁴ user_id user_…⁵ user_…⁶
 #>    <chr>     <chr>   <dttm>                <int> <chr>   <chr>   <chr>   <chr>  
@@ -138,7 +138,7 @@ tt_comments(example_urls, max_comments = 50L)
 ``` r
 tt_user_videos("https://www.tiktok.com/@tiktok")
 #> Getting user videos from ...
-#>  ...waiting 2.9 seconds
+#>  ...waiting 1.3 seconds
 #> # A tibble: 30 × 2
 #>    user_id `video_urls <- ...`                                     
 #>    <chr>   <chr>                                                   
@@ -153,6 +153,38 @@ tt_user_videos("https://www.tiktok.com/@tiktok")
 #>  9 tiktok  https://www.tiktok.com/@tiktok/video/7152957403066158378
 #> 10 tiktok  https://www.tiktok.com/@tiktok/video/7151807169850051883
 #> # … with 20 more rows
+```
+
+### Search for hashtags
+
+``` r
+tt_search_hashtag("rstats", max_videos = 15L)
+#> 250 videos found for rstats
+#> # A tibble: 16 × 17
+#>    video_id  video_timestamp     video…¹ video…² video…³ video…⁴ video…⁵ video…⁶
+#>    <chr>     <dttm>              <chr>     <int> <chr>     <int>   <int>   <int>
+#>  1 70071974… 2021-09-12 23:44:54 https:…      11 vean l…   16200     156     106
+#>  2 69930983… 2021-08-05 23:53:10 https:…      28 #Machi…   12100     271       0
+#>  3 71299257… 2022-08-09 17:13:15 https:…      71 Data v…    8091     222     116
+#>  4 70085355… 2021-09-16 14:17:32 https:…       6 i’m no…    2323     180      27
+#>  5 70067232… 2021-09-11 17:04:49 https:…      10 #tacos…    2263      11      41
+#>  6 70053274… 2021-09-07 22:48:14 https:…      15 Reply …    2262     138      12
+#>  7 70081900… 2021-09-15 15:56:44 https:…      15 Reply …    2187     213      16
+#>  8 70030125… 2021-09-01 17:05:29 https:…      15 Reply …    1322      12     144
+#>  9 70153977… 2021-10-05 02:06:19 https:…     180 Reply …     957      94      30
+#> 10 70075221… 2021-09-13 20:44:58 https:…      59 Reply …     892      13      41
+#> 11 70038738… 2021-09-04 00:47:42 https:…      15 Answer…     506      42       4
+#> 12 70042142… 2021-09-04 22:48:33 https:…       8 #Apren…     482      12      16
+#> 13 70038136… 2021-09-03 20:53:59 https:…      15 Reply …     445      15       8
+#> 14 70030291… 2021-09-01 18:09:56 https:…      31 Reply …     415       6       6
+#> 15 70042240… 2021-09-04 23:26:39 https:…      15 Reply …     374       8      10
+#> 16 70075209… 2021-09-13 20:40:24 https:…     180 Reply …     370       2      10
+#> # … with 9 more variables: video_playcount <int>, video_description <chr>,
+#> #   video_is_ad <lgl>, author_name <chr>, author_followercount <int>,
+#> #   author_followingcount <int>, author_heartcount <int>,
+#> #   author_videocount <int>, author_diggcount <int>, and abbreviated variable
+#> #   names ¹​video_url, ²​video_length, ³​video_title, ⁴​video_diggcount,
+#> #   ⁵​video_sharecount, ⁶​video_commentcount
 ```
 
 ### Json data
