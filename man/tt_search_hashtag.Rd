@@ -27,5 +27,7 @@ a data.frame
 Search videos using hashtag
 }
 \examples{
+\dontrun{
 tt_search_hashtag("rstats", max_videos = 5L)
+}
 }
