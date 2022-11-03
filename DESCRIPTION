@@ -9,6 +9,8 @@ Description: An R port of Deen Freelons Pyktok
   metadata and comments from TikTok (<https://tiktok.com/>) (in other words, 
   you can track TikTok).
 License: GPL-3
+Depends:
+    R (>= 4.1.0)
 Imports:
     curl,
     dplyr,

@@ -339,7 +339,7 @@ tt_search_hashtag <- function(hashtag,
     stop("Please provide exactly one hashtag")
   }
 
-  search_url <- paste0("https://www.tiktok.com/tag/", hashtag)
+  search_url <- paste0("https://www.tiktok.com/tag/", gsub("#", "", hashtag, fixed = TRUE))
   # first page
   data1 <- tt_json(search_url, cookiefile = cookiefile)
   challengeID <- data1[["ChallengePage"]][["challengeInfo"]][["challenge"]][["id"]]
@@ -408,36 +408,36 @@ parse_search <- function(json, api) {
 
   if (api) {
     entries <- "itemList"
-    date_class <- integer(1)
-    auth_name <- function(x) x[["author"]][["uniqueId"]]
+    date_class <- "integer"
+    author_name <- vpluck(json[[entries]], "author", "uniqueId")
   } else {
     entries <- "ItemModule"
-    date_class <- character(1)
-    auth_name <- function(x) x[["author"]]
+    date_class <- "character"
+    author_name <- vpluck(json[[entries]], "author")
   }
 
-  video_timestamp <- vapply(json[[entries]], function(x) x[["createTime"]], FUN.VALUE = date_class) |>
+  video_timestamp <- vpluck(json[[entries]], "createTime", val = date_class) |>
     as.integer() |>
     as.POSIXct(tz = "UTC", origin = "1970-01-01")
 
   tibble::tibble(
-    video_id = vapply(json[[entries]], function(x) x[["video"]][["id"]], FUN.VALUE = character(1)),
-    video_timestamp = video_timestamp,
-    video_url = vapply(json[[entries]], function(x) x[["video"]][["downloadAddr"]], FUN.VALUE = character(1)),
-    video_length = vapply(json[[entries]], function(x) x[["video"]][["duration"]], FUN.VALUE = integer(1)),
-    video_title = vapply(json[[entries]], function(x) x[["desc"]], FUN.VALUE = character(1)),
-    video_diggcount = vapply(json[[entries]], function(x) x[["stats"]][["diggCount"]], FUN.VALUE = integer(1)),
-    video_sharecount = vapply(json[[entries]], function(x) x[["stats"]][["shareCount"]], FUN.VALUE = integer(1)),
-    video_commentcount = vapply(json[[entries]], function(x) x[["stats"]][["commentCount"]], FUN.VALUE = integer(1)),
-    video_playcount = vapply(json[[entries]], function(x) x[["stats"]][["playCount"]], FUN.VALUE = integer(1)),
-    video_description = vapply(json[[entries]], function(x) x[["desc"]], FUN.VALUE = character(1)),
-    video_is_ad = vapply(json[[entries]], function(x) x[["isAd"]], FUN.VALUE = logical(1)),
-    author_name = vapply(json[[entries]], auth_name, FUN.VALUE = character(1)),
-    author_followercount = vapply(json[[entries]], function(x) x[["authorStats"]][["followerCount"]], FUN.VALUE = integer(1)),
-    author_followingcount = vapply(json[[entries]], function(x) x[["authorStats"]][["followingCount"]], FUN.VALUE = integer(1)),
-    author_heartcount = vapply(json[[entries]], function(x) x[["authorStats"]][["heartCount"]], FUN.VALUE = integer(1)),
-    author_videocount = vapply(json[[entries]], function(x) x[["authorStats"]][["videoCount"]], FUN.VALUE = integer(1)),
-    author_diggcount = vapply(json[[entries]], function(x) x[["authorStats"]][["diggCount"]], FUN.VALUE = integer(1))
+    video_id              = vpluck(json[[entries]], "video", "id"),
+    video_timestamp       = video_timestamp,
+    video_url             = vpluck(json[[entries]], "video", "downloadAddr"),
+    video_length          = vpluck(json[[entries]], "video", "duration", val = "integer"),
+    video_title           = vpluck(json[[entries]], "desc"),
+    video_diggcount       = vpluck(json[[entries]], "stats", "diggCount", val = "integer"),
+    video_sharecount      = vpluck(json[[entries]], "stats", "shareCount", val = "integer"),
+    video_commentcount    = vpluck(json[[entries]], "stats", "commentCount", val = "integer"),
+    video_playcount       = vpluck(json[[entries]], "stats", "playCount", val = "integer"),
+    video_description     = vpluck(json[[entries]], "desc"),
+    video_is_ad           = vpluck(json[[entries]], "isAd", val = "logical"),
+    author_name           = author_name,
+    author_followercount  = vpluck(json[[entries]], "authorStats", "followerCount", val = "integer"),
+    author_followingcount = vpluck(json[[entries]], "authorStats", "followingCount", val = "integer"),
+    author_heartcount     = vpluck(json[[entries]], "authorStats", "heartCount", val = "integer"),
+    author_videocount     = vpluck(json[[entries]], "authorStats", "videoCount", val = "integer"),
+    author_diggcount      = vpluck(json[[entries]], "authorStats", "diggCount", val = "integer")
   )
 
 }

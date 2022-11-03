@@ -31,8 +31,25 @@ extract_regex <- function(str, pattern) {
   )
 }
 
+#' @noRd
 wait <- function(sleep_pool) {
   sleep <- stats::runif(1) * sample(sleep_pool, 1L)
   message("\t...waiting ", round(sleep, 1), " seconds")
   Sys.sleep(sleep)
+}
+
+#' @noRd
+vpluck <- function(x, ..., val = "character") {
+  dots <- list(...)
+  if (val == "character") {
+    def <- NA_character_
+    val <- character(1)
+  } else if (val == "integer") {
+    def <- NA_integer_
+    val <- integer(1)
+  } else if (val == "logical") {
+    def <- NA
+    val <- logical(1)
+  }
+  vapply(x, purrr::pluck, !!!dots, .default = def, FUN.VALUE = val)
 }
