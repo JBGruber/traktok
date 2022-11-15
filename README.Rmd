@@ -27,9 +27,9 @@ The goal of traktok is to provide easy access to TikTok data. This package is an
 
 - [Download TikTok videos](#videos)
 - [Download video metadata](#videos)
-- [Download all available video comments](#comments)
+- ~~[Download all available video comments](#comments)~~ (see #5)
 - [Download up to 30 most recent user video URLs](#user-accounts)
-- [Search for videos by hashtag](#search-for-hashtags)
+- ~~[Search for videos by hashtag](#search-for-hashtags)~~ (see #4)
 - [Download full TikTok JSON data objects (in case you want to extract data from parts of the object not included in the above functions)](#json-data)
  
 The same disclaimer as for Pyktok applies: 
@@ -51,20 +51,11 @@ remotes::install_github("JBGruber/traktok")
 
 ### Authentication
 
-Pyktok uses the module [browser_cookie3](https://github.com/borisbabic/browser_cookie3) to directly access the cookies saved in your browser. Such an infrastructure does not exists, to my knowledge, in `R`.
-Instead, you can export the necessary cookies from your browser using a browser extension (after visiting TikTok.com at least once).
-I can recommend ["Get cookies.txt"](https://chrome.google.com/webstore/detail/get-cookiestxt/bgaddhkoddajcdgocldbbfleckgcbcid) for Chromium based browsers or ["cookies.txt"](https://addons.mozilla.org/en-US/firefox/addon/cookies-txt/) for Firefox.
-
-![](man/figures/cookies.png)
-
-Once you've saved this file, you can either provide the path to it in every function, save it in your working directory or set the respective option like this:
-
-```{r, eval=FALSE}
-options(cookiefile = "path/to/tiktok.com_cookies.txt")
-```
-
+Authentication for `traktok` happens automatically the first time you run a function.
 To TikTok, this will make it look as if `traktok` requests come from your ordinary browser.
-If you experience issues, you can try to repeat these steps to get a fresh cookie file.
+`traktok` will save a cookie file in the location returned by `tools::R_user_dir("traktok", "config")`.
+If you ever run into problems due to an expired cookie, you might want to delete the files in this folder to get a fresh start.
+
 
 ### Videos
 

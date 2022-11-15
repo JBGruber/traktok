@@ -8,5 +8,5 @@
     "Cache-Control" = "max-age=0",
     "Connection" = "keep-alive"
   ))
-  options(cookiefile = "tiktok.com_cookies.txt")
+  options(cookiefile = file.path(tools::R_user_dir("traktok", "config"), "tiktok.com_cookies.txt"))
 }

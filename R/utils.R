@@ -1,26 +1,39 @@
 #' @noRd
 tt_read_cookies <- function(cookiefile) {
 
-  # try to check if the value is already a valid cookie string
+  # try to check if the value is already a valid cookie string (meant for testing)
   if (grepl("(.+?=.+;){2,}", cookiefile, perl = TRUE)) {
+
     cookie <- cookiefile
+
   } else {
-    if (!file.exists(cookiefile)) {
-      stop("cookiefile ", cookiefile, " does not exist")
+
+    if (file.exists(cookiefile)) {
+
+      lines <- readLines(cookiefile, warn = FALSE)
+      df <- utils::read.delim(text = lines[grep("\t", lines)], header = FALSE)
+
+    } else {
+
+      # request new cookies
+      h <- curl::new_handle()
+      req <- curl::curl_fetch_memory( "https://www.tiktok.com/", handle = h)
+      df <- curl::handle_cookies(h)
+      dir.create(dirname(cookiefile), recursive = TRUE, showWarnings = FALSE)
+      utils::write.table(df, cookiefile, sep = "\t", row.names = FALSE, quote = FALSE)
+
     }
-
-    lines <- readLines(cookiefile, warn = FALSE)
-
-    df <- utils::read.delim(text = lines[grep("\t", lines)], header = FALSE)
 
     cookies <- df[, 7]
     names(cookies) <- df[, 6]
 
     cookies_str <- vapply(cookies, curl::curl_escape, FUN.VALUE = character(1))
     cookie <- paste(names(cookies), cookies_str, sep = "=", collapse = ";")
+
   }
 
   return(cookie)
+
 }
 
 #' @noRd

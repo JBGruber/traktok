@@ -108,14 +108,9 @@ tt_user_videos <- function(user_url,
 #' Get json file from a TikTok URL
 #'
 #' @param url a URL to a TikTok video or account
-#' @param cookiefile path to your cookiefile. See details.
-#'
-#' @details To get a valid cookiefile, you need to visit TikTok in your browser
-#'   and then use, for example, the Browser extension "Get cookies.txt"
-#'   (available for Chromium based Browsers an Firefox). If you experience
-#'   errors, the cookies might have expired. Just open TikTok in your browser
-#'   again and export a new file in this case.
-#'
+#' @param cookiefile path to your cookiefile. Default is to request a new one
+#'   from TikTok.com and place it in the location returned by
+#'   \code{getOption("cookiefile")}#'
 #' @export
 tt_json <- function(url,
                     cookiefile = getOption("cookiefile")) {
@@ -320,7 +315,9 @@ get_account_video_urls <- function(user_url,
 #'
 #' @param hashtag hashtag to query
 #' @param max_videos max number of videos to return.
-#' @param cookiefile path to your cookiefile. See details in \link{tt_json}.
+#' @param cookiefile path to your cookiefile. Default is to request a new one
+#'   from TikTok.com and place it in the location returned by
+#'   \code{getOption("cookiefile")}
 #' @param ... handed to \link{tt_json}.
 #'
 #' @return a data.frame
