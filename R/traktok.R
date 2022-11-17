@@ -315,7 +315,8 @@ get_account_video_urls <- function(user_url,
 #' Search videos
 #'
 #' @param q query as one string
-#' @param scope either "video".
+#' @param scope can be left blank or either "video" or "user" to narrow down the
+#'   search.
 #' @param max_videos max number of videos to return.
 #' @param offset how many videos to skip. For example, if you already have the
 #'   first X of a search.
@@ -333,7 +334,7 @@ get_account_video_urls <- function(user_url,
 #' tt_search("#rstats", scope = "video", max_videos = 5L)
 #' }
 tt_search <- function(q,
-                      scope = "video",
+                      scope = "",
                       max_videos = Inf,
                       offset = 0L,
                       cookiefile = getOption("cookiefile"),
@@ -345,28 +346,17 @@ tt_search <- function(q,
 
   q <- gsub("#", "%23", q, fixed = TRUE)
 
-  ref_url <- paste0("https://www.tiktok.com/search/", scope, "?q=", q, "&t=1668545518")
-
   cookie <- tt_get_cookies()
 
   data_list <- list()
 
   while (offset < max_videos) {
 
-    message("\t...retrieving videos ", offset, "+")
+    message("\rretrieving videos with offset=", offset, appendLF = FALSE)
 
     req <- httr2::request("https://www.tiktok.com/api/search/item/full/") |>
-      httr2::req_headers(
-        "authority" = "www.tiktok.com",
-        "accept" = "*/*",
-        "accept-language" = "en-US,en;q=0.8",
-        "referer" = ref_url,
-        "user-agent" = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36"
-      ) |>
       httr2::req_options(cookie = cookie) |>
       httr2::req_url_query(
-        "aid" = "1988",
-        "count" = "50",
         "keyword" = q,
         "offset" = as.character(offset)
       ) |>
@@ -375,7 +365,9 @@ tt_search <- function(q,
     res <- try(httr2::req_perform(req) |>
       httr2::resp_body_json())
 
-    if (!methods::is(res, "try-error") & is.null(res[["status_msg"]])) {
+    msg <- "status_msg" %in% names(res)
+
+    if (!methods::is(res, "try-error") | !msg) {
 
       data_list <- c(
         data_list,
@@ -394,7 +386,7 @@ tt_search <- function(q,
 
     } else {
 
-      if (!is.null(res[["status_msg"]])) message(res[["status_msg"]])
+      if (msg) message(res[["status_msg"]])
       max_videos <- 0
 
     }
