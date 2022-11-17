@@ -1,5 +1,10 @@
 #' @noRd
-tt_read_cookies <- function(cookiefile) {
+tt_get_cookies <- function(cookiefile = getOption("cookiefile")) {
+
+  if (is.null(cookiefile)) {
+    cookiefile <-  file.path(tools::R_user_dir("traktok", "config"), "tiktok.com_cookies.txt")
+    options(cookiefile = cookiefile)
+  }
 
   # try to check if the value is already a valid cookie string (meant for testing)
   if (grepl("(.+?=.+;){2,}", cookiefile, perl = TRUE)) {
@@ -28,7 +33,7 @@ tt_read_cookies <- function(cookiefile) {
     names(cookies) <- df[, 6]
 
     cookies_str <- vapply(cookies, curl::curl_escape, FUN.VALUE = character(1))
-    cookie <- paste(names(cookies), cookies_str, sep = "=", collapse = ";")
+    cookie <- paste(names(cookies), cookies_str, sep = "=", collapse = "; ")
 
   }
 

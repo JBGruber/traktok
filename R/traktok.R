@@ -110,12 +110,13 @@ tt_user_videos <- function(user_url,
 #' @param url a URL to a TikTok video or account
 #' @param cookiefile path to your cookiefile. Default is to request a new one
 #'   from TikTok.com and place it in the location returned by
-#'   \code{getOption("cookiefile")}#'
+#'   \code{tools::R_user_dir("traktok", "config")} and set the option cookiefile
+#'   to this location.
 #' @export
 tt_json <- function(url,
                     cookiefile = getOption("cookiefile")) {
 
-  cookie <- tt_read_cookies(cookiefile)
+  cookie <- tt_get_cookies()
   headers <- getOption("headers")
 
   req <- httr2::request(url) |>
@@ -217,7 +218,7 @@ save_video_comments <- function(video_url,
   video_url <- extract_regex(video_url, "(.+?)(?=\\?|$)")
   video_id <- extract_regex(video_url, "(?<=/video/)(.+?)(?=\\?|$)")
 
-  cookie <- tt_read_cookies(cookiefile)
+  cookie <- tt_get_cookies()
   data_list <- list()
 
   while (cursor < max_comments) {
@@ -311,13 +312,17 @@ get_account_video_urls <- function(user_url,
 
 
 
-#' Search videos using hashtag
+#' Search videos
 #'
-#' @param hashtag hashtag to query
+#' @param q query as one string
+#' @param scope either "video".
 #' @param max_videos max number of videos to return.
+#' @param offset how many videos to skip. For example, if you already have the
+#'   first X of a search.
 #' @param cookiefile path to your cookiefile. Default is to request a new one
 #'   from TikTok.com and place it in the location returned by
-#'   \code{getOption("cookiefile")}
+#'   \code{tools::R_user_dir("traktok", "config")} and set the option cookiefile
+#'   to this location.
 #' @param ... handed to \link{tt_json}.
 #'
 #' @return a data.frame
@@ -325,73 +330,73 @@ get_account_video_urls <- function(user_url,
 #'
 #' @examples
 #' \dontrun{
-#' tt_search_hashtag("rstats", max_videos = 5L)
+#' tt_search("#rstats", scope = "video", max_videos = 5L)
 #' }
-tt_search_hashtag <- function(hashtag,
-                              max_videos = Inf,
-                              cookiefile = getOption("cookiefile"),
-                              ...) {
+tt_search <- function(q,
+                      scope = "video",
+                      max_videos = Inf,
+                      offset = 0L,
+                      cookiefile = getOption("cookiefile"),
+                      ...) {
 
-  if (length(hashtag) != 1 & !methods::is(hashtag, "character")) {
-    stop("Please provide exactly one hashtag")
+  if (length(q) != 1 & !methods::is(q, "character")) {
+    stop("Please provide exactly one search string")
   }
 
-  search_url <- paste0("https://www.tiktok.com/tag/", gsub("#", "", hashtag, fixed = TRUE))
-  # first page
-  data1 <- tt_json(search_url, cookiefile = cookiefile)
-  challengeID <- data1[["ChallengePage"]][["challengeInfo"]][["challenge"]][["id"]]
-  video_count <- data1[["ChallengePage"]][["challengeInfo"]][["challenge"]][["stats"]][["videoCount"]]
-  max_videos <- min(c(
-    max_videos,
-    video_count
-  ))
+  q <- gsub("#", "%23", q, fixed = TRUE)
 
-  message(video_count, " videos found for ", hashtag)
-  data_list <- list(parse_search(data1, api = FALSE))
-  cursor <- nrow(data_list[[1]])
+  ref_url <- paste0("https://www.tiktok.com/search/", scope, "?q=", q, "&t=1668545518")
 
-  cookie <- tt_read_cookies(cookiefile)
+  cookie <- tt_get_cookies()
 
-  while (cursor < max_videos) {
+  data_list <- list()
 
-    message("\t...retrieving videos ", cursor, "+")
+  while (offset < max_videos) {
 
-    req <- httr2::request("https://www.tiktok.com/api/challenge/item_list/") |>
+    message("\t...retrieving videos ", offset, "+")
+
+    req <- httr2::request("https://www.tiktok.com/api/search/item/full/") |>
       httr2::req_headers(
-        "Accept-Encoding" = "gzip, deflate, sdch",
-        "Accept-Language" = "en-US,en;q=0.8",
-        "Upgrade-Insecure-Requests" = "1",
-        "User-Agent" = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36",
-        "Accept" = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Cache-Control" = "max-age=0",
-        "Connection" = "keep-alive"
+        "authority" = "www.tiktok.com",
+        "accept" = "*/*",
+        "accept-language" = "en-US,en;q=0.8",
+        "referer" = ref_url,
+        "user-agent" = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36"
       ) |>
       httr2::req_options(cookie = cookie) |>
       httr2::req_url_query(
         "aid" = "1988",
-        "count" = "30",
-        "challengeID" = challengeID,
-        "cursor" = as.character(cursor)
+        "count" = "50",
+        "keyword" = q,
+        "offset" = as.character(offset)
       ) |>
       httr2::req_timeout(seconds = 30L)
 
     res <- try(httr2::req_perform(req) |>
       httr2::resp_body_json())
 
-    if (!methods::is(res, "try-error")) {
+    if (!methods::is(res, "try-error") & is.null(res[["status_msg"]])) {
 
       data_list <- c(
         data_list,
-        list(parse_search(res, api = TRUE))
+        list(parse_search(res))
       )
-      new <- nrow(utils::tail(data_list, 1)[[1]])
-      if (new > 0) {
-        cursor <- cursor + new
+
+      if (as.logical(res[["has_more"]])) {
+
+        offset <- offset + nrow(utils::tail(data_list, 1)[[1]])
+
       } else {
+
         max_videos <- 0
+
       }
+
     } else {
+
+      if (!is.null(res[["status_msg"]])) message(res[["status_msg"]])
       max_videos <- 0
+
     }
   }
 
@@ -399,12 +404,19 @@ tt_search_hashtag <- function(hashtag,
 
 }
 
+#' @noRd
+tt_search_hashtag <- function(hashtag,
+                              max_videos = Inf,
+                              cookiefile = getOption("cookiefile"),
+                              ...) {
+  .Deprecated("tt_search")
+}
 
 #' @noRd
-parse_search <- function(json, api) {
+parse_search <- function(json, api = TRUE) {
 
   if (api) {
-    entries <- "itemList"
+    entries <- "item_list"
     date_class <- "integer"
     author_name <- vpluck(json[[entries]], "author", "uniqueId")
   } else {
