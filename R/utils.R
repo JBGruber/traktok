@@ -89,7 +89,12 @@ tt_get_cookies <- function(x = NULL, save = TRUE, name = "tiktok.com_cookies") {
     }
   }
 
-  if (save) saveRDS(cookies, getOption("tt_cookiefile"))
+  if (save) {
+    dir.create(path = dirname(getOption("tt_cookiefile")),
+               showWarnings = FALSE,
+               recursive = TRUE)
+    saveRDS(cookies, getOption("tt_cookiefile"))
+  }
 
   return(cookies)
 
