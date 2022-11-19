@@ -51,10 +51,14 @@ remotes::install_github("JBGruber/traktok")
 
 ### Authentication
 
-Authentication for `traktok` happens automatically the first time you run a function.
-To TikTok, this will make it look as if `traktok` requests come from your ordinary browser.
-`traktok` will save a cookie file in the location returned by `tools::R_user_dir("traktok", "config")`.
-If you ever run into problems due to an expired cookie, you might want to delete the files in this folder to get a fresh start.
+```{r, echo=FALSE}
+auth <- readLines("vignettes/authentication.Rmd")
+auth <- auth[-(1:grep("```", auth)[2])]
+auth <- gsub("(#+)", "##\\1", auth)
+auth <- gsub("`r knitr::include_graphics(cookies_png)`", "![](vignettes/cookies.png)", auth, fixed = TRUE)
+knitr::asis_output(paste(auth, collapse = "\n"))
+```
+
 
 
 ### Videos
@@ -74,6 +78,8 @@ You can download the videos by either setting `save_video` to `TRUE` or by expor
 
 ### Comments
 
+**Currently not working**
+
 ```{r CommentsExample}
 tt_comments(example_urls, max_comments = 50L)
 ```
@@ -86,7 +92,9 @@ tt_user_videos("https://www.tiktok.com/@tiktok")
 
 ### Search for Hashtags
 
-```{r HashtagExample}
+**Currently not working**
+
+```{r HashtagExample, eval=FALSE}
 tt_search_hashtag("rstats", max_videos = 15L)
 ```
 

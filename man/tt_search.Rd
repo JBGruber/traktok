@@ -4,19 +4,13 @@
 \alias{tt_search}
 \title{Search videos}
 \usage{
-tt_search(
-  q,
-  scope = "video",
-  max_videos = Inf,
-  offset = 0L,
-  cookiefile = getOption("cookiefile"),
-  ...
-)
+tt_search(q, scope = "", max_videos = Inf, offset = 0L, cookiefile = NULL, ...)
 }
 \arguments{
 \item{q}{query as one string}
 
-\item{scope}{either "video".}
+\item{scope}{can be left blank or either "video" or "user" to narrow down the
+search.}
 
 \item{max_videos}{max number of videos to return.}
 

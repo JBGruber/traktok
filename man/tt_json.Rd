@@ -4,7 +4,7 @@
 \alias{tt_json}
 \title{Get json file from a TikTok URL}
 \usage{
-tt_json(url, cookiefile = getOption("cookiefile"))
+tt_json(url, cookiefile = NULL)
 }
 \arguments{
 \item{url}{a URL to a TikTok video or account}

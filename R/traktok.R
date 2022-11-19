@@ -114,10 +114,9 @@ tt_user_videos <- function(user_url,
 #'   to this location.
 #' @export
 tt_json <- function(url,
-                    cookiefile = getOption("cookiefile")) {
+                    cookiefile = NULL) {
 
-  cookie <- tt_get_cookies()
-  headers <- getOption("headers")
+  cookies <- tt_get_cookies(cookiefile)
 
   req <- httr2::request(url) |>
     httr2::req_headers(
@@ -129,7 +128,7 @@ tt_json <- function(url,
       "Cache-Control" = "max-age=0",
       "Connection" = "keep-alive"
     ) |>
-    httr2::req_options(cookie = cookie) |>
+    httr2::req_options(cookie = prep_cookies(cookies)) |>
     httr2::req_timeout(seconds = 30L)
 
   res <- httr2::req_perform(req)
@@ -209,7 +208,7 @@ save_video_comments <- function(video_url,
                                 cursor_resume = 0,
                                 max_comments = Inf,
                                 sleep_pool = 1:10,
-                                cookiefile = getOption("cookiefile")) {
+                                cookiefile = NULL) {
   cursor <- cursor_resume
 
 
@@ -218,7 +217,7 @@ save_video_comments <- function(video_url,
   video_url <- extract_regex(video_url, "(.+?)(?=\\?|$)")
   video_id <- extract_regex(video_url, "(?<=/video/)(.+?)(?=\\?|$)")
 
-  cookie <- tt_get_cookies()
+  cookies <- tt_get_cookies(cookiefile)
   data_list <- list()
 
   while (cursor < max_comments) {
@@ -235,7 +234,7 @@ save_video_comments <- function(video_url,
         "Connection" = "keep-alive",
         referer = video_url
       ) |>
-      httr2::req_options(cookie = cookie) |>
+      httr2::req_options(cookie = prep_cookies(cookies)) |>
       httr2::req_url_query(
         "aweme_id" = video_id,
         "count" = "50",
@@ -337,7 +336,7 @@ tt_search <- function(q,
                       scope = "",
                       max_videos = Inf,
                       offset = 0L,
-                      cookiefile = getOption("cookiefile"),
+                      cookiefile = NULL,
                       ...) {
 
   if (length(q) != 1 & !methods::is(q, "character")) {
@@ -346,7 +345,7 @@ tt_search <- function(q,
 
   q <- gsub("#", "%23", q, fixed = TRUE)
 
-  cookie <- tt_get_cookies()
+  cookies <- tt_get_cookies(cookiefile)
 
   data_list <- list()
 
@@ -355,7 +354,7 @@ tt_search <- function(q,
     message("\rretrieving videos with offset=", offset, appendLF = FALSE)
 
     req <- httr2::request("https://www.tiktok.com/api/search/item/full/") |>
-      httr2::req_options(cookie = cookie) |>
+      httr2::req_options(cookie = prep_cookies(cookies)) |>
       httr2::req_url_query(
         "keyword" = q,
         "offset" = as.character(offset)
