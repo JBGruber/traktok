@@ -4,7 +4,15 @@
 \alias{tt_search}
 \title{Search videos}
 \usage{
-tt_search(q, scope = "", max_videos = Inf, offset = 0L, cookiefile = NULL, ...)
+tt_search(
+  q,
+  scope = "",
+  max_videos = Inf,
+  offset = 0L,
+  cookiefile = NULL,
+  sleep_pool = 1:10,
+  ...
+)
 }
 \arguments{
 \item{q}{query as one string}
@@ -12,7 +20,8 @@ tt_search(q, scope = "", max_videos = Inf, offset = 0L, cookiefile = NULL, ...)
 \item{scope}{can be left blank or either "video" or "user" to narrow down the
 search.}
 
-\item{max_videos}{max number of videos to return.}
+\item{max_videos}{max number of videos to return (the function will usually
+return a few more than the exact number).}
 
 \item{offset}{how many videos to skip. For example, if you already have the
 first X of a search.}
@@ -21,6 +30,9 @@ first X of a search.}
 from TikTok.com and place it in the location returned by
 \code{tools::R_user_dir("traktok", "config")} and set the option cookiefile
 to this location.}
+
+\item{sleep_pool}{a vector of numbers from which a waiting period is randomly
+drawn.}
 
 \item{...}{handed to \link{tt_json}.}
 }
@@ -32,6 +44,6 @@ Search videos
 }
 \examples{
 \dontrun{
-tt_search("#rstats", scope = "video", max_videos = 5L)
+tt_search("#rstats", max_videos = 5L)
 }
 }

@@ -316,13 +316,16 @@ get_account_video_urls <- function(user_url,
 #' @param q query as one string
 #' @param scope can be left blank or either "video" or "user" to narrow down the
 #'   search.
-#' @param max_videos max number of videos to return.
+#' @param max_videos max number of videos to return (the function will usually
+#'   return a few more than the exact number).
 #' @param offset how many videos to skip. For example, if you already have the
 #'   first X of a search.
 #' @param cookiefile path to your cookiefile. Default is to request a new one
 #'   from TikTok.com and place it in the location returned by
 #'   \code{tools::R_user_dir("traktok", "config")} and set the option cookiefile
 #'   to this location.
+#' @param sleep_pool a vector of numbers from which a waiting period is randomly
+#'   drawn.
 #' @param ... handed to \link{tt_json}.
 #'
 #' @return a data.frame
@@ -330,13 +333,14 @@ get_account_video_urls <- function(user_url,
 #'
 #' @examples
 #' \dontrun{
-#' tt_search("#rstats", scope = "video", max_videos = 5L)
+#' tt_search("#rstats", max_videos = 5L)
 #' }
 tt_search <- function(q,
                       scope = "",
                       max_videos = Inf,
                       offset = 0L,
                       cookiefile = NULL,
+                      sleep_pool = 1:10,
                       ...) {
 
   if (length(q) != 1 & !methods::is(q, "character")) {
@@ -354,7 +358,7 @@ tt_search <- function(q,
     message("\rretrieving videos with offset=", offset, appendLF = FALSE)
 
     req <- httr2::request("https://www.tiktok.com/api/search/item/full/") |>
-      httr2::req_options(cookie = prep_cookies(cookies)) |>
+      httr2::req_options(cookie = prep_cookies(cookies, "ttwid")) |>
       httr2::req_url_query(
         "keyword" = q,
         "offset" = as.character(offset)
@@ -375,7 +379,7 @@ tt_search <- function(q,
 
       if (as.logical(res[["has_more"]])) {
 
-        offset <- offset + nrow(utils::tail(data_list, 1)[[1]])
+        offset <- res[["cursor"]]
 
       } else {
 
@@ -389,6 +393,9 @@ tt_search <- function(q,
       max_videos <- 0
 
     }
+
+    if (offset < max_videos) wait(sleep_pool)
+
   }
 
   return(dplyr::bind_rows(data_list))
@@ -404,40 +411,30 @@ tt_search_hashtag <- function(hashtag,
 }
 
 #' @noRd
-parse_search <- function(json, api = TRUE) {
+parse_search <- function(json) {
 
-  if (api) {
-    entries <- "item_list"
-    date_class <- "integer"
-    author_name <- vpluck(json[[entries]], "author", "uniqueId")
-  } else {
-    entries <- "ItemModule"
-    date_class <- "character"
-    author_name <- vpluck(json[[entries]], "author")
-  }
-
-  video_timestamp <- vpluck(json[[entries]], "createTime", val = date_class) |>
+  video_timestamp <- vpluck(json[["item_list"]], "createTime", val = "integer") |>
     as.integer() |>
     as.POSIXct(tz = "UTC", origin = "1970-01-01")
 
   tibble::tibble(
-    video_id              = vpluck(json[[entries]], "video", "id"),
+    video_id              = vpluck(json[["item_list"]], "video", "id"),
     video_timestamp       = video_timestamp,
-    video_url             = vpluck(json[[entries]], "video", "downloadAddr"),
-    video_length          = vpluck(json[[entries]], "video", "duration", val = "integer"),
-    video_title           = vpluck(json[[entries]], "desc"),
-    video_diggcount       = vpluck(json[[entries]], "stats", "diggCount", val = "integer"),
-    video_sharecount      = vpluck(json[[entries]], "stats", "shareCount", val = "integer"),
-    video_commentcount    = vpluck(json[[entries]], "stats", "commentCount", val = "integer"),
-    video_playcount       = vpluck(json[[entries]], "stats", "playCount", val = "integer"),
-    video_description     = vpluck(json[[entries]], "desc"),
-    video_is_ad           = vpluck(json[[entries]], "isAd", val = "logical"),
-    author_name           = author_name,
-    author_followercount  = vpluck(json[[entries]], "authorStats", "followerCount", val = "integer"),
-    author_followingcount = vpluck(json[[entries]], "authorStats", "followingCount", val = "integer"),
-    author_heartcount     = vpluck(json[[entries]], "authorStats", "heartCount", val = "integer"),
-    author_videocount     = vpluck(json[[entries]], "authorStats", "videoCount", val = "integer"),
-    author_diggcount      = vpluck(json[[entries]], "authorStats", "diggCount", val = "integer")
+    video_url             = vpluck(json[["item_list"]], "video", "downloadAddr"),
+    video_length          = vpluck(json[["item_list"]], "video", "duration", val = "integer"),
+    video_title           = vpluck(json[["item_list"]], "desc"),
+    video_diggcount       = vpluck(json[["item_list"]], "stats", "diggCount", val = "integer"),
+    video_sharecount      = vpluck(json[["item_list"]], "stats", "shareCount", val = "integer"),
+    video_commentcount    = vpluck(json[["item_list"]], "stats", "commentCount", val = "integer"),
+    video_playcount       = vpluck(json[["item_list"]], "stats", "playCount", val = "integer"),
+    video_description     = vpluck(json[["item_list"]], "desc"),
+    video_is_ad           = vpluck(json[["item_list"]], "isAd", val = "logical"),
+    author_name           = vpluck(json[["item_list"]], "author", "uniqueId"),
+    author_followercount  = vpluck(json[["item_list"]], "authorStats", "followerCount", val = "integer"),
+    author_followingcount = vpluck(json[["item_list"]], "authorStats", "followingCount", val = "integer"),
+    author_heartcount     = vpluck(json[["item_list"]], "authorStats", "heartCount", val = "integer"),
+    author_videocount     = vpluck(json[["item_list"]], "authorStats", "videoCount", val = "integer"),
+    author_diggcount      = vpluck(json[["item_list"]], "authorStats", "diggCount", val = "integer")
   )
 
 }

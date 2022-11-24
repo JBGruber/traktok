@@ -4,7 +4,7 @@
 \alias{tt_get_cookies}
 \title{Get cookies}
 \usage{
-tt_get_cookies(x, save = TRUE, name = "tiktok.com_cookies")
+tt_get_cookies(x = NULL, save = TRUE, name = "tiktok.com_cookies")
 }
 \arguments{
 \item{x}{either file location, a cookie string, or can be left blank (see
