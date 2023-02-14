@@ -17,11 +17,14 @@ The goal of traktok is to provide easy access to TikTok data. This
 package is an R port of Deen Freelon’s
 [Pyktok](https://github.com/dfreelon/pyktok) Python module. It can
 
-- [Download TikTok videos](#videos)
+- ~~[Download TikTok videos](#videos)~~ (see
+  [\#5](https://github.com/JBGruber/traktok/issues/5))
 - [Download video metadata](#videos)
-- ~~[Download all available video comments](#comments)~~ (see \#5)
+- ~~[Download all available video comments](#comments)~~ (see
+  [\#5](https://github.com/JBGruber/traktok/issues/5))
 - [Download up to 30 most recent user video URLs](#user-accounts)
-- ~~[Search for videos by hashtag](#search-for-hashtags)~~ (see \#4)
+- ~~[Search for videos by hashtag](#search-for-hashtags)~~
+  (see[\#4](https://github.com/JBGruber/traktok/issues/4))
 - [Download full TikTok JSON data objects (in case you want to extract
   data from parts of the object not included in the above
   functions)](#json-data)
@@ -61,16 +64,12 @@ user, the respective functions need cookies from an authenticated user.
 Authentication happens automatically the first time you run a function.
 If you want to do this explicitly, use this function:
 
-``` {r}
-tt_get_cookies()
-```
+`{r} tt_get_cookies()`
 
 It will guide you through the process. If you want to create multiple
 cookie files, you can use the `name` argument:
 
-``` {r}
-tt_get_cookies(name = "cookies_new")
-```
+`{r} tt_get_cookies(name = "cookies_new")`
 
 #### Logged in user
 
@@ -91,16 +90,12 @@ for Firefox.
 Once you’ve saved this file, you read it into `traktok`, which will
 store it permanently.
 
-``` {r}
-tt_get_cookies(x = "tiktok.com_cookies.txt")
-```
+`{r} tt_get_cookies(x = "tiktok.com_cookies.txt")`
 
 If you want to create multiple cookie files, you can use the `name`
 argument:
 
-``` {r}
-tt_get_cookies(x = "tiktok.com_cookies.txt", name = "cookies_new")
-```
+`{r} tt_get_cookies(x = "tiktok.com_cookies.txt", name = "cookies_new")`
 
 #### Multiple cookie files
 
@@ -110,19 +105,11 @@ to prevent this. Using `options(tt_cookiefile = "some\path")`, you can
 change the default location. If you have, for example, multiple cookie
 files in the default location:
 
-``` {r}
-options(tt_cookiefile = file.path(tools::R_user_dir("traktok", "config"), paste0(cookies_new, ".rds")))
-```
+`{r} options(tt_cookiefile = file.path(tools::R_user_dir("traktok", "config"), paste0(cookies_new, ".rds")))`
 
 Alternatively, you can also set cookies for every function:
 
-``` {r}
-cookie_files <- list.files(tools::R_user_dir("traktok", "config"), full.names = TRUE)
-tt_videos(video_urls = "https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1",
-          cookiefile = cookie_files[1])
-tt_videos(video_urls = "https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1",
-          cookiefile = cookie_files[2])
-```
+`{r} cookie_files <- list.files(tools::R_user_dir("traktok", "config"), full.names = TRUE) tt_videos(video_urls = "https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1",           cookiefile = cookie_files[1]) tt_videos(video_urls = "https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1",           cookiefile = cookie_files[2])`
 
 If you ever run into problems due to an expired cookie, you might want
 to delete the files in the default folder to get a fresh start.
@@ -141,14 +128,14 @@ tt_videos(example_urls, save_video = FALSE)
 #> Getting video 6584647400055377158
 #> Getting video 6584647400055377158
 #> # A tibble: 2 × 19
-#>   video_id       video…¹ video…² video…³ video…⁴ video…⁵ video…⁶ video…⁷ video…⁸
-#>   <chr>            <dbl>   <int> <chr>   <chr>     <int>   <int>   <int>   <int>
-#> 1 6584647400055…  1.53e9      14 #MakeE… US       393400    5280   33900 3500000
-#> 2 6584647400055…  1.53e9      14 #MakeE… US       393400    5280   33900 3500000
-#> # … with 10 more variables: video_description <chr>, video_is_ad <lgl>,
-#> #   video_fn <chr>, author_username <chr>, author_name <lgl>,
-#> #   author_followercount <int>, author_followingcount <int>,
-#> #   author_heartcount <int>, author_videocount <int>, author_diggcount <int>,
+#>   video_id video_times…¹ video…² video…³ video…⁴ video…⁵ video…⁶ video…⁷ video…⁸
+#>   <chr>            <dbl> <lgl>   <lgl>   <lgl>   <lgl>   <lgl>   <lgl>   <lgl>  
+#> 1 ""                  NA NA      NA      NA      NA      NA      NA      NA     
+#> 2 ""                  NA NA      NA      NA      NA      NA      NA      NA     
+#> # … with 10 more variables: video_description <lgl>, video_is_ad <lgl>,
+#> #   video_fn <chr>, author_username <lgl>, author_name <lgl>,
+#> #   author_followercount <lgl>, author_followingcount <lgl>,
+#> #   author_heartcount <lgl>, author_videocount <lgl>, author_diggcount <lgl>,
 #> #   and abbreviated variable names ¹​video_timestamp, ²​video_length,
 #> #   ³​video_title, ⁴​video_locationcreated, ⁵​video_diggcount, ⁶​video_sharecount,
 #> #   ⁷​video_commentcount, ⁸​video_playcount
@@ -166,11 +153,11 @@ tt_comments(example_urls, max_comments = 50L)
 #> Getting comments for video 6584647400055377158...
 #>  ...retrieving comments 0+
 #> Error in resp_body_raw(resp) : Can not retrieve empty body
-#>  ...waiting 1.2 seconds
+#>  ...waiting 2.8 seconds
 #> Getting comments for video 6584647400055377158...
 #>  ...retrieving comments 0+
 #> Error in resp_body_raw(resp) : Can not retrieve empty body
-#>  ...waiting 3.3 seconds
+#>  ...waiting 0.3 seconds
 #> # A tibble: 0 × 0
 ```
 
@@ -179,20 +166,20 @@ tt_comments(example_urls, max_comments = 50L)
 ``` r
 tt_user_videos("https://www.tiktok.com/@tiktok")
 #> Getting user videos from ...
-#>  ...waiting 5.1 seconds
+#>  ...waiting 0.2 seconds
 #> # A tibble: 30 × 2
 #>    user_id `video_urls <- ...`                                     
 #>    <chr>   <chr>                                                   
-#>  1 tiktok  https://www.tiktok.com/@tiktok/video/7167469434867682602
-#>  2 tiktok  https://www.tiktok.com/@tiktok/video/7167433371444841771
-#>  3 tiktok  https://www.tiktok.com/@tiktok/video/7167137371249495342
-#>  4 tiktok  https://www.tiktok.com/@tiktok/video/7167085575185419563
-#>  5 tiktok  https://www.tiktok.com/@tiktok/video/7167046051642428718
-#>  6 tiktok  https://www.tiktok.com/@tiktok/video/7166701151595826475
-#>  7 tiktok  https://www.tiktok.com/@tiktok/video/7166242655930928430
-#>  8 tiktok  https://www.tiktok.com/@tiktok/video/7165922997524516138
-#>  9 tiktok  https://www.tiktok.com/@tiktok/video/7165648964333718827
-#> 10 tiktok  https://www.tiktok.com/@tiktok/video/7164906805590527275
+#>  1 tiktok  https://www.tiktok.com/@tiktok/video/7200075941727440170
+#>  2 tiktok  https://www.tiktok.com/@tiktok/video/7200073950645194026
+#>  3 tiktok  https://www.tiktok.com/@tiktok/video/7200058371028962606
+#>  4 tiktok  https://www.tiktok.com/@tiktok/video/7199799408270052651
+#>  5 tiktok  https://www.tiktok.com/@tiktok/video/7199792050412375342
+#>  6 tiktok  https://www.tiktok.com/@tiktok/video/7199773494802910506
+#>  7 tiktok  https://www.tiktok.com/@tiktok/video/7199713922167934251
+#>  8 tiktok  https://www.tiktok.com/@tiktok/video/7199700619102309674
+#>  9 tiktok  https://www.tiktok.com/@tiktok/video/7199529679915715882
+#> 10 tiktok  https://www.tiktok.com/@tiktok/video/7199433286928878894
 #> # … with 20 more rows
 ```
 

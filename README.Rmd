@@ -25,11 +25,11 @@ knitr::opts_chunk$set(
 
 The goal of traktok is to provide easy access to TikTok data. This package is an R port of Deen Freelon's [Pyktok](https://github.com/dfreelon/pyktok) Python module. It can
 
-- [Download TikTok videos](#videos)
+- ~~[Download TikTok videos](#videos)~~ (see [#5](https://github.com/JBGruber/traktok/issues/5))
 - [Download video metadata](#videos)
-- ~~[Download all available video comments](#comments)~~ (see #5)
+- ~~[Download all available video comments](#comments)~~ (see [#5](https://github.com/JBGruber/traktok/issues/5))
 - [Download up to 30 most recent user video URLs](#user-accounts)
-- ~~[Search for videos by hashtag](#search-for-hashtags)~~ (see #4)
+- ~~[Search for videos by hashtag](#search-for-hashtags)~~ (see[#4](https://github.com/JBGruber/traktok/issues/4))
 - [Download full TikTok JSON data objects (in case you want to extract data from parts of the object not included in the above functions)](#json-data)
  
 The same disclaimer as for Pyktok applies: 

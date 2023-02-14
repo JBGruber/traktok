@@ -147,6 +147,7 @@ tt_json <- function(url,
 save_tiktok <- function(video_url,
                         save_video = TRUE,
                         dir = ".",
+                        cookiefile = NULL,
                         ...) {
 
   tt_json <- tt_json(video_url, ...)
@@ -161,19 +162,15 @@ save_tiktok <- function(video_url,
     video_url <- tt_json$url_full
     regex_url <- extract_regex(video_url, "(?<=@).+?(?=\\?|$)")
     video_fn <- paste0(dir, "/", paste0(gsub("/", "_", regex_url), ".mp4"))
-    video_id <- vapply(tt_json[["ItemModule"]], function(x) x[["video"]][["id"]],
-      FUN.VALUE = character(1)
-    )
-
+    video_id <- tt_json[["ItemList"]][["video"]][["keyword"]]
     tt_video_url <- tt_json[["ItemList"]][["video"]][["preloadList"]][["url"]]
-
 
     video_timestamp <- tt_json[["ItemModule"]][[video_id]][["createTime"]] |>
       as.integer() |>
       as.POSIXct(tz = "UTC", origin = "1970-01-01")
 
     data_list <- list(
-      video_id = video_id,
+      video_id = tt_json[["ItemList"]][["video"]][["list"]],
       video_timestamp = video_timestamp,
       video_length = tt_json[["ItemModule"]][[video_id]][["video"]][["duration"]],
       video_title = tt_json[["ItemModule"]][[video_id]][["desc"]],
@@ -183,15 +180,15 @@ save_tiktok <- function(video_url,
       video_commentcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["commentCount"]],
       video_playcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["playCount"]],
       video_description = tt_json[["ItemModule"]][[video_id]][["desc"]],
-      video_is_ad = tt_json[["ItemModule"]][[video_id]][["isAd"]],
+      # video_is_ad = tt_json[["ItemModule"]][[video_id]][["isAd"]],
       video_fn = video_fn,
       author_username = tt_json[["ItemModule"]][[video_id]][["author"]],
-      author_name = tt_json[["ItemModule"]][[video_id]][["authorName"]],
-      author_followercount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["followerCount"]],
-      author_followingcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["followingCount"]],
-      author_heartcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["heartCount"]],
-      author_videocount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["videoCount"]],
-      author_diggcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["diggCount"]]
+      author_name = tt_json[["UserModule"]][["users"]][[1]][["nickname"]]
+      # author_followercount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["followerCount"]],
+      # author_followingcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["followingCount"]],
+      # author_heartcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["heartCount"]],
+      # author_videocount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["videoCount"]],
+      # author_diggcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["diggCount"]]
     )
 
     if (save_video) curl::curl_download(tt_video_url, video_fn, quiet = FALSE)
