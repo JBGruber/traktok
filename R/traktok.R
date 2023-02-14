@@ -150,7 +150,8 @@ save_tiktok <- function(video_url,
                         cookiefile = NULL,
                         ...) {
 
-  tt_json <- tt_json(video_url, ...)
+  cookies <- tt_get_cookies(cookiefile)
+  tt_json <- tt_json(video_url, cookiefile = cookiefile, ...)
 
   if (tt_json$url_full == "https://www.tiktok.com/") {
 
@@ -162,7 +163,6 @@ save_tiktok <- function(video_url,
     video_url <- tt_json$url_full
     regex_url <- extract_regex(video_url, "(?<=@).+?(?=\\?|$)")
     video_fn <- paste0(dir, "/", paste0(gsub("/", "_", regex_url), ".mp4"))
-    video_id <- tt_json[["ItemList"]][["video"]][["keyword"]]
     tt_video_url <- tt_json[["ItemList"]][["video"]][["preloadList"]][["url"]]
 
     video_timestamp <- tt_json[["ItemModule"]][[video_id]][["createTime"]] |>
@@ -191,14 +191,20 @@ save_tiktok <- function(video_url,
       # author_diggcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["diggCount"]]
     )
 
-    if (save_video) curl::curl_download(tt_video_url, video_fn, quiet = FALSE)
+    if (save_video) {
+      h <- curl::handle_setopt(
+        curl::new_handle(),
+        cookie = prep_cookies(cookies),
+        referer = "https://www.tiktok.com/"
+      )
+      curl::curl_download(tt_video_url, video_fn, quiet = FALSE, handle = h)
+    }
 
     return(tibble::tibble(data.frame(lapply(data_list, function(x) ifelse(is.null(x), NA, x)))))
 
   }
 
 }
-
 
 #' @noRd
 save_video_comments <- function(video_url,
