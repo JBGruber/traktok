@@ -147,9 +147,11 @@ tt_json <- function(url,
 save_tiktok <- function(video_url,
                         save_video = TRUE,
                         dir = ".",
+                        cookiefile = NULL,
                         ...) {
 
-  tt_json <- tt_json(video_url, ...)
+  cookies <- tt_get_cookies(cookiefile)
+  tt_json <- tt_json(video_url, cookiefile = cookiefile, ...)
 
   if (tt_json$url_full == "https://www.tiktok.com/") {
 
@@ -162,7 +164,7 @@ save_tiktok <- function(video_url,
     regex_url <- extract_regex(video_url, "(?<=@).+?(?=\\?|$)")
     video_fn <- paste0(dir, "/", paste0(gsub("/", "_", regex_url), ".mp4"))
     video_id <- vapply(tt_json[["ItemModule"]], function(x) x[["video"]][["id"]],
-      FUN.VALUE = character(1)
+                       FUN.VALUE = character(1)
     )
 
     tt_video_url <- tt_json[["ItemList"]][["video"]][["preloadList"]][["url"]]
@@ -194,14 +196,20 @@ save_tiktok <- function(video_url,
       author_diggcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["diggCount"]]
     )
 
-    if (save_video) curl::curl_download(tt_video_url, video_fn, quiet = FALSE)
+    if (save_video) {
+      h <- curl::handle_setopt(
+        curl::new_handle(),
+        cookie = prep_cookies(cookies),
+        referer = "https://www.tiktok.com/"
+      )
+      curl::curl_download(tt_video_url, video_fn, quiet = FALSE, handle = h)
+    }
 
     return(tibble::tibble(data.frame(lapply(data_list, function(x) ifelse(is.null(x), NA, x)))))
 
   }
 
 }
-
 
 #' @noRd
 save_video_comments <- function(video_url,
@@ -212,8 +220,8 @@ save_video_comments <- function(video_url,
   cursor <- cursor_resume
 
 
-  tt_json <- tt_json(video_url, cookiefile = cookiefile)
-  video_url <- tt_json$url_full
+  # tt_json <- tt_json(video_url, cookiefile = cookiefile)
+  # video_url <- tt_json$url_full
   video_url <- extract_regex(video_url, "(.+?)(?=\\?|$)")
   video_id <- extract_regex(video_url, "(?<=/video/)(.+?)(?=\\?|$)")
 
@@ -236,11 +244,13 @@ save_video_comments <- function(video_url,
       ) |>
       httr2::req_options(cookie = prep_cookies(cookies)) |>
       httr2::req_url_query(
+        "aid" = 1988,
         "aweme_id" = video_id,
-        "count" = "50",
-        "cursor" = as.character(cursor)
+        "count" = "20",
+        "cursor" = as.character(60)
       ) |>
-      httr2::req_timeout(seconds = 30L)
+      httr2::req_timeout(seconds = 30L) |>
+      sign_url()
 
     res <- try(httr2::req_perform(req) |>
       httr2::resp_body_json())
