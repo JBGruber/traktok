@@ -163,7 +163,7 @@ save_tiktok <- function(video_url,
     video_url <- tt_json$url_full
     regex_url <- extract_regex(video_url, "(?<=@).+?(?=\\?|$)")
     video_fn <- paste0(dir, "/", paste0(gsub("/", "_", regex_url), ".mp4"))
-    tt_video_url <- tt_json[["ItemList"]][["video"]][["preloadList"]][["url"]]
+    video_id <- extract_regex(video_url, "(?<=/video/)(.+?)(?=\\?|$)")
 
     video_timestamp <- tt_json[["ItemModule"]][[video_id]][["createTime"]] |>
       as.integer() |>
@@ -192,6 +192,7 @@ save_tiktok <- function(video_url,
     )
 
     if (save_video) {
+      tt_video_url <- tt_json[["ItemModule"]][[video_id]][["video"]][["downloadAddr"]]
       h <- curl::handle_setopt(
         curl::new_handle(),
         cookie = prep_cookies(cookies),
