@@ -51,12 +51,10 @@ remotes::install_github("JBGruber/traktok")
 
 ### Authentication
 
-```{r, echo=FALSE}
-auth <- readLines("vignettes/authentication.Rmd")
-auth <- auth[-(1:grep("```", auth)[2])]
-auth <- gsub("(#+)", "##\\1", auth)
-auth <- gsub("`r knitr::include_graphics(cookies_png)`", "![](vignettes/cookies.png)", auth, fixed = TRUE)
-knitr::asis_output(paste(auth, collapse = "\n"))
+```{r, echo=FALSE, results='asis'}
+res <- knitr::knit_child("vignettes/authentication.Rmd", quiet = TRUE)
+res <- gsub("`r knitr::include_graphics(cookies_png)`", "![](vignettes/cookies.png)", res, fixed = TRUE)
+cat(res, sep = '\n')
 ```
 
 

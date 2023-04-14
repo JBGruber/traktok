@@ -59,19 +59,23 @@ anonymous cookies and a manual one which gives you user cookies.
 your ordinary browser. However, since some request require a logged in
 user, the respective functions need cookies from an authenticated user.
 
-#### Anonymous cookies
+## Anonymous cookies
 
 Authentication happens automatically the first time you run a function.
 If you want to do this explicitly, use this function:
 
-`{r} tt_get_cookies()`
+``` r
+tt_get_cookies()
+```
 
 It will guide you through the process. If you want to create multiple
 cookie files, you can use the `name` argument:
 
-`{r} tt_get_cookies(name = "cookies_new")`
+``` r
+tt_get_cookies(name = "cookies_new")
+```
 
-#### Logged in user
+## Logged in user
 
 Pyktok uses the module
 [browser_cookie3](https://github.com/borisbabic/browser_cookie3) to
@@ -85,19 +89,23 @@ for Chromium based browsers or
 [“cookies.txt”](https://addons.mozilla.org/en-US/firefox/addon/cookies-txt/)
 for Firefox.
 
-![](vignettes/cookies.png)
+<img src="cookies.png" width="100%" />
 
 Once you’ve saved this file, you read it into `traktok`, which will
 store it permanently.
 
-`{r} tt_get_cookies(x = "tiktok.com_cookies.txt")`
+``` r
+tt_get_cookies(x = "tiktok.com_cookies.txt")
+```
 
 If you want to create multiple cookie files, you can use the `name`
 argument:
 
-`{r} tt_get_cookies(x = "tiktok.com_cookies.txt", name = "cookies_new")`
+``` r
+tt_get_cookies(x = "tiktok.com_cookies.txt", name = "cookies_new")
+```
 
-#### Multiple cookie files
+## Multiple cookie files
 
 `tt_get_cookies` will save a cookie file in the location returned by
 `tools::R_user_dir("traktok", "config")`. Set `save = FALSE` if you want
@@ -105,11 +113,19 @@ to prevent this. Using `options(tt_cookiefile = "some\path")`, you can
 change the default location. If you have, for example, multiple cookie
 files in the default location:
 
-`{r} options(tt_cookiefile = file.path(tools::R_user_dir("traktok", "config"), paste0(cookies_new, ".rds")))`
+``` r
+options(tt_cookiefile = file.path(tools::R_user_dir("traktok", "config"), paste0(cookies_new, ".rds")))
+```
 
 Alternatively, you can also set cookies for every function:
 
-`{r} cookie_files <- list.files(tools::R_user_dir("traktok", "config"), full.names = TRUE) tt_videos(video_urls = "https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1",           cookiefile = cookie_files[1]) tt_videos(video_urls = "https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1",           cookiefile = cookie_files[2])`
+``` r
+cookie_files <- list.files(tools::R_user_dir("traktok", "config"), full.names = TRUE)
+tt_videos(video_urls = "https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1",
+          cookiefile = cookie_files[1])
+tt_videos(video_urls = "https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1",
+          cookiefile = cookie_files[2])
+```
 
 If you ever run into problems due to an expired cookie, you might want
 to delete the files in the default folder to get a fresh start.
@@ -125,16 +141,6 @@ example_urls <- c(
   "https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1"
 )
 tt_videos(example_urls, save_video = FALSE)
-#> Getting video 6584647400055377158
-#> Getting video 6584647400055377158
-#> # A tibble: 2 × 13
-#>   video_id        video_timestamp video_length video_title video_locationcreated
-#>   <chr>                     <dbl>        <int> <chr>       <chr>                
-#> 1 65846474000553…      1533107692           14 #MakeEvery… US                   
-#> 2 65846474000553…      1533107692           14 #MakeEvery… US                   
-#> # ℹ 8 more variables: video_diggcount <int>, video_sharecount <int>,
-#> #   video_commentcount <int>, video_playcount <int>, video_description <chr>,
-#> #   video_fn <chr>, author_username <chr>, author_name <chr>
 ```
 
 You can download the videos by either setting `save_video` to `TRUE` or
@@ -146,37 +152,12 @@ by exporting the URLs and downloading them with an external tool.
 
 ``` r
 tt_comments(example_urls, max_comments = 50L)
-#> Getting comments for video 6584647400055377158...
-#>  ...retrieving comments 0+
-#> Error in resp_body_raw(resp) : Can not retrieve empty body
-#>  ...waiting 0.1 seconds
-#> Getting comments for video 6584647400055377158...
-#>  ...retrieving comments 0+
-#> Error in resp_body_raw(resp) : Can not retrieve empty body
-#>  ...waiting 2.6 seconds
-#> # A tibble: 0 × 0
 ```
 
 ### User accounts
 
 ``` r
 tt_user_videos("https://www.tiktok.com/@tiktok")
-#> Getting user videos from ...
-#>  ...waiting 0.2 seconds
-#> # A tibble: 30 × 2
-#>    user_id `video_urls <- ...`                                     
-#>    <chr>   <chr>                                                   
-#>  1 tiktok  https://www.tiktok.com/@tiktok/video/7221947290192334126
-#>  2 tiktok  https://www.tiktok.com/@tiktok/video/7221638040584768810
-#>  3 tiktok  https://www.tiktok.com/@tiktok/video/7221199914028584238
-#>  4 tiktok  https://www.tiktok.com/@tiktok/video/7220919718134418734
-#>  5 tiktok  https://www.tiktok.com/@tiktok/video/7220534207745887530
-#>  6 tiktok  https://www.tiktok.com/@tiktok/video/7220457887502503210
-#>  7 tiktok  https://www.tiktok.com/@tiktok/video/7219710828436835630
-#>  8 tiktok  https://www.tiktok.com/@tiktok/video/7219352089099586858
-#>  9 tiktok  https://www.tiktok.com/@tiktok/video/7217451934717005102
-#> 10 tiktok  https://www.tiktok.com/@tiktok/video/7217189183788698926
-#> # ℹ 20 more rows
 ```
 
 ### Search for Hashtags

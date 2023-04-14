@@ -4,3 +4,5 @@ tiktok.com_cookies.txt
 ^README\.Rmd$
 ^codecov\.yml$
 ^\.github$
+^doc$
+^Meta$
