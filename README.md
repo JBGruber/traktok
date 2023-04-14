@@ -127,18 +127,14 @@ example_urls <- c(
 tt_videos(example_urls, save_video = FALSE)
 #> Getting video 6584647400055377158
 #> Getting video 6584647400055377158
-#> # A tibble: 2 × 19
-#>   video_id video_times…¹ video…² video…³ video…⁴ video…⁵ video…⁶ video…⁷ video…⁸
-#>   <chr>            <dbl> <lgl>   <lgl>   <lgl>   <lgl>   <lgl>   <lgl>   <lgl>  
-#> 1 ""                  NA NA      NA      NA      NA      NA      NA      NA     
-#> 2 ""                  NA NA      NA      NA      NA      NA      NA      NA     
-#> # … with 10 more variables: video_description <lgl>, video_is_ad <lgl>,
-#> #   video_fn <chr>, author_username <lgl>, author_name <lgl>,
-#> #   author_followercount <lgl>, author_followingcount <lgl>,
-#> #   author_heartcount <lgl>, author_videocount <lgl>, author_diggcount <lgl>,
-#> #   and abbreviated variable names ¹​video_timestamp, ²​video_length,
-#> #   ³​video_title, ⁴​video_locationcreated, ⁵​video_diggcount, ⁶​video_sharecount,
-#> #   ⁷​video_commentcount, ⁸​video_playcount
+#> # A tibble: 2 × 13
+#>   video_id        video_timestamp video_length video_title video_locationcreated
+#>   <chr>                     <dbl>        <int> <chr>       <chr>                
+#> 1 65846474000553…      1533107692           14 #MakeEvery… US                   
+#> 2 65846474000553…      1533107692           14 #MakeEvery… US                   
+#> # ℹ 8 more variables: video_diggcount <int>, video_sharecount <int>,
+#> #   video_commentcount <int>, video_playcount <int>, video_description <chr>,
+#> #   video_fn <chr>, author_username <chr>, author_name <chr>
 ```
 
 You can download the videos by either setting `save_video` to `TRUE` or
@@ -153,11 +149,11 @@ tt_comments(example_urls, max_comments = 50L)
 #> Getting comments for video 6584647400055377158...
 #>  ...retrieving comments 0+
 #> Error in resp_body_raw(resp) : Can not retrieve empty body
-#>  ...waiting 2.8 seconds
+#>  ...waiting 0.1 seconds
 #> Getting comments for video 6584647400055377158...
 #>  ...retrieving comments 0+
 #> Error in resp_body_raw(resp) : Can not retrieve empty body
-#>  ...waiting 0.3 seconds
+#>  ...waiting 2.6 seconds
 #> # A tibble: 0 × 0
 ```
 
@@ -170,17 +166,17 @@ tt_user_videos("https://www.tiktok.com/@tiktok")
 #> # A tibble: 30 × 2
 #>    user_id `video_urls <- ...`                                     
 #>    <chr>   <chr>                                                   
-#>  1 tiktok  https://www.tiktok.com/@tiktok/video/7200075941727440170
-#>  2 tiktok  https://www.tiktok.com/@tiktok/video/7200073950645194026
-#>  3 tiktok  https://www.tiktok.com/@tiktok/video/7200058371028962606
-#>  4 tiktok  https://www.tiktok.com/@tiktok/video/7199799408270052651
-#>  5 tiktok  https://www.tiktok.com/@tiktok/video/7199792050412375342
-#>  6 tiktok  https://www.tiktok.com/@tiktok/video/7199773494802910506
-#>  7 tiktok  https://www.tiktok.com/@tiktok/video/7199713922167934251
-#>  8 tiktok  https://www.tiktok.com/@tiktok/video/7199700619102309674
-#>  9 tiktok  https://www.tiktok.com/@tiktok/video/7199529679915715882
-#> 10 tiktok  https://www.tiktok.com/@tiktok/video/7199433286928878894
-#> # … with 20 more rows
+#>  1 tiktok  https://www.tiktok.com/@tiktok/video/7221947290192334126
+#>  2 tiktok  https://www.tiktok.com/@tiktok/video/7221638040584768810
+#>  3 tiktok  https://www.tiktok.com/@tiktok/video/7221199914028584238
+#>  4 tiktok  https://www.tiktok.com/@tiktok/video/7220919718134418734
+#>  5 tiktok  https://www.tiktok.com/@tiktok/video/7220534207745887530
+#>  6 tiktok  https://www.tiktok.com/@tiktok/video/7220457887502503210
+#>  7 tiktok  https://www.tiktok.com/@tiktok/video/7219710828436835630
+#>  8 tiktok  https://www.tiktok.com/@tiktok/video/7219352089099586858
+#>  9 tiktok  https://www.tiktok.com/@tiktok/video/7217451934717005102
+#> 10 tiktok  https://www.tiktok.com/@tiktok/video/7217189183788698926
+#> # ℹ 20 more rows
 ```
 
 ### Search for Hashtags

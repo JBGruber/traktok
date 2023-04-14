@@ -30,7 +30,7 @@ Suggests:
 URL: https://github.com/JBGruber/traktok
 BugReports: https://github.com/JBGruber/traktok/issues
 Encoding: UTF-8
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 Language: en-US
 Config/testthat/edition: 3
 Config/testthat/parallel: false

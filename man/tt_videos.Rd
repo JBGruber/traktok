@@ -4,12 +4,22 @@
 \alias{tt_videos}
 \title{Get video URLs and metadata from videos}
 \usage{
-tt_videos(video_urls, save_video = FALSE, dir = ".", sleep_pool = 1:10, ...)
+tt_videos(
+  video_urls,
+  save_video = FALSE,
+  overwrite = FALSE,
+  dir = ".",
+  sleep_pool = 1:10,
+  ...
+)
 }
 \arguments{
 \item{video_urls}{vector of URLs to TikTok videos.}
 
 \item{save_video}{logical. Should the videos be downloaded.}
+
+\item{overwrite}{logical. If save_video=TRUE and the file already exists,
+should it be overwritten?}
 
 \item{dir}{directory to save videos files to.}
 

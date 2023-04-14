@@ -2,6 +2,8 @@
 #'
 #' @param video_urls vector of URLs to TikTok videos.
 #' @param save_video logical. Should the videos be downloaded.
+#' @param overwrite logical. If save_video=TRUE and the file already exists,
+#'   should it be overwritten?
 #' @param dir directory to save videos files to.
 #' @param sleep_pool a vector of numbers from which a waiting period is randomly
 #'   drawn.
@@ -20,17 +22,18 @@
 #' }
 tt_videos <- function(video_urls,
                       save_video = FALSE,
+                      overwrite = FALSE,
                       dir = ".",
                       sleep_pool = 1:10,
                       ...) {
 
-  purrr::map_df(video_urls, function(u) {
+  dplyr::bind_rows(purrr::map(video_urls, function(u) {
     video_id <- extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)|(?<=https://vm.tiktok.com/).+?(?=/|$)")
     message("Getting video ", video_id)
     out <- save_tiktok(u, save_video = save_video, dir = dir, ...)
     if (u != utils::tail(video_urls, 1)) wait(sleep_pool)
     return(out)
-  })
+  }))
 
 }
 
@@ -60,13 +63,13 @@ tt_comments <- function(video_urls,
                         sleep_pool = 1:10,
                         ...) {
 
-  purrr::map_df(video_urls, function(u) {
+  dplyr::bind_rows(purrr::map(video_urls, function(u) {
     video_id <- extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)")
     message("Getting comments for video ", video_id, "...")
     out <- save_video_comments(u, max_comments = max_comments, sleep_pool = sleep_pool, ...)
     wait(sleep_pool)
     return(out)
-  })
+  }))
 
 }
 
@@ -93,13 +96,13 @@ tt_user_videos <- function(user_url,
                            sleep_pool = 1:10,
                            ...) {
 
-  purrr::map_df(user_url, function(u) {
+  dplyr::bind_rows(purrr::map(user_url, function(u) {
     video_id <- extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)")
     message("Getting user videos from ", video_id, "...")
     out <- get_account_video_urls(u, ...)
     wait(sleep_pool)
     return(out)
-  })
+  }))
 
 }
 
@@ -146,6 +149,7 @@ tt_json <- function(url,
 #' @noRd
 save_tiktok <- function(video_url,
                         save_video = TRUE,
+                        overwrite = FALSE,
                         dir = ".",
                         cookiefile = NULL,
                         ...) {
@@ -192,13 +196,15 @@ save_tiktok <- function(video_url,
     )
 
     if (save_video) {
-      tt_video_url <- tt_json[["ItemModule"]][[video_id]][["video"]][["downloadAddr"]]
-      h <- curl::handle_setopt(
-        curl::new_handle(),
-        cookie = prep_cookies(cookies),
-        referer = "https://www.tiktok.com/"
-      )
-      curl::curl_download(tt_video_url, video_fn, quiet = FALSE, handle = h)
+      if (overwrite || !file.exists(video_fn)) {
+        tt_video_url <- tt_json[["ItemModule"]][[video_id]][["video"]][["downloadAddr"]]
+        h <- curl::handle_setopt(
+          curl::new_handle(),
+          cookie = prep_cookies(cookies),
+          referer = "https://www.tiktok.com/"
+        )
+        curl::curl_download(tt_video_url, video_fn, quiet = FALSE, handle = h)
+      }
     }
 
     return(tibble::tibble(data.frame(lapply(data_list, function(x) ifelse(is.null(x), NA, x)))))
