@@ -187,7 +187,8 @@ save_tiktok <- function(video_url,
       # video_is_ad = tt_json[["ItemModule"]][[video_id]][["isAd"]],
       video_fn = video_fn,
       author_username = tt_json[["ItemModule"]][[video_id]][["author"]],
-      author_name = tt_json[["UserModule"]][["users"]][[1]][["nickname"]]
+      author_name = tt_json[["UserModule"]][["users"]][[1]][["nickname"]],
+      video_url = tt_json[["ItemModule"]][[video_id]][["video"]][["downloadAddr"]]
       # author_followercount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["followerCount"]],
       # author_followingcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["followingCount"]],
       # author_heartcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["heartCount"]],
