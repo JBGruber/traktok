@@ -29,7 +29,7 @@ tt_videos <- function(video_urls,
 
   dplyr::bind_rows(purrr::map(video_urls, function(u) {
     video_id <- extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)|(?<=https://vm.tiktok.com/).+?(?=/|$)")
-    message("Getting video ", video_id)
+    cli::cli_progress_step("Getting video {video_id}")
     out <- save_tiktok(u, save_video = save_video, dir = dir, ...)
     if (u != utils::tail(video_urls, 1)) wait(sleep_pool)
     return(out)
@@ -65,7 +65,7 @@ tt_comments <- function(video_urls,
 
   dplyr::bind_rows(purrr::map(video_urls, function(u) {
     video_id <- extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)")
-    message("Getting comments for video ", video_id, "...")
+    cli::cli_progress_step("Getting comments for video {video_id}")
     out <- save_video_comments(u, max_comments = max_comments, sleep_pool = sleep_pool, ...)
     wait(sleep_pool)
     return(out)
@@ -98,7 +98,7 @@ tt_user_videos <- function(user_url,
 
   dplyr::bind_rows(purrr::map(user_url, function(u) {
     video_id <- extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)")
-    message("Getting user videos from ", video_id, "...")
+    cli::cli_progress_step("Getting comments for video {video_id}")
     out <- get_account_video_urls(u, ...)
     wait(sleep_pool)
     return(out)
@@ -164,7 +164,7 @@ save_tiktok <- function(video_url,
 
   if (tt_json$url_full == "https://www.tiktok.com/") {
 
-    warning(video_url, " can't be reached.")
+    cli::cli_warn("{video_url} can't be reached.")
     return(tibble::tibble())
 
   } else {
@@ -238,7 +238,7 @@ save_video_comments <- function(video_url,
   data_list <- list()
 
   while (cursor < max_comments) {
-    message("\t...retrieving comments ", cursor, "+")
+    cli::cli_progress_step("retrieving comments ", cursor, "+")
 
     req <- httr2::request("https://www.tiktok.com/api/comment/list/") |>
       httr2::req_headers(
@@ -372,7 +372,7 @@ tt_search <- function(q,
 
   while (offset < max_videos) {
 
-    message("\rretrieving videos with offset=", offset, appendLF = FALSE)
+    cli::cli_progress_step("retrieving videos with offset={offset}")
 
     req <- httr2::request("https://www.tiktok.com/api/search/item/full/") |>
       httr2::req_options(cookie = prep_cookies(cookies, "ttwid")) |>
@@ -406,7 +406,7 @@ tt_search <- function(q,
 
     } else {
 
-      if (msg) message(res[["status_msg"]])
+      if (msg) cli::cli_inform(res[["status_msg"]])
       max_videos <- 0
 
     }
