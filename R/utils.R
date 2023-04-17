@@ -67,7 +67,7 @@ tt_get_cookies <- function(x = NULL, save = TRUE, name = "tiktok.com_cookies") {
     if (is.list(x)) {
 
       # provided as list (likely already cookie)
-      test_cookies(x)
+      cookies <- test_cookies(x)
 
     } else if (is.character(x)) {
 
