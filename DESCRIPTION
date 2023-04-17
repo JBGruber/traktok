@@ -1,7 +1,7 @@
 Package: traktok
 Type: Package
 Title: Collecting TikTok Data
-Version: 0.0.1.9000
+Version: 0.0.2.9000
 Authors@R: person("Johannes", "Gruber", email = "johannesb.gruber@gmail.com",
   role = c("aut", "cre"))
 Description: An R port of Deen Freelons Pyktok 

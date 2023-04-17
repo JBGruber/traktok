@@ -132,16 +132,21 @@ tt_json <- function(url,
       "Connection" = "keep-alive"
     ) |>
     httr2::req_options(cookie = prep_cookies(cookies)) |>
-    httr2::req_timeout(seconds = 30L)
+    httr2::req_timeout(seconds = 30L) |>
+    httr2::req_error(is_error = function(x) FALSE)
 
   res <- httr2::req_perform(req)
+  status <- httr2::resp_status(res)
+  if (status >= 400)
+    cli::cli_warn("Retrieving {url} resulted in html status {status}, the row will contain NAs.")
 
   res |>
     httr2::resp_body_html() |>
     rvest::html_node("[id='SIGI_STATE']") |>
     rvest::html_text() |>
     jsonlite::fromJSON() |>
-    c(url_full = res$url)
+    c(url_full = res$url,
+      html_status = status)
 
 }
 
@@ -174,7 +179,7 @@ save_tiktok <- function(video_url,
       as.POSIXct(tz = "UTC", origin = "1970-01-01")
 
     data_list <- list(
-      video_id = tt_json[["ItemList"]][["video"]][["list"]],
+      video_id = unlist(tt_json[["ItemList"]][["video"]][["list"]]),
       video_timestamp = video_timestamp,
       video_length = tt_json[["ItemModule"]][[video_id]][["video"]][["duration"]],
       video_title = tt_json[["ItemModule"]][[video_id]][["desc"]],
@@ -188,7 +193,8 @@ save_tiktok <- function(video_url,
       video_fn = video_fn,
       author_username = tt_json[["ItemModule"]][[video_id]][["author"]],
       author_name = tt_json[["UserModule"]][["users"]][[1]][["nickname"]],
-      video_url = tt_json[["ItemModule"]][[video_id]][["video"]][["downloadAddr"]]
+      video_url = tt_json[["ItemModule"]][[video_id]][["video"]][["downloadAddr"]],
+      html_status = tt_json$html_status
       # author_followercount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["followerCount"]],
       # author_followingcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["followingCount"]],
       # author_heartcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["heartCount"]],
