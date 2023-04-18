@@ -6,7 +6,7 @@ test_that("get meta and download", {
                   save_video = FALSE,
                   dir = tempdir())
   expect_equal(nrow(df), 2L)
-  expect_equal(ncol(df), 15L)
+  expect_equal(ncol(df), 16L)
   # expect_equal(file.exists(df[["video_fn"]][1]), TRUE)
   expect_lte(sum(is.na(df)), 2L)
   expect_warning(tt_videos("https://www.tiktok.com/"),

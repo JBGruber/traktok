@@ -9,6 +9,7 @@ tt_videos(
   save_video = FALSE,
   overwrite = FALSE,
   dir = ".",
+  cache_dir = NULL,
   sleep_pool = 1:10,
   ...
 )
@@ -22,6 +23,10 @@ tt_videos(
 should it be overwritten?}
 
 \item{dir}{directory to save videos files to.}
+
+\item{cache_dir}{if set to a path, one RDS file with metadata will be written
+to disk for each video. This is useful if you have many videos and want to
+pick up where you left if something goes wrong.}
 
 \item{sleep_pool}{a vector of numbers from which a waiting period is randomly
 drawn.}

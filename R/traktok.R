@@ -5,6 +5,9 @@
 #' @param overwrite logical. If save_video=TRUE and the file already exists,
 #'   should it be overwritten?
 #' @param dir directory to save videos files to.
+#' @param cache_dir if set to a path, one RDS file with metadata will be written
+#'   to disk for each video. This is useful if you have many videos and want to
+#'   pick up where you left if something goes wrong.
 #' @param sleep_pool a vector of numbers from which a waiting period is randomly
 #'   drawn.
 #' @param ... handed to \link{tt_json}.
@@ -24,13 +27,14 @@ tt_videos <- function(video_urls,
                       save_video = FALSE,
                       overwrite = FALSE,
                       dir = ".",
+                      cache_dir = NULL,
                       sleep_pool = 1:10,
                       ...) {
 
   dplyr::bind_rows(purrr::map(video_urls, function(u) {
     video_id <- extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)|(?<=https://vm.tiktok.com/).+?(?=/|$)")
     cli::cli_progress_step("Getting video {video_id}")
-    out <- save_tiktok(u, save_video = save_video, dir = dir, ...)
+    out <- save_tiktok(u, save_video = save_video, dir = dir, cache_dir = cache_dir, ...)
     if (u != utils::tail(video_urls, 1)) wait(sleep_pool)
     return(out)
   }))
@@ -156,6 +160,7 @@ save_tiktok <- function(video_url,
                         save_video = TRUE,
                         overwrite = FALSE,
                         dir = ".",
+                        cache_dir = NULL,
                         cookiefile = NULL,
                         ...) {
 
@@ -169,38 +174,50 @@ save_tiktok <- function(video_url,
 
   } else {
 
-    video_url <- tt_json$url_full
-    regex_url <- extract_regex(video_url, "(?<=@).+?(?=\\?|$)")
-    video_fn <- paste0(dir, "/", paste0(gsub("/", "_", regex_url), ".mp4"))
     video_id <- extract_regex(video_url, "(?<=/video/)(.+?)(?=\\?|$)")
+    cache_file <- ""
+    if (!is.null(cache_dir)) {
+      cache_file <- paste0(cache_dir, "video_meta_", video_id, ".rds")
+    }
 
-    video_timestamp <- tt_json[["ItemModule"]][[video_id]][["createTime"]] |>
-      as.integer() |>
-      as.POSIXct(tz = "UTC", origin = "1970-01-01")
+    if (file.exists(cache_file)) {
+      out <- readRDS(cache_file)
+    } else {
+      video_url <- tt_json$url_full
+      regex_url <- extract_regex(video_url, "(?<=@).+?(?=\\?|$)")
+      video_fn <- paste0(dir, "/", paste0(gsub("/", "_", regex_url), ".mp4"))
 
-    data_list <- list(
-      video_id = unlist(tt_json[["ItemList"]][["video"]][["list"]]),
-      video_timestamp = video_timestamp,
-      video_length = tt_json[["ItemModule"]][[video_id]][["video"]][["duration"]],
-      video_title = tt_json[["ItemModule"]][[video_id]][["desc"]],
-      video_locationcreated = tt_json[["ItemModule"]][[video_id]][["locationCreated"]],
-      video_diggcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["diggCount"]],
-      video_sharecount = tt_json[["ItemModule"]][[video_id]][["stats"]][["shareCount"]],
-      video_commentcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["commentCount"]],
-      video_playcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["playCount"]],
-      video_description = tt_json[["ItemModule"]][[video_id]][["desc"]],
-      # video_is_ad = tt_json[["ItemModule"]][[video_id]][["isAd"]],
-      video_fn = video_fn,
-      author_username = tt_json[["ItemModule"]][[video_id]][["author"]],
-      author_name = tt_json[["UserModule"]][["users"]][[1]][["nickname"]],
-      video_url = tt_json[["ItemModule"]][[video_id]][["video"]][["downloadAddr"]],
-      html_status = tt_json$html_status
-      # author_followercount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["followerCount"]],
-      # author_followingcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["followingCount"]],
-      # author_heartcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["heartCount"]],
-      # author_videocount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["videoCount"]],
-      # author_diggcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["diggCount"]]
-    )
+      video_timestamp <- tt_json[["ItemModule"]][[video_id]][["createTime"]] |>
+        as.integer() |>
+        as.POSIXct(tz = "UTC", origin = "1970-01-01")
+
+      data_list <- list(
+        video_id = unlist(tt_json[["ItemList"]][["video"]][["list"]]),
+        video_url = video_url,
+        video_timestamp = video_timestamp,
+        video_length = tt_json[["ItemModule"]][[video_id]][["video"]][["duration"]],
+        video_title = tt_json[["ItemModule"]][[video_id]][["desc"]],
+        video_locationcreated = tt_json[["ItemModule"]][[video_id]][["locationCreated"]],
+        video_diggcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["diggCount"]],
+        video_sharecount = tt_json[["ItemModule"]][[video_id]][["stats"]][["shareCount"]],
+        video_commentcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["commentCount"]],
+        video_playcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["playCount"]],
+        video_description = tt_json[["ItemModule"]][[video_id]][["desc"]],
+        # video_is_ad = tt_json[["ItemModule"]][[video_id]][["isAd"]],
+        video_fn = video_fn,
+        author_username = tt_json[["ItemModule"]][[video_id]][["author"]],
+        author_name = tt_json[["UserModule"]][["users"]][[1]][["nickname"]],
+        download_url = tt_json[["ItemModule"]][[video_id]][["video"]][["downloadAddr"]],
+        html_status = tt_json$html_status
+        # author_followercount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["followerCount"]],
+        # author_followingcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["followingCount"]],
+        # author_heartcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["heartCount"]],
+        # author_videocount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["videoCount"]],
+        # author_diggcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["diggCount"]]
+      )
+      out <- tibble::tibble(data.frame(lapply(data_list, function(x) ifelse(is.null(x), NA, x))))
+      if (cache_file != "") saveRDS(out, cache_file)
+    }
 
     if (save_video) {
       if (overwrite || !file.exists(video_fn)) {
@@ -214,7 +231,7 @@ save_tiktok <- function(video_url,
       }
     }
 
-    return(tibble::tibble(data.frame(lapply(data_list, function(x) ifelse(is.null(x), NA, x)))))
+    return(out)
 
   }
 
