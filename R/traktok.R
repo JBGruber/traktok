@@ -220,15 +220,8 @@ save_tiktok <- function(video_url,
     }
 
     if (save_video) {
-      if (overwrite || !file.exists(video_fn)) {
-        tt_video_url <- tt_json[["ItemModule"]][[video_id]][["video"]][["downloadAddr"]]
-        h <- curl::handle_setopt(
-          curl::new_handle(),
-          cookie = prep_cookies(cookies),
-          referer = "https://www.tiktok.com/"
-        )
-        curl::curl_download(tt_video_url, video_fn, quiet = FALSE, handle = h)
-      }
+      tt_video_url <- tt_json[["ItemModule"]][[video_id]][["video"]][["downloadAddr"]]
+      download_video(tt_video_url, video_fn, overwrite, cookies)
     }
 
     return(out)
@@ -236,6 +229,20 @@ save_tiktok <- function(video_url,
   }
 
 }
+
+
+#' @noRd
+download_video <- function(tt_video_url, video_fn, overwrite, cookies) {
+  if (overwrite || !file.exists(video_fn)) {
+    h <- curl::handle_setopt(
+      curl::new_handle(),
+      cookie = prep_cookies(cookies),
+      referer = "https://www.tiktok.com/"
+    )
+    curl::curl_download(tt_video_url, video_fn, quiet = FALSE, handle = h)
+  }
+}
+
 
 #' @noRd
 save_video_comments <- function(video_url,

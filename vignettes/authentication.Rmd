@@ -20,7 +20,6 @@ There are two ways to authentication: an automated one which gives you anonymous
 `traktok` uses these cookies to make request appear as they come from your ordinary browser.
 However, since some request require a logged in user, the respective functions need cookies from an authenticated user.
 
-
 ## Anonymous cookies
 
 Authentication happens automatically the first time you run a function.
@@ -43,7 +42,7 @@ tt_get_cookies(name = "cookies_new")
 Pyktok uses the module [browser_cookie3](https://github.com/borisbabic/browser_cookie3) to directly access the cookies saved in your browser.
 Such an infrastructure does not exists, to my knowledge, in `R` (tell me if I'm wrong!).
 Instead, you can export the necessary cookies from your browser using a browser extension (after logging in at TikTok.com at least once).
-I can recommend ["Get cookies.txt"](https://chrome.google.com/webstore/detail/get-cookiestxt/bgaddhkoddajcdgocldbbfleckgcbcid) for Chromium based browsers or ["cookies.txt"](https://addons.mozilla.org/en-US/firefox/addon/cookies-txt/) for Firefox.
+I can recommend ["Get cookies.txt"](https://chrome.google.com/webstore/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc) for Chromium based browsers or ["cookies.txt"](https://addons.mozilla.org/en-US/firefox/addon/cookies-txt/) for Firefox.
 
 `r knitr::include_graphics(cookies_png)`
 

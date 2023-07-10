@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 
 The goal of traktok is to provide easy access to TikTok data. This package is an R port of Deen Freelon's [Pyktok](https://github.com/dfreelon/pyktok) Python module. It can
 
-- ~~[Download TikTok videos](#videos)~~ (see [#5](https://github.com/JBGruber/traktok/issues/5))
+- [Download TikTok videos](#videos)
 - [Download video metadata](#videos)
 - ~~[Download all available video comments](#comments)~~ (see [#5](https://github.com/JBGruber/traktok/issues/5))
 - [Download up to 30 most recent user video URLs](#user-accounts)
@@ -53,7 +53,7 @@ remotes::install_github("JBGruber/traktok")
 
 ```{r, echo=FALSE, results='asis'}
 res <- knitr::knit_child("vignettes/authentication.Rmd", quiet = TRUE)
-res <- gsub("`r knitr::include_graphics(cookies_png)`", "![](vignettes/cookies.png)", res, fixed = TRUE)
+res <- gsub("src=\"cookies.png\"", "src=\"vignettes/cookies.png\"", res, fixed = TRUE)
 cat(res, sep = '\n')
 ```
 
@@ -69,7 +69,7 @@ example_urls <- c(
   "https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1",
   "https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1"
 )
-tt_videos(example_urls, save_video = FALSE)
+tt_videos(example_urls, save_video = TRUE)
 ```
 
 You can download the videos by either setting `save_video` to `TRUE` or by exporting the URLs and downloading them with an external tool.

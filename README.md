@@ -17,8 +17,7 @@ The goal of traktok is to provide easy access to TikTok data. This
 package is an R port of Deen Freelon’s
 [Pyktok](https://github.com/dfreelon/pyktok) Python module. It can
 
-- ~~[Download TikTok videos](#videos)~~ (see
-  [\#5](https://github.com/JBGruber/traktok/issues/5))
+- [Download TikTok videos](#videos)
 - [Download video metadata](#videos)
 - ~~[Download all available video comments](#comments)~~ (see
   [\#5](https://github.com/JBGruber/traktok/issues/5))
@@ -84,12 +83,12 @@ infrastructure does not exists, to my knowledge, in `R` (tell me if I’m
 wrong!). Instead, you can export the necessary cookies from your browser
 using a browser extension (after logging in at TikTok.com at least
 once). I can recommend [“Get
-cookies.txt”](https://chrome.google.com/webstore/detail/get-cookiestxt/bgaddhkoddajcdgocldbbfleckgcbcid)
+cookies.txt”](https://chrome.google.com/webstore/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc)
 for Chromium based browsers or
 [“cookies.txt”](https://addons.mozilla.org/en-US/firefox/addon/cookies-txt/)
 for Firefox.
 
-<img src="cookies.png" width="100%" />
+<img src="vignettes/cookies.png" width="100%" />
 
 Once you’ve saved this file, you read it into `traktok`, which will
 store it permanently.
@@ -140,7 +139,7 @@ example_urls <- c(
   "https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1",
   "https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1"
 )
-tt_videos(example_urls, save_video = FALSE)
+tt_videos(example_urls, save_video = TRUE)
 ```
 
 You can download the videos by either setting `save_video` to `TRUE` or
