@@ -10,6 +10,7 @@
 #'   pick up where you left if something goes wrong.
 #' @param sleep_pool a vector of numbers from which a waiting period is randomly
 #'   drawn.
+#' @param verbose logical. Print progress bar.
 #' @param ... handed to \link{tt_json}.
 #'
 #' @details The function will wait between scraping two videos to make it less
@@ -29,6 +30,7 @@ tt_videos <- function(video_urls,
                       dir = ".",
                       cache_dir = NULL,
                       sleep_pool = 1:10,
+                      verbose = TRUE,
                       ...) {
 
   dplyr::bind_rows(purrr::map(video_urls, function(u) {
@@ -37,7 +39,7 @@ tt_videos <- function(video_urls,
     out <- save_tiktok(u, save_video = save_video, dir = dir, cache_dir = cache_dir, ...)
     if (u != utils::tail(video_urls, 1)) wait(sleep_pool)
     return(out)
-  }))
+  }, .progress = verbose))
 
 }
 

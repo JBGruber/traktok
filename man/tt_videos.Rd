@@ -11,6 +11,7 @@ tt_videos(
   dir = ".",
   cache_dir = NULL,
   sleep_pool = 1:10,
+  verbose = TRUE,
   ...
 )
 }
@@ -30,6 +31,8 @@ pick up where you left if something goes wrong.}
 
 \item{sleep_pool}{a vector of numbers from which a waiting period is randomly
 drawn.}
+
+\item{verbose}{logical. Print progress bar.}
 
 \item{...}{handed to \link{tt_json}.}
 }
