@@ -35,11 +35,22 @@ tt_videos <- function(video_urls,
 
   dplyr::bind_rows(purrr::map(video_urls, function(u) {
     video_id <- extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)|(?<=https://vm.tiktok.com/).+?(?=/|$)")
-    cli::cli_progress_step("Getting video {video_id}")
-    out <- save_tiktok(u, save_video = save_video, dir = dir, cache_dir = cache_dir, ...)
-    if (u != utils::tail(video_urls, 1)) wait(sleep_pool)
-    return(out)
-  }, .progress = verbose))
+
+    cache_file <- ""
+    if (!is.null(cache_dir)) {
+      cache_file <- file.path(cache_dir, paste0("/video_meta_", video_id, ".rds"))
+    }
+    if (file.exists(cache_file)) {
+      if (verbose) cli::cli_progress_step("Loaded video {video_id} from cache")
+      return(readRDS(cache_file))
+    } else {
+      if (verbose) cli::cli_progress_step("Getting video {video_id}")
+      out <- save_tiktok(u, save_video = save_video, dir = dir, ...)
+      if (u != utils::tail(video_urls, 1)) wait(sleep_pool)
+      if (cache_file != "") saveRDS(out, cache_file)
+      return(out)
+    }
+  }))
 
 }
 
@@ -162,11 +173,9 @@ save_tiktok <- function(video_url,
                         save_video = TRUE,
                         overwrite = FALSE,
                         dir = ".",
-                        cache_dir = NULL,
                         cookiefile = NULL,
                         ...) {
 
-  cookies <- tt_get_cookies(cookiefile)
   tt_json <- tt_json(video_url, cookiefile = cookiefile, ...)
 
   if (tt_json$url_full == "https://www.tiktok.com/") {
@@ -176,59 +185,49 @@ save_tiktok <- function(video_url,
 
   } else {
 
+    video_url <- tt_json$url_full
+    regex_url <- extract_regex(video_url, "(?<=@).+?(?=\\?|$)")
+    video_fn <- paste0(dir, "/", paste0(gsub("/", "_", regex_url), ".mp4"))
     video_id <- extract_regex(video_url, "(?<=/video/)(.+?)(?=\\?|$)")
-    cache_file <- ""
-    if (!is.null(cache_dir)) {
-      cache_file <- paste0(cache_dir, "video_meta_", video_id, ".rds")
-    }
 
-    if (file.exists(cache_file)) {
-      out <- readRDS(cache_file)
-    } else {
-      video_url <- tt_json$url_full
-      regex_url <- extract_regex(video_url, "(?<=@).+?(?=\\?|$)")
-      video_fn <- paste0(dir, "/", paste0(gsub("/", "_", regex_url), ".mp4"))
+    video_timestamp <- tt_json[["ItemModule"]][[video_id]][["createTime"]] |>
+      as.integer() |>
+      as.POSIXct(tz = "UTC", origin = "1970-01-01")
 
-      video_timestamp <- tt_json[["ItemModule"]][[video_id]][["createTime"]] |>
-        as.integer() |>
-        as.POSIXct(tz = "UTC", origin = "1970-01-01")
-
-      data_list <- list(
-        video_id = unlist(tt_json[["ItemList"]][["video"]][["list"]]),
-        video_url = video_url,
-        video_timestamp = video_timestamp,
-        video_length = tt_json[["ItemModule"]][[video_id]][["video"]][["duration"]],
-        video_title = tt_json[["ItemModule"]][[video_id]][["desc"]],
-        video_locationcreated = tt_json[["ItemModule"]][[video_id]][["locationCreated"]],
-        video_diggcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["diggCount"]],
-        video_sharecount = tt_json[["ItemModule"]][[video_id]][["stats"]][["shareCount"]],
-        video_commentcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["commentCount"]],
-        video_playcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["playCount"]],
-        video_description = tt_json[["ItemModule"]][[video_id]][["desc"]],
-        # video_is_ad = tt_json[["ItemModule"]][[video_id]][["isAd"]],
-        video_fn = video_fn,
-        author_username = tt_json[["ItemModule"]][[video_id]][["author"]],
-        author_name = tt_json[["UserModule"]][["users"]][[1]][["nickname"]],
-        download_url = tt_json[["ItemModule"]][[video_id]][["video"]][["downloadAddr"]],
-        html_status = tt_json$html_status
-        # author_followercount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["followerCount"]],
-        # author_followingcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["followingCount"]],
-        # author_heartcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["heartCount"]],
-        # author_videocount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["videoCount"]],
-        # author_diggcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["diggCount"]]
-      )
-      out <- tibble::tibble(data.frame(lapply(data_list, function(x) ifelse(is.null(x), NA, x))))
-      if (cache_file != "") saveRDS(out, cache_file)
-    }
-
-    if (save_video) {
-      tt_video_url <- tt_json[["ItemModule"]][[video_id]][["video"]][["downloadAddr"]]
-      download_video(tt_video_url, video_fn, overwrite, cookies)
-    }
-
-    return(out)
+    data_list <- list(
+      video_id = unlist(tt_json[["ItemList"]][["video"]][["list"]]),
+      video_url = video_url,
+      video_timestamp = video_timestamp,
+      video_length = tt_json[["ItemModule"]][[video_id]][["video"]][["duration"]],
+      video_title = tt_json[["ItemModule"]][[video_id]][["desc"]],
+      video_locationcreated = tt_json[["ItemModule"]][[video_id]][["locationCreated"]],
+      video_diggcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["diggCount"]],
+      video_sharecount = tt_json[["ItemModule"]][[video_id]][["stats"]][["shareCount"]],
+      video_commentcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["commentCount"]],
+      video_playcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["playCount"]],
+      video_description = tt_json[["ItemModule"]][[video_id]][["desc"]],
+      # video_is_ad = tt_json[["ItemModule"]][[video_id]][["isAd"]],
+      video_fn = video_fn,
+      author_username = tt_json[["ItemModule"]][[video_id]][["author"]],
+      author_name = tt_json[["UserModule"]][["users"]][[1]][["nickname"]],
+      download_url = tt_json[["ItemModule"]][[video_id]][["video"]][["downloadAddr"]],
+      html_status = tt_json$html_status
+      # author_followercount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["followerCount"]],
+      # author_followingcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["followingCount"]],
+      # author_heartcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["heartCount"]],
+      # author_videocount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["videoCount"]],
+      # author_diggcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["diggCount"]]
+    )
+    out <- tibble::tibble(data.frame(lapply(data_list, function(x) ifelse(is.null(x), NA, x))))
 
   }
+
+  if (save_video) {
+    tt_video_url <- tt_json[["ItemModule"]][[video_id]][["video"]][["downloadAddr"]]
+    download_video(tt_video_url, video_fn, overwrite, cookies = tt_get_cookies(cookiefile))
+  }
+
+  return(out)
 
 }
 
