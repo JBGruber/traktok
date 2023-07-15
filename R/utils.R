@@ -184,9 +184,9 @@ extract_regex <- function(str, pattern) {
 
 
 #' @noRd
-wait <- function(sleep_pool) {
+wait <- function(sleep_pool, verbose = TRUE) {
   sleep <- stats::runif(1) * sample(sleep_pool, 1L)
-  message("\t...waiting ", round(sleep, 1), " seconds")
+  if (verbose) cli::cli_progress_step("waiting {round(sleep, 1)} seconds")
   Sys.sleep(sleep)
 }
 

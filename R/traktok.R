@@ -46,7 +46,7 @@ tt_videos <- function(video_urls,
     } else {
       if (verbose) cli::cli_progress_step("Getting video {video_id}")
       out <- save_tiktok(u, save_video = save_video, dir = dir, ...)
-      if (u != utils::tail(video_urls, 1)) wait(sleep_pool)
+      if (u != utils::tail(video_urls, 1)) wait(sleep_pool, verbose)
       if (cache_file != "") saveRDS(out, cache_file)
       return(out)
     }
@@ -174,9 +174,16 @@ save_tiktok <- function(video_url,
                         overwrite = FALSE,
                         dir = ".",
                         cookiefile = NULL,
+                        retry = 5,
                         ...) {
 
-  tt_json <- tt_json(video_url, cookiefile = cookiefile, ...)
+  tt_json <- try(tt_json(video_url, cookiefile = cookiefile, ...), silent = TRUE)
+  while (methods::is(tt_json, "try-error") && retry > 0) {
+    cli::cli_warn("retrieving data failed, retrying {retry} more times after waiting 30 seconds")
+    retry <- retry - 1L
+    Sys.sleep(30)
+    tt_json <- try(tt_json(video_url, cookiefile = cookiefile, ...), silent = TRUE)
+  }
 
   if (tt_json$url_full == "https://www.tiktok.com/") {
 
