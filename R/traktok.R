@@ -45,7 +45,7 @@ tt_videos <- function(video_urls,
       return(readRDS(cache_file))
     } else {
       if (verbose) cli::cli_progress_step("Getting video {video_id}")
-      out <- save_tiktok(u, save_video = save_video, dir = dir, ...)
+      out <- save_tiktok(u, save_video = save_video, dir = dir, verbose = verbose, ...)
       if (u != utils::tail(video_urls, 1)) wait(sleep_pool, verbose)
       if (cache_file != "") saveRDS(out, cache_file)
       return(out)
@@ -175,11 +175,12 @@ save_tiktok <- function(video_url,
                         dir = ".",
                         cookiefile = NULL,
                         retry = 5,
+                        verbose = TRUE,
                         ...) {
 
   tt_json <- try(tt_json(video_url, cookiefile = cookiefile, ...), silent = TRUE)
   while (methods::is(tt_json, "try-error") && retry > 0) {
-    cli::cli_warn("retrieving data failed, retrying {retry} more times after waiting 30 seconds")
+    cli::cli_warn("Retrieving data failed. Retrying {retry} more times after waiting 30 seconds")
     retry <- retry - 1L
     Sys.sleep(30)
     tt_json <- try(tt_json(video_url, cookiefile = cookiefile, ...), silent = TRUE)
@@ -201,37 +202,48 @@ save_tiktok <- function(video_url,
       as.integer() |>
       as.POSIXct(tz = "UTC", origin = "1970-01-01")
 
-    data_list <- list(
-      video_id = unlist(tt_json[["ItemList"]][["video"]][["list"]]),
-      video_url = video_url,
-      video_timestamp = video_timestamp,
-      video_length = tt_json[["ItemModule"]][[video_id]][["video"]][["duration"]],
-      video_title = tt_json[["ItemModule"]][[video_id]][["desc"]],
-      video_locationcreated = tt_json[["ItemModule"]][[video_id]][["locationCreated"]],
-      video_diggcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["diggCount"]],
-      video_sharecount = tt_json[["ItemModule"]][[video_id]][["stats"]][["shareCount"]],
-      video_commentcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["commentCount"]],
-      video_playcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["playCount"]],
-      video_description = tt_json[["ItemModule"]][[video_id]][["desc"]],
-      # video_is_ad = tt_json[["ItemModule"]][[video_id]][["isAd"]],
-      video_fn = video_fn,
-      author_username = tt_json[["ItemModule"]][[video_id]][["author"]],
-      author_name = tt_json[["UserModule"]][["users"]][[1]][["nickname"]],
-      download_url = tt_json[["ItemModule"]][[video_id]][["video"]][["downloadAddr"]],
-      html_status = tt_json$html_status
-      # author_followercount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["followerCount"]],
-      # author_followingcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["followingCount"]],
-      # author_heartcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["heartCount"]],
-      # author_videocount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["videoCount"]],
-      # author_diggcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["diggCount"]]
-    )
-    out <- tibble::tibble(data.frame(lapply(data_list, function(x) ifelse(is.null(x), NA, x))))
+    if (!is_classified(video_timestamp, tt_json, video_id)) {
+      data_list <- list(
+        video_id = unlist(tt_json[["ItemList"]][["video"]][["list"]]),
+        video_url = video_url,
+        video_timestamp = video_timestamp,
+        video_length = tt_json[["ItemModule"]][[video_id]][["video"]][["duration"]],
+        video_title = tt_json[["ItemModule"]][[video_id]][["desc"]],
+        video_locationcreated = tt_json[["ItemModule"]][[video_id]][["locationCreated"]],
+        video_diggcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["diggCount"]],
+        video_sharecount = tt_json[["ItemModule"]][[video_id]][["stats"]][["shareCount"]],
+        video_commentcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["commentCount"]],
+        video_playcount = tt_json[["ItemModule"]][[video_id]][["stats"]][["playCount"]],
+        video_description = tt_json[["ItemModule"]][[video_id]][["desc"]],
+        # video_is_ad = tt_json[["ItemModule"]][[video_id]][["isAd"]],
+        video_fn = video_fn,
+        author_username = tt_json[["ItemModule"]][[video_id]][["author"]],
+        author_name = tt_json[["UserModule"]][["users"]][[1]][["nickname"]],
+        download_url = tt_json[["ItemModule"]][[video_id]][["video"]][["downloadAddr"]],
+        html_status = tt_json$html_status
+        # author_followercount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["followerCount"]],
+        # author_followingcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["followingCount"]],
+        # author_heartcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["heartCount"]],
+        # author_videocount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["videoCount"]],
+        # author_diggcount = tt_json[["ItemModule"]][[video_id]][["authorStats"]][["diggCount"]]
+      )
+      out <- tibble::tibble(data.frame(lapply(data_list, function(x) ifelse(is.null(x), NA, x))))
+    } else {
+      cli::cli_warn("Video {video_id} seems to be classified and you do not have access.")
+      out <- tibble::tibble()
+    }
 
   }
 
   if (save_video) {
     tt_video_url <- tt_json[["ItemModule"]][[video_id]][["video"]][["downloadAddr"]]
     download_video(tt_video_url, video_fn, overwrite, cookies = tt_get_cookies(cookiefile))
+    f_size <- file.size(video_fn)
+    if (f_size < 1000) {
+      cli::cli_warn("Video {video_id} has a very small file size (less than 1kB) and is likely corrupt.")
+    } else {
+      if (verbose) cli::cli_process_done(msg_done = "Got video {video_id}. File size: {utils:::format.object_size(f_size, 'auto')}")
+    }
   }
 
   return(out)
@@ -247,7 +259,7 @@ download_video <- function(tt_video_url, video_fn, overwrite, cookies) {
       cookie = prep_cookies(cookies),
       referer = "https://www.tiktok.com/"
     )
-    curl::curl_download(tt_video_url, video_fn, quiet = FALSE, handle = h)
+    curl::curl_download(tt_video_url, video_fn, quiet = TRUE, handle = h)
   }
 }
 

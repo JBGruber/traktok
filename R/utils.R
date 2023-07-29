@@ -186,7 +186,7 @@ extract_regex <- function(str, pattern) {
 #' @noRd
 wait <- function(sleep_pool, verbose = TRUE) {
   sleep <- stats::runif(1) * sample(sleep_pool, 1L)
-  if (verbose) cli::cli_progress_step("waiting {round(sleep, 1)} seconds")
+  if (verbose) cli::cli_progress_message("waiting {round(sleep, 1)} seconds")
   Sys.sleep(sleep)
 }
 
@@ -206,3 +206,10 @@ vpluck <- function(x, ..., val = "character") {
   }
   vapply(x, purrr::pluck, !!!dots, .default = def, FUN.VALUE = val)
 }
+
+#' @noRd
+is_classified <- function(video_timestamp, tt_json, video_id) {
+  video_timestamp == structure(0, tzone = "UTC", class = c("POSIXct", "POSIXt")) &&
+    tt_json[["ItemModule"]][[video_id]][["isContentClassified"]]
+}
+
