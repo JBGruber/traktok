@@ -37,15 +37,25 @@ tt_videos <- function(video_urls,
     video_id <- extract_regex(u, "(?<=/video/)(.+?)(?=\\?|$)|(?<=https://vm.tiktok.com/).+?(?=/|$)")
 
     cache_file <- ""
+    done_msg <- NULL
     if (!is.null(cache_dir)) {
       cache_file <- file.path(cache_dir, paste0("/video_meta_", video_id, ".rds"))
     }
     if (file.exists(cache_file)) {
-      if (verbose) cli::cli_progress_step("Loaded video {video_id} from cache")
+      if (verbose) cli::cli_progress_step("Loaded video {video_id} from cache ({which(u == video_urls)}/{length(video_urls)}).")
       return(readRDS(cache_file))
     } else {
-      if (verbose) cli::cli_progress_step("Getting video {video_id}")
+      if (verbose) cli::cli_progress_step(
+        "Getting video {video_id}",
+        msg_done = "Got video {video_id} ({which(u == video_urls)}/{length(video_urls)}). {done_msg}"
+      )
       out <- save_tiktok(u, save_video = save_video, dir = dir, verbose = verbose, ...)
+      f_size <- file.size(out$video_fn)
+      if (isTRUE(f_size > 1000)) {
+        done_msg <- glue::glue("File size: {utils:::format.object_size(f_size, 'auto')}.")
+      } else {
+        cli::cli_warn("Video {video_id} has a very small file size (less than 1kB) and is likely corrupt.")
+      }
       if (u != utils::tail(video_urls, 1)) wait(sleep_pool, verbose)
       if (cache_file != "") saveRDS(out, cache_file)
       return(out)
@@ -178,12 +188,19 @@ save_tiktok <- function(video_url,
                         verbose = TRUE,
                         ...) {
 
+  retry2 <- retry
   tt_json <- try(tt_json(video_url, cookiefile = cookiefile, ...), silent = TRUE)
   while (methods::is(tt_json, "try-error") && retry > 0) {
     cli::cli_warn("Retrieving data failed. Retrying {retry} more times after waiting 30 seconds")
     retry <- retry - 1L
     Sys.sleep(30)
     tt_json <- try(tt_json(video_url, cookiefile = cookiefile, ...), silent = TRUE)
+  }
+  if (methods::is(tt_json, "try-error")) {
+    cli::cli_abort(c(
+      "Retrieving data failed with message: ",
+      gsub("Error in try(stop(\"test\")) : ", "", tt_json[1], fixed = TRUE)
+    ))
   }
 
   if (tt_json$url_full == "https://www.tiktok.com/") {
@@ -237,12 +254,14 @@ save_tiktok <- function(video_url,
 
   if (save_video) {
     tt_video_url <- tt_json[["ItemModule"]][[video_id]][["video"]][["downloadAddr"]]
-    download_video(tt_video_url, video_fn, overwrite, cookies = tt_get_cookies(cookiefile))
-    f_size <- file.size(video_fn)
-    if (f_size < 1000) {
-      cli::cli_warn("Video {video_id} has a very small file size (less than 1kB) and is likely corrupt.")
-    } else {
-      if (verbose) cli::cli_process_done(msg_done = "Got video {video_id}. File size: {utils:::format.object_size(f_size, 'auto')}")
+    if (!is.null(tt_video_url)) {
+      download_video(tt_video_url = tt_video_url,
+                     video_fn = video_fn,
+                     overwrite = overwrite,
+                     cookies = tt_get_cookies(cookiefile),
+                     retry = retry2)
+
+      out$video_fn <- video_fn
     }
   }
 
@@ -252,14 +271,26 @@ save_tiktok <- function(video_url,
 
 
 #' @noRd
-download_video <- function(tt_video_url, video_fn, overwrite, cookies) {
-  if (overwrite || !file.exists(video_fn)) {
-    h <- curl::handle_setopt(
-      curl::new_handle(),
-      cookie = prep_cookies(cookies),
-      referer = "https://www.tiktok.com/"
-    )
-    curl::curl_download(tt_video_url, video_fn, quiet = TRUE, handle = h)
+download_video <- function(tt_video_url,
+                           video_fn,
+                           overwrite,
+                           cookies,
+                           retry) {
+  f <- structure("", class = "try-error")
+  while (methods::is(f, "try-error") && retry > 0) {
+    if (overwrite || !file.exists(video_fn)) {
+      h <- curl::handle_setopt(
+        curl::new_handle(),
+        cookie = prep_cookies(cookies),
+        referer = "https://www.tiktok.com/"
+      )
+      f <- try(curl::curl_download(tt_video_url, video_fn, quiet = TRUE, handle = h))
+      if (methods::is(f, "try-error")) {
+        Sys.sleep(10)
+        cli::cli_progress_message("Download failed, retrying after 10 seconds. {retry} left.")
+      }
+    } else f <- ""
+    retry <- retry - 1
   }
 }
 
