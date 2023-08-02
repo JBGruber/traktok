@@ -26,14 +26,14 @@ Authentication happens automatically the first time you run a function.
 If you want to do this explicitly, use this function:
 
 ```{r}
-tt_get_cookies()
+auth_hidden()
 ```
 
 It will guide you through the process.
 If you want to create multiple cookie files, you can use the `name` argument:
 
 ```{r}
-tt_get_cookies(name = "cookies_new")
+auth_hidden(name = "cookies_new")
 ```
 
 
@@ -49,19 +49,19 @@ I can recommend ["Get cookies.txt"](https://chrome.google.com/webstore/detail/ge
 Once you've saved this file, you read it into `traktok`, which will store it permanently.
 
 ```{r}
-tt_get_cookies(x = "tiktok.com_cookies.txt")
+auth_hidden(x = "tiktok.com_cookies.txt")
 ```
 
 If you want to create multiple cookie files, you can use the `name` argument:
 
 ```{r}
-tt_get_cookies(x = "tiktok.com_cookies.txt", name = "cookies_new")
+auth_hidden(x = "tiktok.com_cookies.txt", name = "cookies_new")
 ```
 
 
 ## Multiple cookie files
 
-`tt_get_cookies` will save a cookie file in the location returned by `tools::R_user_dir("traktok", "config")`.
+`auth_hidden` will save a cookie file in the location returned by `tools::R_user_dir("traktok", "config")`.
 Set `save = FALSE` if you want to prevent this.
 Using `options(tt_cookiefile = "some\path")`, you can change the default location.
 If you have, for example, multiple cookie files in the default location:
