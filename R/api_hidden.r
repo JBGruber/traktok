@@ -7,8 +7,8 @@
 #'   to this location.
 #' @export
 tt_request_hidden <- function(url,
-                           max_tries = 5L,
-                           cookiefile = NULL) {
+                              max_tries = 5L,
+                              cookiefile = NULL) {
 
   cookies <- auth_hidden(cookiefile)
 
@@ -37,8 +37,11 @@ tt_request_hidden <- function(url,
     rvest::html_node("[id='SIGI_STATE']") |>
     rvest::html_text()
 
+  if (nchar(out) < 10) stop("no json found")
+
   attr(out, "url_full") <- res$url
   attr(out, "html_status") <- status
+  attr(out, "set-cookies") <- httr2::resp_headers(res)[["set-cookie"]]
   return(out)
 }
 
@@ -80,7 +83,7 @@ tt_search_hidden <- function(query,
   cookies <- auth_hidden(cookiefile)
 
   results <- list()
-  page <- 0
+  page <- 1
   has_more <- TRUE
   done_msg <- ""
   while(page <= max_pages && has_more) {

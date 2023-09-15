@@ -63,6 +63,7 @@ tt_videos <- function(video_urls,
     video_fn <- file.path(dir, paste0(gsub("/", "_", regex_url), ".mp4"))
 
     if (save_video) {
+
       f_name <- save_video(video_url = video_dat$download_url,
                            video_fn = video_fn,
                            overwrite = overwrite,
@@ -128,7 +129,7 @@ save_video <- function(video_url,
         )
         f <- try(curl::curl_download(
           video_url, video_fn, quiet = TRUE, handle = h
-        ), silent = TRUE)
+        ), silent = F)
 
         if (methods::is(f, "try-error")) {
           cli::cli_alert_warning(

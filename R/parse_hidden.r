@@ -21,9 +21,9 @@ parse_video <- function(json_string, video_id) {
     video_sharecount      = spluck(tt_data, "ItemModule", video_id, "stats", "shareCount"),
     video_commentcount    = spluck(tt_data, "ItemModule", video_id, "stats", "commentCount"),
     video_playcount       = spluck(tt_data, "ItemModule", video_id, "stats", "playCount"),
-    video_description     = spluck(tt_data, "ItemModule", video_id, "desc"),
     author_username       = spluck(tt_data, "ItemModule", video_id, "author"),
-    author_name           = spluck(tt_data, "UserModule", "users", 1, "nickname"),
+    author_nickname       = spluck(tt_data, "UserModule", "users", 1, "nickname"),
+    author_bio            = spluck(tt_data, "UserModule", "users", 1, "signature"),
     download_url          = spluck(tt_data, "ItemModule", video_id, "video", "downloadAddr"),
     html_status           = html_status,
     music                 = list(spluck(tt_data, "ItemModule", video_id, "music")),
@@ -34,6 +34,7 @@ parse_video <- function(json_string, video_id) {
 }
 
 
+#' @noRd
 parse_search <- function(res) {
   tt_data <- res |>
     httr2::resp_body_json()
