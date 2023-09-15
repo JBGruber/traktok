@@ -1,3 +1,5 @@
+the <- new.env()
+
 # base function for extracting regex
 #' @noRd
 extract_regex <- function(str, pattern) {
