@@ -1,6 +1,6 @@
 test_that("1. cookies as string options", {
-  options(tt_cookiefile = Sys.getenv("TT_COOKIES"))
-  expect_gt(nchar(auth_hidden(save = FALSE)), 100)
+  options(tt_cookiefile = "tt_csrf_token=test;")
+  expect_equal(auth_hidden(save = FALSE), list(tt_csrf_token = "test;"))
   unlink(list.files(tools::R_user_dir("traktok", "config"), full.names = TRUE))
 })
 

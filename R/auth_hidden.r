@@ -61,7 +61,7 @@ auth_hidden <- function(x = NULL, save = TRUE, name = "tiktok.com_cookies") {
 
       } else { # if default location is empty, query user
 
-        no_cookies()
+        cookies <- no_cookies()
 
       }
 
@@ -167,6 +167,7 @@ no_cookies <- function() {
     "3" = stop("No cookies provided or found in default location. If you are using",
                " traktok for the first time, see ?auth_hidden."),
   )
+  return(cookies)
 }
 
 #' @noRd
@@ -176,4 +177,5 @@ get_anonymous_cookies <- function() {
   df <- curl::handle_cookies(h)
   cookies <- as.list(df[, "value"])
   names(cookies) <- df[, "name"]
+  return(cookies)
 }
