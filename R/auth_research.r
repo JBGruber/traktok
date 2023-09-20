@@ -77,7 +77,7 @@ get_token <- function() {
   if (rlang::env_has(the, nms = "tiktok_token")) {
     token <- rlang::env_get(the, nm = "tiktok_token", I(rlang::hash("traktok")))
   } else if (file.exists(f)) {
-    token <- httr2::secret_read_rds(f, rlang::hash("traktok"))
+    token <- httr2::secret_read_rds(f, I(rlang::hash("traktok")))
   } else {
     token <- auth_research()
   }

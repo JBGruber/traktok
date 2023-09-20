@@ -12,6 +12,9 @@ tt_query_videos(
   start_cursor = 0L,
   search_id = NULL,
   is_random = FALSE,
+  max_pages = 1,
+  cache = TRUE,
+  verbose = TRUE,
   token = NULL
 )
 }
@@ -29,6 +32,16 @@ skip (for picking up an old search)}
 \item{search_id}{The search id (for picking up an old search)}
 
 \item{is_random}{Whether the query is random (defaults to FALSE)}
+
+\item{max_pages}{results are returned in batches/pages with 100
+videos. How many should be requested before the function stops?}
+
+\item{cache}{should progress be saved in the current session? It
+can then be retrieved with \code{last_query()} if an error
+occurs. But the function will use extra memory.}
+
+\item{verbose}{should the function print status updates to the
+screen?}
 
 \item{token}{The authentication token (usually supplied
 automatically after running auth_research once)}

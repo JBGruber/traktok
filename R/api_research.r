@@ -8,6 +8,13 @@
 #'   skip (for picking up an old search)
 #' @param search_id The search id (for picking up an old search)
 #' @param is_random Whether the query is random (defaults to FALSE)
+#' @param max_pages results are returned in batches/pages with 100
+#'   videos. How many should be requested before the function stops?
+#' @param cache should progress be saved in the current session? It
+#'   can then be retrieved with \code{last_query()} if an error
+#'   occurs. But the function will use extra memory.
+#' @param verbose should the function print status updates to the
+#'   screen?
 #' @param token The authentication token (usually supplied
 #'   automatically after running auth_research once)
 #' @return A data.frame of parsed TikTok videos
@@ -40,6 +47,9 @@ tt_query_videos <- function(query,
                             start_cursor = 0L,
                             search_id = NULL,
                             is_random = FALSE,
+                            max_pages = 1,
+                            cache = TRUE,
+                            verbose = TRUE,
                             token = NULL) {
 
   if (is.character(query)) {
@@ -66,6 +76,8 @@ tt_query_videos <- function(query,
   if (is_datetime(end_date))
     end_date <- format(end_date, "%Y%m%d")
 
+  if (verbose) cli::cli_progress_step("Making first request")
+
   res <- tt_query_request(
     query = query,
     start_date = start_date,
@@ -77,9 +89,13 @@ tt_query_videos <- function(query,
     token = token
   )
   videos <- purrr::pluck(res, "data", "videos")
+  if (cache) the$videos <- videos
 
+  page <- 1
   # res <- jsonlite::read_json("tests/testthat/example_resp.json")
-  while (purrr::pluck(res, "data", "has_more", .default = FALSE)) {
+  while (purrr::pluck(res, "data", "has_more", .default = FALSE) && page < max_pages) {
+    page <- page + 1
+    if (verbose) cli::cli_progress_step("Getting page {page}")
     res <- tt_query_request(
       query = query,
       start_date = start_date,
@@ -91,8 +107,10 @@ tt_query_videos <- function(query,
       token = token
     )
     videos <- c(videos, purrr::pluck(res, "data", "videos"))
+    if (cache) the$videos <- videos
   }
 
+  if (verbose) cli::cli_progress_step("Parsing data")
   out <- parse_api_search(videos)
 
   attr(out, "search_id") <- spluck(res, "data", "search_id")
@@ -115,21 +133,22 @@ tt_query_request <- function(query,
   if (!is_query(query))
     cli::cli_abort("query needs to be a query object (see {.code ?query})")
 
+  body <- list(query = unclass(query),
+               start_date = start_date,
+               end_date = end_date,
+               max_count = 100L,
+               cursor = cursor,
+               search_id = search_id,
+               is_random = is_random)
+
   httr2::request("https://open.tiktokapis.com/v2/research/video/query/") |>
     httr2::req_method("POST") |>
     httr2::req_url_query(fields = fields) |>
     httr2::req_auth_bearer_token(token$access_token) |>
-    httr2::req_body_json(
-      list(query = unclass(query),
-           start_date = start_date,
-           end_date = end_date,
-           max_count = 100L,
-           cursor = cursor,
-           search_id = search_id,
-           is_random = is_random)
-    ) |>
+    httr2::req_body_json(data = purrr::discard(body, is.null)) |>
     httr2::req_perform() |>
     httr2::resp_body_json()
+
 }
 
 
