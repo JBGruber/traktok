@@ -118,7 +118,7 @@ tt_query_request <- function(query,
   httr2::request("https://open.tiktokapis.com/v2/research/video/query/") |>
     httr2::req_method("POST") |>
     httr2::req_url_query(fields = fields) |>
-    httr2::req_auth_bearer_token(token) |>
+    httr2::req_auth_bearer_token(token$access_token) |>
     httr2::req_body_json(
       list(query = unclass(query),
            start_date = start_date,
