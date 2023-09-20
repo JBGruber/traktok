@@ -1,6 +1,7 @@
 #' Get json string from a TikTok URL using the hidden API
 #'
 #' @param url a URL to a TikTok video or account
+#' @param max_tries how often should the request be tried before throwing an error
 #' @param cookiefile path to your cookiefile. Default is to request a new one
 #'   from TikTok.com and place it in the location returned by
 #'   \code{tools::R_user_dir("traktok", "config")} and set the option cookiefile

@@ -1,0 +1,21 @@
+{
+  "and": [
+    {
+      "field_name": "region_code",
+      "operation": "IN",
+      "field_values": ["JP", "US"]
+    },
+    {
+      "field_name":"hashtag_name",
+      "operation":"EQ",
+      "field_values":["animal"]
+    }
+  ],
+  "not": [
+    {
+      "field_name": "video_length",
+      "operation": "EQ",
+      "field_values": ["SHORT"]
+    }
+  ]
+}

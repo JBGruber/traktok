@@ -11,6 +11,10 @@
 #' @param sleep_pool a vector of numbers from which a waiting period is randomly
 #'   drawn.
 #' @param max_tries how often to retry if a request fails.
+#' @param cookiefile path to your cookiefile. Default is to request a new one
+#'   from TikTok.com and place it in the location returned by
+#'   \code{tools::R_user_dir("traktok", "config")} and set the option cookiefile
+#'   to this location.
 #' @param verbose logical. Print status messages.
 #' @param ... handed to \link{tt_json}.
 #'

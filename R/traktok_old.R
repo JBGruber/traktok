@@ -76,7 +76,7 @@ tt_json <- function(...) {
 #' @export
 tt_search <- function(...) {
 
-  cli::cli_warn("This function has been replaced by {.fn search_hidden}")
-  search_hidden(...)
+  cli::cli_warn("This function has been replaced by {.fn tt_search_hidden}")
+  tt_search_hidden(...)
 
 }

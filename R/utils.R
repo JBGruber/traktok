@@ -32,6 +32,10 @@ vpluck <- function(x, ..., val = "character") {
       def <- NA_integer_
       val <- integer(1)
     },
+    "double" = {
+      def <- NA_integer_
+      val <- numeric(1)
+    },
     "logical" = {
       def <- NA
       val <- logical(1)
