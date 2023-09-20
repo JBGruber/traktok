@@ -153,6 +153,13 @@ tt_query_request <- function(query,
     httr2::req_headers("Content-Type" = "application/json") |>
     httr2::req_auth_bearer_token(token$access_token) |>
     httr2::req_body_json(data = purrr::discard(body, is.null)) |>
+    httr2::req_error(body = function(resp) {
+      c(
+        paste("status:", httr2::resp_body_json(resp)$error$code),
+        paste("message:", httr2::resp_body_json(resp)$error$message),
+        paste("log_id:", httr2::resp_body_json(resp)$error$log_id)
+      )
+    }) |>
     httr2::req_perform() |>
     httr2::resp_body_json()
 
