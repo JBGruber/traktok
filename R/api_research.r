@@ -2,7 +2,7 @@
 #'
 #' @param query A query string or object (see \link{query})
 #' @param start_date,end_date A start and end date to narrow the
-#'   search (optional)
+#'   search (required).
 #' @param fields The fields to be returned (defaults to all)
 #' @param start_cursor The starting cursor, i.e., how many results to
 #'   skip (for picking up an old search)
@@ -41,8 +41,8 @@
 #'   tt_query_videos()
 #' }
 tt_query_videos <- function(query,
-                            start_date = NULL,
-                            end_date = NULL,
+                            start_date = Sys.Date() - 1,
+                            end_date = Sys.Date(),
                             fields = "all",
                             start_cursor = 0L,
                             search_id = NULL,
@@ -70,11 +70,17 @@ tt_query_videos <- function(query,
   if (fields == "all")
     fields <- "id,video_description,create_time,region_code,share_count,view_count,like_count,comment_count,music_id,hashtag_names,username,effect_ids,playlist_id,voice_to_text"
 
-  if (is_datetime(start_date))
+  if (is_datetime(start_date)) {
     start_date <- format(start_date, "%Y%m%d")
+  } else if (!grepl("\\d{8}", start_date)) {
+    cli::cli_abort("{.code start_date} needs to be a valid date or a string like, e.g., \"20210102\"")
+  }
 
-  if (is_datetime(end_date))
+  if (is_datetime(end_date)) {
     end_date <- format(end_date, "%Y%m%d")
+  } else if (!grepl("\\d{8}", start_date)) {
+    cli::cli_abort("{.code start_date} needs to be a valid date or a string like, e.g., \"20210102\"")
+  }
 
   if (verbose) cli::cli_progress_step("Making first request")
 
@@ -144,6 +150,7 @@ tt_query_request <- function(query,
   httr2::request("https://open.tiktokapis.com/v2/research/video/query/") |>
     httr2::req_method("POST") |>
     httr2::req_url_query(fields = fields) |>
+    httr2::req_headers("Content-Type" = "application/json") |>
     httr2::req_auth_bearer_token(token$access_token) |>
     httr2::req_body_json(data = purrr::discard(body, is.null)) |>
     httr2::req_perform() |>
