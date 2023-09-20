@@ -112,7 +112,7 @@ tt_query_request <- function(query,
 
   if (is.null(token)) token <- get_token()
 
-  if (!is_query(q))
+  if (!is_query(query))
     cli::cli_abort("query needs to be a query object (see {.code ?query})")
 
   httr2::request("https://open.tiktokapis.com/v2/research/video/query/") |>
