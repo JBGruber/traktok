@@ -1,3 +1,22 @@
+#' Authenticate for the official research API
+#'
+#' @param client_key Client key for authentication
+#' @param client_secret Client secret for authentication
+#'
+#' @returns An authentication token
+#'
+#' @details You need to apply for access to the API and get the key
+#' and secret from TikTok. See
+#' <https://developers.tiktok.com/products/research-api/> for more
+#' information.
+#'
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' auth_research(client_key, client_secret)
+#' }
 auth_research <- function(client_key, client_secret) {
   if (missing(client_key))
     client_key <- askpass::askpass("Please enter your client key")
@@ -21,7 +40,7 @@ auth_research <- function(client_key, client_secret) {
   rlang::env_poke(env = the, nm = "tiktok_token", value = token, create = TRUE)
 
   httr2::secret_write_rds(x = token, path = file.path(p, f),
-                          key = I(rlang::hash("traktok")))
+                         key = I(rlang::hash("traktok")))
 
   cli::cli_alert_success("Succesfully authenticated!")
   invisible(token)
