@@ -57,4 +57,9 @@ spluck <- function(.x, ...) {
   purrr::pluck(.x, ..., .default = NA)
 }
 
+is_datetime <- function(x) {
+  methods::is(x, "POSIXct") +
+    methods::is(x, "POSIXlt") +
+    methods::is(x, "Date") > 0
+}
 

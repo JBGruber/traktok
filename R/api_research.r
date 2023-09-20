@@ -60,10 +60,10 @@ tt_query_videos <- function(query,
   if (fields == "all")
     fields <- "id,video_description,create_time,region_code,share_count,view_count,like_count,comment_count,music_id,hashtag_names,username,effect_ids,playlist_id,voice_to_text"
 
-  if (is.finite.POSIXlt(start_date))
+  if (is_datetime(start_date))
     start_date <- format(start_date, "%Y%m%d")
 
-  if (is.finite.POSIXlt(end_date))
+  if (is_datetime(end_date))
     end_date <- format(end_date, "%Y%m%d")
 
   res <- tt_query_request(
