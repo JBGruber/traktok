@@ -54,7 +54,7 @@ req_token <- function(client_key, client_secret) {
     httr2::req_headers(
       "Content-Type" = "application/x-www-form-urlencoded",
       "Cache-Control" = "no-cache") |>
-    httr2::req_url_query(
+    httr2::req_body_form(
       "client_key" = client_key,
       "client_secret" = client_secret,
       "grant_type" = "client_credentials"
