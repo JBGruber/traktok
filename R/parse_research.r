@@ -34,4 +34,4 @@ parse_api_search <- function(x) {
 print.tt_results <- function(x, ...) {
   cli::cat_rule(paste("search id:",  cli::col_red(attr(x, "search_id"))))
   print(tibble::as_tibble(x))
-}i
+}
