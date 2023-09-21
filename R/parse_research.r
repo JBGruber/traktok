@@ -14,6 +14,10 @@ parse_api_search <- function(x) {
     hashtag_names     = vpluck(x, "hashtag_names", val = "list")
   )
 
+  out$video_id <- ifelse(is.na(out$video_id),
+                         as.character(vpluck(x, "id", val = "double")),
+                         out$video_id)
+
   class(out) <- c("tt_results", class(out))
 
   return(out)

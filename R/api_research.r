@@ -82,7 +82,7 @@ tt_query_videos <- function(query,
     cli::cli_abort("{.code start_date} needs to be a valid date or a string like, e.g., \"20210102\"")
   }
 
-  if (verbose) cli::cli_progress_step("Making first request")
+  if (verbose) cli::cli_progress_step("Making initial request")
 
   res <- tt_query_request(
     query = query,

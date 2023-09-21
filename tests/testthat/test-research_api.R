@@ -85,4 +85,10 @@ test_that("parsing", {
       parse_api_search()
     c(out$video_id, nrow(out), ncol(out))
   }, c("702874395068494976", "702874395068494976", "2", "9"))
+  # apparently, sometimes the video_id is just called id
+  expect_equal({
+    out <- list(list(id = 1), list(video_id = 2)) |>
+      parse_api_search()
+    out$video_id
+  }, c("1", "2"))
 })
