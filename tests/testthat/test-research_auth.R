@@ -34,6 +34,10 @@ test_that("authentication works", {
 
   expect_equal(get_token()$access_token, httr2::obfuscated("clt.example12345Example12345Example"))
 
+  expect_equal(get_token()$client_key, httr2::obfuscated("test"))
+
+  expect_equal(get_token()$client_secret, httr2::obfuscated("test"))
+
   on.exit(file.remove(file.path(tools::R_user_dir("traktok", "cache"), "test.rds")))
 })
 
