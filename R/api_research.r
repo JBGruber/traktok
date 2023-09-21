@@ -161,7 +161,7 @@ tt_query_request <- function(query,
       )
     }) |>
     httr2::req_perform() |>
-    httr2::resp_body_json()
+    httr2::resp_body_json(bigint_as_char = TRUE)
 
 }
 
