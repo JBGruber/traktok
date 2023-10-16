@@ -29,6 +29,12 @@
 #' }
 auth_hidden <- function(x = NULL, save = TRUE, name = "tiktok.com_cookies") {
 
+  UseMethod("auth_hidden")
+
+}
+
+auth_hidden.character <- function(x = NULL, save = TRUE, name = "tiktok.com_cookies") {
+
   # set option if not present
   if (is.null(getOption("tt_cookiefile"))) {
     options(tt_cookiefile = file.path(tools::R_user_dir("traktok", "config"),
@@ -101,6 +107,29 @@ auth_hidden <- function(x = NULL, save = TRUE, name = "tiktok.com_cookies") {
     saveRDS(cookies, getOption("tt_cookiefile"))
   }
 
+  class(cookies) <- c("tt_cookies", class(cookies))
+  return(cookies)
+
+}
+
+auth_hidden.tt_cookies <- function(x = NULL, save = TRUE, name = "tiktok.com_cookies") {
+
+  # set option if not present
+  if (is.null(getOption("tt_cookiefile"))) {
+    options(tt_cookiefile = file.path(tools::R_user_dir("traktok", "config"),
+                                      paste0(name, ".rds")))
+  }
+
+  cookies <-  x
+
+  if (save && !file.exists(getOption("tt_cookiefile"))) {
+    dir.create(path = dirname(getOption("tt_cookiefile")),
+               showWarnings = FALSE,
+               recursive = TRUE)
+    saveRDS(cookies, getOption("tt_cookiefile"))
+  }
+
+  class(cookies) <- c("tt_cookies", class(cookies))
   return(cookies)
 
 }

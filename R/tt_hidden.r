@@ -50,9 +50,10 @@ tt_videos <- function(video_urls,
       "(?<=/video/)(.+?)(?=\\?|$)|(?<=https://vm.tiktok.com/).+?(?=/|$)"
     )
     i <- which(u == video_urls)
+    done_msg <- ""
     if (verbose) cli::cli_progress_step(
       "Getting video {video_id}",
-      msg_done = "Got video {video_id} ({i}/{n_urls})."
+      msg_done = "Got video {video_id} ({i}/{n_urls}). {done_msg}"
     )
 
     video_dat <- get_video(url = u,
@@ -125,7 +126,6 @@ save_video <- function(video_url,
 
     if (overwrite || !file.exists(video_fn)) {
       while (methods::is(f, "try-error") && max_tries > 0) {
-
         h <- curl::handle_setopt(
           curl::new_handle(),
           cookie = prep_cookies(cookies),
