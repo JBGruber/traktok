@@ -151,7 +151,7 @@ tt_user_info_api <- function(username,
   if (is.null(token)) token <- get_token()
 
   if (fields == "all")
-    fields <- "id,video_description,create_time,region_code,share_count,view_count,like_count,comment_count,music_id,hashtag_names,username,effect_ids,playlist_id,voice_to_text"
+    fields <- "display_name,bio_description,avatar_url,is_verified,follower_count,following_count,likes_count,video_count"
 
   httr2::request("https://open.tiktokapis.com/v2/research/user/info/") |>
     httr2::req_method("POST") |>
@@ -201,7 +201,7 @@ tt_comments_api <- function(video_id,
   }
 
   if (fields == "all")
-    fields <- "id,video_description,create_time,region_code,share_count,view_count,like_count,comment_count,music_id,hashtag_names,username,effect_ids,playlist_id,voice_to_text"
+    fields <- "id,video_id,text,like_count,reply_count,parent_comment_id,create_time"
 
   res <- tt_query_request(
     endpoint = "comment/list/",
