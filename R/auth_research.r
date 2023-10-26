@@ -88,8 +88,8 @@ get_token <- function() {
 
   # refresh token if expired
   if (token$access_token_expires <= Sys.time() + 5) {
-    token <- auth_research(client_key = token$client_key,
-                           client_secret = token$client_secret)
+    token <- auth_research(client_key = dec(token$client_key),
+                           client_secret = dec(token$client_secret))
   }
 
   return(token)

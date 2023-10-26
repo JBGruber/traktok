@@ -95,6 +95,7 @@ tt_query_videos <- function(query,
     is_random = is_random,
     token = token
   )
+  cli::cli_progress_done()
   videos <- purrr::pluck(res, "data", "videos")
   if (cache) the$videos <- videos
 
@@ -102,7 +103,8 @@ tt_query_videos <- function(query,
   # res <- jsonlite::read_json("tests/testthat/example_resp.json")
   while (purrr::pluck(res, "data", "has_more", .default = FALSE) && page < max_pages) {
     page <- page + 1
-    if (verbose) cli::cli_progress_step("Getting page {page}")
+    if (verbose) cli::cli_progress_step("Getting page {page}",
+                                        msg_done = "Got page {page}")
     res <- tt_query_request(
       endpoint = "query/",
       query = query,
@@ -117,6 +119,7 @@ tt_query_videos <- function(query,
     videos <- c(videos, purrr::pluck(res, "data", "videos"))
     if (cache) the$videos <- videos
   }
+  cli::cli_progress_done()
 
   if (verbose) cli::cli_progress_step("Parsing data")
   out <- parse_api_search(videos)
@@ -145,6 +148,8 @@ tt_user_info_api <- function(username,
                              verbose = TRUE,
                              token = NULL) {
 
+  if (is.null(token)) token <- get_token()
+
   if (fields == "all")
     fields <- "id,video_description,create_time,region_code,share_count,view_count,like_count,comment_count,music_id,hashtag_names,username,effect_ids,playlist_id,voice_to_text"
 
@@ -162,7 +167,8 @@ tt_user_info_api <- function(username,
       )
     }) |>
     httr2::req_perform() |>
-    httr2::resp_body_json(bigint_as_char = TRUE)
+    httr2::resp_body_json(bigint_as_char = TRUE) |>
+    parse_api_user()
 }
 
 
@@ -211,7 +217,8 @@ tt_comments_api <- function(video_id,
   # res <- jsonlite::read_json("tests/testthat/example_resp_comments.json")
   while (purrr::pluck(res, "data", "has_more", .default = FALSE) && page < max_pages) {
     page <- page + 1
-    if (verbose) cli::cli_progress_step("Getting page {page}")
+    if (verbose) cli::cli_progress_step("Getting page {page}",
+                                        msg_done = "Got page {page}")
     res <- tt_query_request(
       endpoint = "comment/list/",
       video_id = video_id,
@@ -222,6 +229,7 @@ tt_comments_api <- function(video_id,
     comments <- c(comments, purrr::pluck(res, "data", "comments"))
     if (cache) the$comments <- comments
   }
+  cli::cli_progress_done()
 
   if (verbose) cli::cli_progress_step("Parsing data")
   out <- parse_api_comments(comments)
@@ -243,7 +251,7 @@ tt_query_request <- function(endpoint,
 
   if (is.null(token)) token <- get_token()
 
-  if (!is_query(query))
+  if (!is.null(query) && !is_query(query))
     cli::cli_abort("query needs to be a query object (see {.code ?query})")
 
   body <- list(query = unclass(query),
