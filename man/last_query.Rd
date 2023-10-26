@@ -2,15 +2,18 @@
 % Please edit documentation in R/last_.r
 \name{last_query}
 \alias{last_query}
+\alias{last_comments}
 \title{Retrieve most recent query}
 \usage{
 last_query()
+
+last_comments()
 }
 \value{
 a list of unparsed videos
 }
 \description{
-If \code{tt_query_videos} videos failes after already getting several pages,
-you can use this function to get all videos that have been retrieved to far
-from memory (does not work when the sesseion has crashed).
+If \code{tt_query_videos} or \code{tt_comments_api} fail after already getting several pages,
+you can use this function to get all videos that have been retrieved so far
+from memory (does not work when the session has crashed).
 }

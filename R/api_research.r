@@ -118,8 +118,8 @@ tt_query_videos <- function(query,
     )
     videos <- c(videos, purrr::pluck(res, "data", "videos"))
     if (cache) the$videos <- videos
+    if (verbose) cli::cli_progress_done()
   }
-  if (verbose) cli::cli_progress_done()
 
   if (verbose) cli::cli_progress_step("Parsing data")
   out <- parse_api_search(videos)
@@ -153,6 +153,7 @@ tt_user_info_api <- function(username,
   if (fields == "all")
     fields <- "display_name,bio_description,avatar_url,is_verified,follower_count,following_count,likes_count,video_count"
 
+  # /tests/testthat/example_resp_q_user.json
   httr2::request("https://open.tiktokapis.com/v2/research/user/info/") |>
     httr2::req_method("POST") |>
     httr2::req_url_query(fields = fields) |>
@@ -168,7 +169,7 @@ tt_user_info_api <- function(username,
     }) |>
     httr2::req_perform() |>
     httr2::resp_body_json(bigint_as_char = TRUE) |>
-    parse_api_user()
+    tibble::as_tibble()
 }
 
 
@@ -230,8 +231,8 @@ tt_comments_api <- function(video_id,
     )
     comments <- c(comments, purrr::pluck(res, "data", "comments"))
     if (cache) the$comments <- comments
+    if (verbose) cli::cli_progress_done()
   }
-  if (verbose) cli::cli_progress_done()
 
   if (verbose) cli::cli_progress_step("Parsing data")
   out <- parse_api_comments(comments)
