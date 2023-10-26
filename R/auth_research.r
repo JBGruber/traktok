@@ -30,8 +30,8 @@ auth_research <- function(client_key, client_secret) {
   token$access_token_expires <- Sys.time() + token$expires_in
 
   # attach for refresh
-  token$client_key <- httr2::obfuscated(client_key)
-  token$client_secret <- httr2::obfuscated(client_secret)
+  token$client_key <- enc(client_key)
+  token$client_secret <- enc(client_secret)
 
   f <- Sys.getenv("TIKTOK_TOKEN", unset = "token.rds")
   p <- tools::R_user_dir("traktok", "cache")
@@ -48,6 +48,10 @@ auth_research <- function(client_key, client_secret) {
 
 
 req_token <- function(client_key, client_secret) {
+
+  if (methods::is(client_key, "raw")) client_key <- dec(client_key)
+  if (methods::is(client_secret, "raw")) client_secret <- dec(client_secret)
+
   # https://developers.tiktok.com/doc/client-access-token-management
   resp <- httr2::request("https://open.tiktokapis.com/v2/oauth/token/") |>
     httr2::req_method("POST") |>
@@ -90,3 +94,19 @@ get_token <- function() {
 
   return(token)
 }
+
+
+#' encrypt a single element
+#' @noRd
+enc <- function(x, key = NULL) {
+  if (is.null(key)) key <- openssl::sha256(charToRaw(Sys.getenv("COOKIE_KEY", unset = "supergeheim")))
+  openssl::aes_ctr_encrypt(charToRaw(x), key)
+}
+
+#' decrypt a single element
+#' @noRd
+dec <- function(x, key = NULL) {
+  if (is.null(key)) key <- openssl::sha256(charToRaw(Sys.getenv("COOKIE_KEY", unset = "supergeheim")))
+  rawToChar(openssl::aes_ctr_decrypt(x, key))
+}
+
