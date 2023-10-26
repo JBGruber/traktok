@@ -169,6 +169,7 @@ tt_user_info_api <- function(username,
     }) |>
     httr2::req_perform() |>
     httr2::resp_body_json(bigint_as_char = TRUE) |>
+    purrr::pluck("data") |>
     tibble::as_tibble()
 }
 
