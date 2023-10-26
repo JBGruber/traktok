@@ -2,7 +2,7 @@
 % Please edit documentation in R/api_research.r
 \name{tt_query_videos}
 \alias{tt_query_videos}
-\title{Query TikTok videos using the API}
+\title{Query TikTok videos using the research API}
 \usage{
 tt_query_videos(
   query,
@@ -50,7 +50,7 @@ automatically after running auth_research once)}
 A data.frame of parsed TikTok videos
 }
 \description{
-Query TikTok videos using the API
+Query TikTok videos using the research API
 }
 \examples{
 \dontrun{

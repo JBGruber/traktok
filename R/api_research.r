@@ -1,4 +1,4 @@
-#' Query TikTok videos using the API
+#' Query TikTok videos using the research API
 #'
 #' @param query A query string or object (see \link{query})
 #' @param start_date,end_date A start and end date to narrow the
@@ -108,7 +108,7 @@ tt_query_videos <- function(query,
       end_date = end_date,
       fields = fields,
       cursor = purrr::pluck(res, "data", "cursor", .default = NULL),
-      search_id = search_id,
+      search_id = purrr::pluck(res, "data", "search_id", .default = NULL),
       is_random = is_random,
       token = token
     )
@@ -164,4 +164,45 @@ tt_query_request <- function(query,
     httr2::resp_body_json(bigint_as_char = TRUE)
 
 }
+
+
+
+#' Lookup TikTok videos by a user using the research API
+#'
+#' @param username name of the user to be queried
+#' @param fields The fields to be returned (defaults to all)
+#' @inheritParams tt_query_videos
+#'
+#' @return A data.frame of parsed TikTok videos the user has posted
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' tt_user_info_api("jbgruber")
+#' }
+tt_user_info_api <- function(username,
+                             fields = "all",
+                             verbose = TRUE,
+                             token = NULL) {
+
+  if (fields == "all")
+    fields <- "id,video_description,create_time,region_code,share_count,view_count,like_count,comment_count,music_id,hashtag_names,username,effect_ids,playlist_id,voice_to_text"
+
+  httr2::request("https://open.tiktokapis.com/v2/research/user/info/") |>
+    httr2::req_method("POST") |>
+    httr2::req_url_query(fields = fields) |>
+    httr2::req_headers("Content-Type" = "application/json") |>
+    httr2::req_auth_bearer_token(token$access_token) |>
+    httr2::req_body_json(data = list(username = username)) |>
+    httr2::req_error(body = function(resp) {
+      c(
+        paste("status:", httr2::resp_body_json(resp)$error$code),
+        paste("message:", httr2::resp_body_json(resp)$error$message),
+        paste("log_id:", httr2::resp_body_json(resp)$error$log_id)
+      )
+    }) |>
+    httr2::req_perform() |>
+    httr2::resp_body_json(bigint_as_char = TRUE)
+}
+
 

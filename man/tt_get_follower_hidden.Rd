@@ -29,6 +29,14 @@ to this location.}
 
 \item{verbose}{logical. Print status messages.}
 }
+\value{
+a data.frame of followers
+}
 \description{
 Get followers of a user from the hidden API
+}
+\examples{
+\dontrun{
+tt_get_follower_hidden("MS4wLjABAAAAun-1Cl5bjjlMXYCkKo58aPekMkPkkFkWB0y0-lSIJ-EMQ_1RLj1slviOVj0Vpuv9")
+}
 }

@@ -16,12 +16,12 @@ test_that("query", {
 
 test_that("request", {
   mock_success <- function(req) {
-    req <<- req
+    req <<- req # use this to test request below
     httr2::response(status_code = 200,
                     headers = "Content-Type: application/json",
                     body = charToRaw(
                       paste0(
-                        readLines("example_resp.json"), collapse = "")
+                        readLines("example_resp_q_videos.json"), collapse = "")
                       )
                     )
   }
@@ -42,7 +42,8 @@ test_that("request", {
     tt_query_videos(q,
                     start_date = "20230101",
                     end_date = "20230115",
-                    is_random = NULL)
+                    is_random = NULL,
+                    token = list(access_token = "test"))
   )
 
   ex <- jsonlite::read_json("example_request.json")
@@ -71,7 +72,8 @@ test_that("request", {
                       end_date = "20230115",
                       is_random = NULL,
                       max_pages = 20,
-                      verbose = FALSE)
+                      verbose = FALSE,
+                      token = list(access_token = "test"))
     )
     nrow(df)
   }, 40)
@@ -80,15 +82,21 @@ test_that("request", {
 
 test_that("parsing", {
   expect_equal({
-    out <- jsonlite::read_json("example_resp.json", bigint_as_char = TRUE) |>
+    out <- jsonlite::read_json("example_resp_q_videos.json", bigint_as_char = TRUE) |>
       purrr::pluck("data", "videos") |>
       parse_api_search()
     c(out$video_id, nrow(out), ncol(out))
-  }, c("702874395068494965", "702874395068494965", "2", "9"))
+  }, c("702874395068494965", "702874395068494965", "2", "11"))
   # apparently, sometimes the video_id is just called id
   expect_equal({
-    out <- list(list(id = 1), list(video_id = 2)) |>
+    out <- list(list(id = "1"), list(video_id = "2")) |>
       parse_api_search()
     out$video_id
   }, c("1", "2"))
+  expect_equal({
+    out <- jsonlite::read_json("example_resp_q_videos.json", bigint_as_char = TRUE) |>
+      purrr::pluck("data", "videos") |>
+      parse_api_user()
+    c(out$video_id, nrow(out), ncol(out))
+  }, c("702874395068494965", "702874395068494965", "2", "9"))
 })
