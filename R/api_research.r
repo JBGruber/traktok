@@ -95,7 +95,7 @@ tt_query_videos <- function(query,
     is_random = is_random,
     token = token
   )
-  cli::cli_progress_done()
+  if (verbose) cli::cli_progress_done()
   videos <- purrr::pluck(res, "data", "videos")
   if (cache) the$videos <- videos
 
@@ -119,7 +119,7 @@ tt_query_videos <- function(query,
     videos <- c(videos, purrr::pluck(res, "data", "videos"))
     if (cache) the$videos <- videos
   }
-  cli::cli_progress_done()
+  if (verbose) cli::cli_progress_done()
 
   if (verbose) cli::cli_progress_step("Parsing data")
   out <- parse_api_search(videos)
@@ -203,6 +203,7 @@ tt_comments_api <- function(video_id,
   if (fields == "all")
     fields <- "id,video_id,text,like_count,reply_count,parent_comment_id,create_time"
 
+  if (verbose) cli::cli_progress_step("Making initial request")
   res <- tt_query_request(
     endpoint = "comment/list/",
     video_id = video_id,
@@ -210,6 +211,7 @@ tt_comments_api <- function(video_id,
     cursor = start_cursor,
     token = token
   )
+  if (verbose) cli::cli_progress_done()
   comments <- purrr::pluck(res, "data", "comments")
   if (cache) the$comments <- comments
   page <- 1
@@ -229,7 +231,7 @@ tt_comments_api <- function(video_id,
     comments <- c(comments, purrr::pluck(res, "data", "comments"))
     if (cache) the$comments <- comments
   }
-  cli::cli_progress_done()
+  if (verbose) cli::cli_progress_done()
 
   if (verbose) cli::cli_progress_step("Parsing data")
   out <- parse_api_comments(comments)

@@ -55,7 +55,7 @@ parse_api_user <- function(x) {
 
 
 #' @noRd
-parse_api_user <- function(x) {
+parse_api_comments <- function(x) {
 
   out <- x |>
     dplyr::bind_rows()
