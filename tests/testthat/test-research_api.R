@@ -94,9 +94,15 @@ test_that("parsing", {
     out$video_id
   }, c("1", "2"))
   expect_equal({
-    out <- jsonlite::read_json("example_resp_q_videos.json", bigint_as_char = TRUE) |>
-      purrr::pluck("data", "videos") |>
+    out <- jsonlite::read_json("example_resp_q_user.json", bigint_as_char = TRUE) |>
+      purrr::pluck("data") |>
+      parse_api_user()
+    c(nrow(out), ncol(out))
+  }, c(1, 8))
+  expect_equal({
+    out <- jsonlite::read_json("example_resp_comments.json", bigint_as_char = TRUE) |>
+      purrr::pluck("data", "comments") |>
       parse_api_user()
     c(out$video_id, nrow(out), ncol(out))
-  }, c("702874395068494965", "702874395068494965", "2", "9"))
+  }, c("1234563451201523412", "1", "7"))
 })

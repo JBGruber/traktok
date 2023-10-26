@@ -10,7 +10,8 @@ parse_api_search <- function(x) {
     create_time       = as.POSIXct(vpluck(x, "create_time", val = "integer"),
                                    tz = "UTC", origin = "1970-01-01"),
     effect_ids        = vpluck(x, "effect_ids", val = "list"),
-    music_id          = vpluck(x, "music_id", val = "character"),
+    music_id          = purrr:::map_chr(x, function(i)
+      purrr::pluck(i, "music_id", .default = NA_character_)),
     video_description = vpluck(x, "video_description", val = "character"),
     hashtag_names     = vpluck(x, "hashtag_names", val = "list"),
     voice_to_text     = vpluck(x, "voice_to_text", val = "character"),
@@ -46,6 +47,18 @@ parse_api_user <- function(x) {
   out$video_id <- ifelse(is.na(out$video_id),
                          vpluck(x, "id", val = "character"),
                          out$video_id)
+
+  class(out) <- c("tt_results", class(out))
+
+  return(out)
+}
+
+
+#' @noRd
+parse_api_user <- function(x) {
+
+  out <- x |>
+    dplyr::bind_rows()
 
   class(out) <- c("tt_results", class(out))
 

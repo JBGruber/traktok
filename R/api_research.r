@@ -85,6 +85,7 @@ tt_query_videos <- function(query,
   if (verbose) cli::cli_progress_step("Making initial request")
 
   res <- tt_query_request(
+    endpoint = "query/",
     query = query,
     start_date = start_date,
     end_date = end_date,
@@ -103,6 +104,7 @@ tt_query_videos <- function(query,
     page <- page + 1
     if (verbose) cli::cli_progress_step("Getting page {page}")
     res <- tt_query_request(
+      endpoint = "query/",
       query = query,
       start_date = start_date,
       end_date = end_date,
@@ -123,48 +125,6 @@ tt_query_videos <- function(query,
 
   return(out)
 }
-
-
-tt_query_request <- function(query,
-                             start_date,
-                             end_date,
-                             fields,
-                             cursor,
-                             search_id,
-                             is_random,
-                             token) {
-
-  if (is.null(token)) token <- get_token()
-
-  if (!is_query(query))
-    cli::cli_abort("query needs to be a query object (see {.code ?query})")
-
-  body <- list(query = unclass(query),
-               start_date = start_date,
-               end_date = end_date,
-               max_count = 100L,
-               cursor = cursor,
-               search_id = search_id,
-               is_random = is_random)
-
-  httr2::request("https://open.tiktokapis.com/v2/research/video/query/") |>
-    httr2::req_method("POST") |>
-    httr2::req_url_query(fields = fields) |>
-    httr2::req_headers("Content-Type" = "application/json") |>
-    httr2::req_auth_bearer_token(token$access_token) |>
-    httr2::req_body_json(data = purrr::discard(body, is.null)) |>
-    httr2::req_error(body = function(resp) {
-      c(
-        paste("status:", httr2::resp_body_json(resp)$error$code),
-        paste("message:", httr2::resp_body_json(resp)$error$message),
-        paste("log_id:", httr2::resp_body_json(resp)$error$log_id)
-      )
-    }) |>
-    httr2::req_perform() |>
-    httr2::resp_body_json(bigint_as_char = TRUE)
-
-}
-
 
 
 #' Lookup TikTok videos by a user using the research API
@@ -206,3 +166,110 @@ tt_user_info_api <- function(username,
 }
 
 
+#' Retrieve video comments
+#'
+#' @param video_id The id or URL of a video
+#' @inheritParams tt_query_videos
+#'
+#' @return A data.frame of parsed comments
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' tt_user_info_api("jbgruber")
+#' }
+tt_comments_api <- function(video_id,
+                            fields = "all",
+                            start_cursor = 0L,
+                            max_pages = 1L,
+                            cache = TRUE,
+                            verbose = TRUE,
+                            token = NULL) {
+
+  # if video_id is given as URL
+  if (grepl("[^0-9]", video_id)) {
+    video_id <- extract_regex(
+      video_id,
+      "(?<=/video/)(.+?)(?=\\?|$)|(?<=https://vm.tiktok.com/).+?(?=/|$)"
+    )
+  }
+
+  if (fields == "all")
+    fields <- "id,video_description,create_time,region_code,share_count,view_count,like_count,comment_count,music_id,hashtag_names,username,effect_ids,playlist_id,voice_to_text"
+
+  res <- tt_query_request(
+    endpoint = "comment/list/",
+    video_id = video_id,
+    fields = fields,
+    cursor = start_cursor,
+    token = token
+  )
+  comments <- purrr::pluck(res, "data", "comments")
+  if (cache) the$comments <- comments
+  page <- 1
+
+  # res <- jsonlite::read_json("tests/testthat/example_resp_comments.json")
+  while (purrr::pluck(res, "data", "has_more", .default = FALSE) && page < max_pages) {
+    page <- page + 1
+    if (verbose) cli::cli_progress_step("Getting page {page}")
+    res <- tt_query_request(
+      endpoint = "comment/list/",
+      video_id = video_id,
+      fields = fields,
+      cursor = purrr::pluck(res, "data", "cursor", .default = NULL),
+      token = token
+    )
+    comments <- c(comments, purrr::pluck(res, "data", "comments"))
+    if (cache) the$comments <- comments
+  }
+
+  if (verbose) cli::cli_progress_step("Parsing data")
+  out <- parse_api_comments(comments)
+
+  return(out)
+}
+
+
+tt_query_request <- function(endpoint,
+                             query = NULL,
+                             video_id = NULL,
+                             start_date = NULL,
+                             end_date = NULL,
+                             fields = NULL,
+                             cursor = NULL,
+                             search_id = NULL,
+                             is_random = NULL,
+                             token) {
+
+  if (is.null(token)) token <- get_token()
+
+  if (!is_query(query))
+    cli::cli_abort("query needs to be a query object (see {.code ?query})")
+
+  body <- list(query = unclass(query),
+               video_id = video_id,
+               start_date = start_date,
+               end_date = end_date,
+               max_count = 100L,
+               cursor = cursor,
+               search_id = search_id,
+               is_random = is_random)
+
+  httr2::request("https://open.tiktokapis.com/v2/research/video/") |>
+    httr2::req_url_path_append(endpoint) |>
+    httr2::req_method("POST") |>
+    httr2::req_url_query(fields = fields) |>
+    httr2::req_headers("Content-Type" = "application/json") |>
+    httr2::req_auth_bearer_token(token$access_token) |>
+    httr2::req_body_json(data = purrr::discard(body, is.null)) |>
+    httr2::req_error(body = function(resp) {
+      c(
+        paste("status:", httr2::resp_body_json(resp)$error$code),
+        paste("message:", httr2::resp_body_json(resp)$error$message),
+        paste("log_id:", httr2::resp_body_json(resp)$error$log_id)
+      )
+    }) |>
+    httr2::req_perform() |>
+    httr2::resp_body_json(bigint_as_char = TRUE)
+
+}
