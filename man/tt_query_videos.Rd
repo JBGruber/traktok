@@ -6,8 +6,8 @@
 \usage{
 tt_query_videos(
   query,
-  start_date = NULL,
-  end_date = NULL,
+  start_date = Sys.Date() - 1,
+  end_date = Sys.Date(),
   fields = "all",
   start_cursor = 0L,
   search_id = NULL,
@@ -22,7 +22,7 @@ tt_query_videos(
 \item{query}{A query string or object (see \link{query})}
 
 \item{start_date, end_date}{A start and end date to narrow the
-search (optional)}
+search (required).}
 
 \item{fields}{The fields to be returned (defaults to all)}
 

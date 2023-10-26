@@ -47,7 +47,7 @@ parse_search <- function(res) {
   video_timestamp <- vpluck(tt_videos, "item", "createTime", val = "integer") |>
     as.integer() |>
     as.POSIXct(tz = "UTC", origin = "1970-01-01")
-  tt_videos[[1]][["item"]][["video"]][["duration"]]
+
   out <- tibble::tibble(
     video_id              = video_id,
     video_timestamp       = video_timestamp,
@@ -75,4 +75,43 @@ parse_search <- function(res) {
   attr(out, "has_more") <- as.logical(purrr::pluck(tt_data, "has_more", .default = FALSE))
 
   return(out)
+}
+
+
+#' @noRd
+parse_user <- function(user_data) {
+
+  user_info <- spluck(user_data, "__DEFAULT_SCOPE__", "webapp.user-detail", "userInfo")
+
+  tibble::tibble(
+    user_id           = spluck(user_info, "user", "id"),
+    user_name         = spluck(user_info, "user", "uniqueId"),
+    user_nickname     = spluck(user_info, "user", "nickname"),
+    avatar_url        = spluck(user_info, "user", "avatarLarger"),
+    signature         = spluck(user_info, "user", "signature"),
+    verified          = spluck(user_info, "user", "verified"),
+    secUid            = spluck(user_info, "user", "secUid"),
+    bio_link          = spluck(user_info, "user", "bioLink", "link"),
+    commerce_user     = spluck(user_info, "user", "commerceUserInfo"),
+    region            = spluck(user_info, "user", "region"),
+    nickname_modified = as.POSIXct(spluck(user_info, "user", "nickNameModifyTime"),
+                                   origin = "1970-01-01"),
+    language          = spluck(user_info, "user", "language"),
+    follower_count     = spluck(user_info, "stats", "followerCount"),
+    following_count    = spluck(user_info, "stats", "followingCount"),
+    heart_count        = spluck(user_info, "stats", "heartCount"),
+    video_count        = spluck(user_info, "stats", "videoCount"),
+    friend_count       = spluck(user_info, "stats", "friendCount"),
+  )
+
+}
+
+#' @noRd
+parse_followers <- function(follower_data) {
+
+  purrr::map(follower_data, function(f) {
+    dplyr::bind_cols(f$user, f$stats)
+  }) |>
+    dplyr::bind_rows()
+
 }
