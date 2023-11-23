@@ -72,6 +72,7 @@ parse_search <- function(res) {
   )
 
   attr(out, "cursor") <- purrr::pluck(tt_data, "cursor", .default = NA)
+  attr(out, "search_id") <- purrr::pluck(tt_data, "log_pb", "impr_id", .default = NA)
   attr(out, "has_more") <- as.logical(purrr::pluck(tt_data, "has_more", .default = FALSE))
 
   return(out)

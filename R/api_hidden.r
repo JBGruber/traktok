@@ -87,6 +87,8 @@ tt_search_hidden <- function(query,
   page <- 1
   has_more <- TRUE
   done_msg <- ""
+  search_id <- NULL
+
   while(page <= max_pages && has_more) {
     if (verbose) cli::cli_progress_step(
       "Getting page {page}",
@@ -100,7 +102,8 @@ tt_search_hidden <- function(query,
         "cookie_enabled" = "true",
         "from_page" = "search",
         "keyword" = query,
-        "offset" = offset
+        "offset" = offset,
+        search_id = search_id
       ) |>
       httr2::req_options(cookie = prep_cookies(cookies)) |>
       httr2::req_headers(
@@ -123,6 +126,7 @@ tt_search_hidden <- function(query,
     status <- httr2::resp_status(resp)
     if (status < 400L) results[[page]] <- parse_search(resp)
     offset <- attr(results[[page]], "cursor")
+    search_id <- attr(results[[page]], "search_id")
     has_more <- attr(results[[page]], "has_more")
     done_msg <- glue::glue("Found {nrow(results[[page]])} videos.")
     page <- page + 1
@@ -133,7 +137,9 @@ tt_search_hidden <- function(query,
     if (page <= max_pages) wait(sleep_pool)
   }
 
-  dplyr::bind_rows(results)
+  video_id <- NULL
+  dplyr::bind_rows(results) |>
+    dplyr::filter(!is.na(video_id))
 }
 
 
