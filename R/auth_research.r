@@ -63,6 +63,7 @@ req_token <- function(client_key, client_secret) {
       "client_secret" = client_secret,
       "grant_type" = "client_credentials"
     ) |>
+    httr2::req_error(is_error = function(x) FALSE) |>
     httr2::req_perform() |>
     httr2::resp_body_json()
 

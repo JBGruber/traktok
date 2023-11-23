@@ -13,7 +13,7 @@ test_that("authentication works", {
   Sys.setenv("TIKTOK_TOKEN" = "test.rds")
 
   expect_equal(
-    httr2::with_mock(
+    httr2::with_mocked_responses(
       mock_success,
       req_token(client_key = "test", client_secret = "test")
     ),
@@ -23,7 +23,7 @@ test_that("authentication works", {
   )
 
   expect_equal(
-    httr2::with_mock(
+    httr2::with_mocked_responses(
       mock_success,
       auth_research(client_key = "test", client_secret = "test")$token_type
     ),
@@ -50,7 +50,7 @@ test_that("auth error", {
                         }"))
   }
   expect_error({
-    httr2::with_mock(
+    httr2::with_mocked_responses(
       mock_error,
       req_token(client_key = "test", client_secret = "test")
     )

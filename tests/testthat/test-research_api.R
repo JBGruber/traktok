@@ -37,7 +37,7 @@ test_that("request", {
               operation = "EQ",
               field_values = "SHORT")
 
-  httr2::with_mock(
+  httr2::with_mocked_responses(
     mock_success,
     tt_query_videos(q,
                     start_date = "20230101",
@@ -65,7 +65,7 @@ test_that("request", {
   }, ex$end_date)
 
   expect_equal({
-    df <- httr2::with_mock(
+    df <- httr2::with_mocked_responses(
       mock_success,
       tt_query_videos(q,
                       start_date = "20230101",

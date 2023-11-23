@@ -29,7 +29,8 @@ Imports:
     purrr,
     rvest,
     stats,
-    tibble
+    tibble,
+    openssl
 Suggests:
     covr,
     knitr,
