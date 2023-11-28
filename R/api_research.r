@@ -1,5 +1,11 @@
 #' Query TikTok videos using the research API
 #'
+#' @description \ifelse{html}{\figure{api-both.svg}{options:
+#'   alt='[Both]'}}{\strong{[Both]}}
+#'
+#'   This is the version of \link{tt_search} that explicitly uses Research
+#'   API. Use \link{tt_search_hidden} for the Research API version.
+#'
 #' @param query A query string or object (see \link{query})
 #' @param start_date,end_date A start and end date to narrow the
 #'   search (required).
@@ -22,7 +28,7 @@
 #' @examples
 #' \dontrun{
 #' # look for a keyword or hashtag by default
-#' tt_query_videos("rstats")
+#' tt_search_api("rstats")
 #'
 #' # or build a more elaborate query
 #' query() |>
@@ -38,9 +44,9 @@
 #'   query_not(operation = "EQ",
 #'             field_name = "video_length",
 #'             field_values = "SHORT") |>
-#'   tt_query_videos()
+#'   tt_search_api()
 #' }
-tt_query_videos <- function(query,
+tt_search_api <- function(query,
                             start_date = Sys.Date() - 1,
                             end_date = Sys.Date(),
                             fields = "all",
@@ -130,23 +136,43 @@ tt_query_videos <- function(query,
 }
 
 
+#' @export
+#' @rdname tt_search_api
+tt_query_videos <- tt_search_api
+
+
 #' Lookup TikTok videos by a user using the research API
+#'
+#' @description
+#' \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on: Research API]'}}{\strong{[Works on: Research API]}}
 #'
 #' @param username name of the user to be queried
 #' @param fields The fields to be returned (defaults to all)
-#' @inheritParams tt_query_videos
+#' @inheritParams tt_search_api
 #'
 #' @return A data.frame of parsed TikTok videos the user has posted
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' tt_user_info_api("jbgruber")
+#' tt_user_videos_api("jbgruber")
+#' # OR
+#' tt_user_videos_api("https://www.tiktok.com/@tiktok")
+#' # OR
+#' tt_user_videos("https://www.tiktok.com/@tiktok")
 #' }
-tt_user_info_api <- function(username,
-                             fields = "all",
-                             verbose = TRUE,
-                             token = NULL) {
+tt_user_videos_api <- function(username,
+                               fields = "all",
+                               verbose = TRUE,
+                               token = NULL) {
+
+  # if username is given as URL
+  if (grepl("/", username)) {
+    username <- extract_regex(
+      username,
+      "(?<=.com/@)(.+?)(?=\\?|$|/)"
+    )
+  }
 
   if (is.null(token)) token <- get_token()
 
@@ -176,15 +202,22 @@ tt_user_info_api <- function(username,
 
 #' Retrieve video comments
 #'
+#' @description
+#' \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on: Research API]'}}{\strong{[Works on: Research API]}}
+#'
 #' @param video_id The id or URL of a video
-#' @inheritParams tt_query_videos
+#' @inheritParams tt_search_api
 #'
 #' @return A data.frame of parsed comments
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' tt_user_info_api("jbgruber")
+#' tt_comments("https://www.tiktok.com/@tiktok/video/7106594312292453675")
+#' # OR
+#' tt_comments("7106594312292453675")
+#' # OR
+#' tt_comments_api("7106594312292453675")
 #' }
 tt_comments_api <- function(video_id,
                             fields = "all",

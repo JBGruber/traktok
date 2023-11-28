@@ -9,7 +9,8 @@ tt_request_hidden(url, max_tries = 5L, cookiefile = NULL)
 \arguments{
 \item{url}{a URL to a TikTok video or account}
 
-\item{max_tries}{how often should the request be tried before throwing an error}
+\item{max_tries}{how often should the request be tried before throwing an
+error}
 
 \item{cookiefile}{path to your cookiefile. Default is to request a new one
 from TikTok.com and place it in the location returned by
@@ -17,5 +18,11 @@ from TikTok.com and place it in the location returned by
 to this location.}
 }
 \description{
-Get json string from a TikTok URL using the hidden API
+\ifelse{html}{\figure{api-unofficial}{options:
+  alt='[Works on: Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
+
+  Use this function in case you want to check the full data for a given
+  TikTok video or account. In tt_videos, only an opinionated selection of
+  data is included in the final object. If you want some different
+  information, you can use this function.
 }

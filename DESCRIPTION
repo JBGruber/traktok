@@ -8,10 +8,9 @@ Authors@R:
            email = "JohannesB.Gruber@gmail.com", 
            role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-9177-1772"))
-Description: An R port of Deen Freelons Pyktok 
-  (<https://github.com/dfreelon/pyktok>) Python module. traktok scrapes videos, 
-  metadata and comments from TikTok (<https://tiktok.com/>) (in other words, 
-  you can track TikTok).
+Description: Getting TikTok data (<https://tiktok.com/>) through the official 
+  and unofficial APIs—in other words, you can track TikTok. Origninally a port
+  of Deen Freelon's Pyktok (<https://github.com/dfreelon/pyktok>) Python module.
 License: GPL-3
 Depends:
     R (>= 4.1.0)
@@ -37,12 +36,11 @@ Suggests:
     rmarkdown,
     spelling,
     testthat (>= 3.0.0)
-Remotes: JBGruber/cookiemonster
 URL: https://github.com/JBGruber/traktok
 BugReports: https://github.com/JBGruber/traktok/issues
 Encoding: UTF-8
 RoxygenNote: 7.2.3
-Language: en-US
+Language: en-GB
 Config/testthat/edition: 3
 Config/testthat/parallel: false
 VignetteBuilder: knitr

@@ -10,33 +10,36 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 [![R-CMD-check](https://github.com/JBGruber/traktok/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JBGruber/traktok/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/JBGruber/traktok/branch/main/graph/badge.svg)](https://codecov.io/gh/JBGruber/traktok?branch=main)
-[![Twitter](https://img.shields.io/twitter/url/https/twitter.com/JohannesBGruber.svg?style=social&label=Follow%20%40JohannesBGruber)](https://twitter.com/JohannesBGruber)
 <!-- badges: end -->
 
+## Feature overview
+
+| Description                 | Shorthand        | Research API       | Hidden API              |
+|:----------------------------|:-----------------|:-------------------|:------------------------|
+| search videos               | tt_search        | tt_search_api      | tt_search_hidden        |
+| get video detail (+file)    | tt_videos        | \-                 | tt_videos_hidden        |
+| get user videos             | tt_user_videos   | tt_user_videos_api | \-                      |
+| get comments under a video  | tt_comments      | tt_comments_api    | \-                      |
+| get who follows a user      | tt_get_follower  | \-                 | tt_get_follower_hidden  |
+| get who a user is following | tt_get_following | \-                 | tt_get_following_hidden |
+| get raw video data          | \-               | \-                 | tt_request_hidden       |
+| authenticate a session      | \-               | auth_research      | auth_hidden             |
+
 The goal of traktok is to provide easy access to TikTok data. This
-package is an R port of Deen Freelon’s
-[Pyktok](https://github.com/dfreelon/pyktok) Python module. It can
-
-- [Download TikTok videos](#videos)
-- [Download video metadata](#videos)
-- ~~[Download all available video comments](#comments)~~ (see
-  [\#5](https://github.com/JBGruber/traktok/issues/5))
-- [Download up to 30 most recent user video URLs](#user-accounts)
-- ~~[Search for videos by hashtag](#search-for-hashtags)~~
-  (see[\#4](https://github.com/JBGruber/traktok/issues/4))
-- [Download full TikTok JSON data objects (in case you want to extract
-  data from parts of the object not included in the above
-  functions)](#json-data)
-
-The same disclaimer as for Pyktok applies:
+package one started as an R port of Deen Freelon’s
+[Pyktok](https://github.com/dfreelon/pyktok) Python module (though it is
+a complete rewrite without Python dependencies). It now covers functions
+from the secret hidden API that TikTok is using to show/search/play
+videos on their Website and the official [Research
+API](https://developers.tiktok.com/products/research-api/). Since the
+Research API misses some important features (and since not everyone has
+access to it) it can often make sense to still use the hidden API that
+mocks requests from a browser. However, an important disclaimer for the
+hidden API applies:
 
 > This program may stop working suddenly if TikTok changes how it stores
 > its data ([see Freelon,
 > 2018](https://osf.io/preprints/socarxiv/56f4q/)).
-
-I check automatically every day if the approach is still working.
-Current status:
-[![Still-Working?](https://github.com/JBGruber/traktok/actions/workflows/still-working.yaml/badge.svg)](https://github.com/JBGruber/traktok/actions/workflows/still-working.yaml)
 
 ## Installation
 
@@ -46,130 +49,4 @@ You can install the development version of traktok from
 ``` r
 # install.packages("remotes")
 remotes::install_github("JBGruber/traktok")
-```
-
-## Usage
-
-### Authentication
-
-There are two ways to authentication: an automated one which gives you
-anonymous cookies and a manual one which gives you user cookies.
-`traktok` uses these cookies to make request appear as they come from
-your ordinary browser. However, since some request require a logged in
-user, the respective functions need cookies from an authenticated user.
-
-## Anonymous cookies
-
-Authentication happens automatically the first time you run a function.
-If you want to do this explicitly, use this function:
-
-``` r
-auth_hidden()
-```
-
-It will guide you through the process. If you want to create multiple
-cookie files, you can use the `name` argument:
-
-``` r
-auth_hidden(name = "cookies_new")
-```
-
-## Logged in user
-
-Pyktok uses the module
-[browser_cookie3](https://github.com/borisbabic/browser_cookie3) to
-directly access the cookies saved in your browser. Such an
-infrastructure does not exists, to my knowledge, in `R` (tell me if I’m
-wrong!). Instead, you can export the necessary cookies from your browser
-using a browser extension (after logging in at TikTok.com at least
-once). I can recommend [“Get
-cookies.txt”](https://chrome.google.com/webstore/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc)
-for Chromium based browsers or
-[“cookies.txt”](https://addons.mozilla.org/en-US/firefox/addon/cookies-txt/)
-for Firefox.
-
-<img src="vignettes/cookies.png" width="100%" />
-
-Once you’ve saved this file, you read it into `traktok`, which will
-store it permanently.
-
-``` r
-auth_hidden(x = "tiktok.com_cookies.txt")
-```
-
-If you want to create multiple cookie files, you can use the `name`
-argument:
-
-``` r
-auth_hidden(x = "tiktok.com_cookies.txt", name = "cookies_new")
-```
-
-## Multiple cookie files
-
-`auth_hidden` will save a cookie file in the location returned by
-`tools::R_user_dir("traktok", "config")`. Set `save = FALSE` if you want
-to prevent this. Using `options(tt_cookiefile = "some\path")`, you can
-change the default location. If you have, for example, multiple cookie
-files in the default location:
-
-``` r
-options(tt_cookiefile = file.path(tools::R_user_dir("traktok", "config"), paste0(cookies_new, ".rds")))
-```
-
-Alternatively, you can also set cookies for every function:
-
-``` r
-cookie_files <- list.files(tools::R_user_dir("traktok", "config"), full.names = TRUE)
-tt_videos(video_urls = "https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1",
-          cookiefile = cookie_files[1])
-tt_videos(video_urls = "https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1",
-          cookiefile = cookie_files[2])
-```
-
-If you ever run into problems due to an expired cookie, you might want
-to delete the files in the default folder to get a fresh start.
-
-### Videos
-
-You can get data from videos like this:
-
-``` r
-library(traktok)
-example_urls <- c(
-  "https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1",
-  "https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1"
-)
-tt_videos(example_urls, save_video = TRUE)
-```
-
-You can download the videos by either setting `save_video` to `TRUE` or
-by exporting the URLs and downloading them with an external tool.
-
-### Comments
-
-**Currently not working**
-
-``` r
-tt_comments(example_urls, max_comments = 50L)
-```
-
-### User accounts
-
-``` r
-tt_user_videos("https://www.tiktok.com/@tiktok")
-```
-
-### Search for Hashtags
-
-**Currently not working**
-
-``` r
-tt_search_hashtag("rstats", max_videos = 15L)
-```
-
-### Json data
-
-``` r
-video_json <- tt_json("https://www.tiktok.com/@tiktok/video/7106594312292453675?is_copy_url=1&is_from_webapp=v1")
-user_json <- tt_json("https://www.tiktok.com/@tiktok")
 ```

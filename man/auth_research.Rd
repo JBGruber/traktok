@@ -20,7 +20,7 @@ Authenticate for the official research API
 \details{
 You need to apply for access to the API and get the key
 and secret from TikTok. See
-<https://developers.tiktok.com/products/research-api/> for more
+\url{https://developers.tiktok.com/products/research-api/} for more
 information.
 }
 \examples{

@@ -39,7 +39,7 @@ test_that("request", {
 
   httr2::with_mocked_responses(
     mock_success,
-    tt_query_videos(q,
+    tt_search_api(q,
                     start_date = "20230101",
                     end_date = "20230115",
                     is_random = NULL,
@@ -67,7 +67,7 @@ test_that("request", {
   expect_equal({
     df <- httr2::with_mocked_responses(
       mock_success,
-      tt_query_videos(q,
+      tt_search_api(q,
                       start_date = "20230101",
                       end_date = "20230115",
                       is_random = NULL,

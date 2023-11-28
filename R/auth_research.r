@@ -7,7 +7,7 @@
 #'
 #' @details You need to apply for access to the API and get the key
 #' and secret from TikTok. See
-#' <https://developers.tiktok.com/products/research-api/> for more
+#' \url{https://developers.tiktok.com/products/research-api/} for more
 #' information.
 #'
 #'
@@ -74,7 +74,7 @@ req_token <- function(client_key, client_secret) {
 }
 
 
-get_token <- function() {
+get_token <- function(auth = TRUE) {
 
   f <- file.path(tools::R_user_dir("traktok", "cache"),
                  Sys.getenv("TIKTOK_TOKEN", unset = "token.rds"))
@@ -83,9 +83,9 @@ get_token <- function() {
     token <- rlang::env_get(the, nm = "tiktok_token", I(rlang::hash("traktok")))
   } else if (file.exists(f)) {
     token <- httr2::secret_read_rds(f, I(rlang::hash("traktok")))
-  } else {
+  } else if (auth) {
     token <- auth_research()
-  }
+  } else return(FALSE)
 
   # refresh token if expired
   if (token$access_token_expires <= Sys.time() + 5) {

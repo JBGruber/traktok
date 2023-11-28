@@ -38,7 +38,11 @@ to this location.}
 a data.frame
 }
 \description{
-Search videos
+\ifelse{html}{\figure{api-both.svg}{options:
+  alt='[Both]'}}{\strong{[Both]}}
+
+  This is the version of \link{tt_search} that explicitly uses unofficial
+  API. Use \link{tt_search_api} for the Research API version.
 }
 \details{
 The function will wait between scraping two videos to make it less
