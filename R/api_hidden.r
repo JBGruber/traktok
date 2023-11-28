@@ -53,6 +53,8 @@ tt_videos_hidden <- function(video_urls,
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
   f_name <- ""
 
+  dir.create(cache_dir, showWarnings = FALSE)
+
   dplyr::bind_rows(purrr::map(video_urls, function(u) {
     video_id <- extract_regex(
       u,
@@ -419,18 +421,10 @@ tt_get_following_hidden <- function(secuid,
     )
     resp <- httr2::request("https://www.tiktok.com/api/user/list/") |>
       httr2::req_url_query(
-        count = "198", # for some reason this is the highest number that works
-        from_page = "user",
-        history_len = "3",
+        count = "198",
         minCursor = new_data$minCursor,
-        secUid = secuid
-      ) |>
-      httr2::req_headers(
-        `User-Agent` = "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/117.0",
-        Accept = "*/*",
-        `Accept-Language` = "en-US,en;q=0.5",
-        `Accept-Encoding` = "gzip, deflate, br",
-        TE = "trailers",
+        scene = "21",
+        secUid = secuid,
       ) |>
       httr2::req_options(cookie = cookies) |>
       httr2::req_retry(max_tries = max_tries) |>
@@ -478,19 +472,21 @@ tt_get_follower_hidden <- function(secuid,
     )
     resp <- httr2::request("https://www.tiktok.com/api/user/list/") |>
       httr2::req_url_query(
-        count = "198", # for some reason this is the highest number that works
-        from_page = "user",
-        history_len = "3",
-        scene = "67",
+        count = "198",
         minCursor = new_data$minCursor,
-        secUid = secuid
+        scene = "67",
+        secUid = secuid,
       ) |>
-      httr2::req_headers(
-        `User-Agent` = "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/117.0",
-        Accept = "*/*",
-        `Accept-Language` = "en-US,en;q=0.5",
-        `Accept-Encoding` = "gzip, deflate, br",
-        TE = "trailers",
+      httr2::req_options(cookie = cookies) |>
+      httr2::req_retry(max_tries = max_tries) |>
+      httr2::req_perform()
+
+    resp <- httr2::request("https://www.tiktok.com/api/user/list/") |>
+      httr2::req_url_query(
+        count = "198",
+        minCursor = new_data$minCursor,
+        scene = "67",
+        secUid = secuid,
       ) |>
       httr2::req_options(cookie = cookies) |>
       httr2::req_retry(max_tries = max_tries) |>
