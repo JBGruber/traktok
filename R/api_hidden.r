@@ -1,7 +1,7 @@
 #' Get video metadata and video files from URLs
 #'
-#' @description \ifelse{html}{\figure{api-unofficial}{options:
-#'   alt='[Works on: Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
+#' @description \ifelse{html}{\figure{api-unofficial}{options: alt='[Works on:
+#'   Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
 #'
 #' @param video_urls vector of URLs to TikTok videos.
 #' @param save_video logical. Should the videos be downloaded.
@@ -14,10 +14,9 @@
 #' @param sleep_pool a vector of numbers from which a waiting period is randomly
 #'   drawn.
 #' @param max_tries how often to retry if a request fails.
-#' @param cookiefile path to your cookiefile. Default is to request a new one
-#'   from TikTok.com and place it in the location returned by
-#'   \code{tools::R_user_dir("traktok", "config")} and set the option cookiefile
-#'   to this location.
+#' @param cookiefile path to your cookiefile. See
+#'   \code{vignette("unofficial-api", package = "traktok")} for more information
+#'   on authentication.
 #' @param verbose logical. Print status messages.
 #' @param ... handed to \code{tt_videos_hidden} (for tt_videos) and (further) to
 #'   \link{tt_request_hidden}.
@@ -27,8 +26,8 @@
 #'   from the `sleep_pool` and multiplied by a random fraction.
 #'
 #' @details Note that the video file has to be requested in the same session as
-#' the metadata. So while the URL to the video file is included in the metadata,
-#' this link will not work in most cases.
+#'   the metadata. So while the URL to the video file is included in the
+#'   metadata, this link will not work in most cases.
 #'
 #'
 #' @return a data.frame
@@ -50,7 +49,8 @@ tt_videos_hidden <- function(video_urls,
                              ...) {
 
   n_urls <- length(video_urls)
-  cookies <- auth_hidden(cookiefile)
+  if (!is.null(cookiefile)) cookiemonster::add_cookies(cookiefile)
+  cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
   f_name <- ""
 
   dplyr::bind_rows(purrr::map(video_urls, function(u) {
@@ -114,7 +114,7 @@ get_video <- function(url,
                                                 paste0(video_id, ".json"))
 
   if (overwrite || !file.exists(json_fn)) {
-    tt_json <- tt_request_hidden(url, cookiefile = cookies, max_tries = max_tries)
+    tt_json <- tt_request_hidden(url, max_tries = max_tries)
   }
 
   if (!is.null(cache_dir)) writeLines(tt_json, json_fn, useBytes = TRUE)
@@ -137,12 +137,12 @@ save_video <- function(video_url,
       while (methods::is(f, "try-error") && max_tries > 0) {
         h <- curl::handle_setopt(
           curl::new_handle(),
-          cookie = prep_cookies(cookies),
+          cookie = cookies,
           referer = "https://www.tiktok.com/"
         )
         f <- try(curl::curl_download(
           video_url, video_fn, quiet = TRUE, handle = h
-        ), silent = F)
+        ), silent = TRUE)
 
         if (methods::is(f, "try-error")) {
           cli::cli_alert_warning(
@@ -153,6 +153,8 @@ save_video <- function(video_url,
 
         max_tries <- max_tries - 1
       }
+    } else if (file.exists(video_fn)) {
+      f <- video_fn
     }
 
   } else {
@@ -174,18 +176,15 @@ save_video <- function(video_url,
 #'   information, you can use this function.
 #'
 #' @param url a URL to a TikTok video or account
-#' @param max_tries how often should the request be tried before throwing an
-#'   error
-#' @param cookiefile path to your cookiefile. Default is to request a new one
-#'   from TikTok.com and place it in the location returned by
-#'   \code{tools::R_user_dir("traktok", "config")} and set the option cookiefile
-#'   to this location.
+#'
+#' @inheritParams tt_videos_hidden
 #' @export
 tt_request_hidden <- function(url,
                               max_tries = 5L,
                               cookiefile = NULL) {
 
-  cookies <- auth_hidden(cookiefile)
+  if (!is.null(cookiefile)) cookiemonster::add_cookies(cookiefile)
+  cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
 
   req <- httr2::request(url) |>
     httr2::req_headers(
@@ -197,7 +196,7 @@ tt_request_hidden <- function(url,
       "Cache-Control" = "max-age=0",
       "Connection" = "keep-alive"
     ) |>
-    httr2::req_options(cookie = prep_cookies(cookies)) |>
+    httr2::req_options(cookie = cookies) |>
     httr2::req_retry(max_tries = max_tries) |>
     httr2::req_timeout(seconds = 60L) |>
     httr2::req_error(is_error = function(x) FALSE)
@@ -233,14 +232,8 @@ tt_request_hidden <- function(url,
 #' @param offset how many videos to skip. For example, if you already have the
 #'   first X of a search.
 #' @param max_pages how many pages to get before stopping the search.
-#' @param sleep_pool a vector of numbers from which a waiting period is randomly
-#'   drawn.
-#' @param max_tries how often to retry if a request fails.
-#' @param cookiefile path to your cookiefile. Default is to request a new one
-#'   from TikTok.com and place it in the location returned by
-#'   \code{tools::R_user_dir("traktok", "config")} and set the option cookiefile
-#'   to this location.
-#' @param verbose logical. Print status messages.
+#'
+#' @inheritParams tt_videos_hidden
 #'
 #' @details The function will wait between scraping two videos to make it less
 #'   obvious that a scraper is accessing the site. The period is drawn randomly
@@ -261,7 +254,8 @@ tt_search_hidden <- function(query,
                              cookiefile = NULL,
                              verbose = TRUE) {
 
-  cookies <- auth_hidden(cookiefile)
+  if (!is.null(cookiefile)) cookiemonster::add_cookies(cookiefile)
+  cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
 
   results <- list()
   page <- 1
@@ -285,7 +279,7 @@ tt_search_hidden <- function(query,
         "offset" = offset,
         search_id = search_id
       ) |>
-      httr2::req_options(cookie = prep_cookies(cookies)) |>
+      httr2::req_options(cookie = cookies) |>
       httr2::req_headers(
         authority = "www.tiktok.com",
         accept = "*/*",
@@ -341,7 +335,7 @@ tt_search_hidden <- function(query,
 #                                 cookiefile = NULL,
 #                                 verbose = TRUE) {
 #
-#   cookies <- auth_hidden(cookiefile)
+#   if (!is.null(cookiefile)) cookiemonster::add_cookies(cookiefile)
 #
 #   purrr::map(username, function(u) {
 #     u <- sub("^@", "", urltools::domain(u))
@@ -410,7 +404,8 @@ tt_get_following_hidden <- function(secuid,
                                     cookiefile = NULL,
                                     verbose = TRUE) {
 
-  cookies <- auth_hidden(cookiefile)
+  if (!is.null(cookiefile)) cookiemonster::add_cookies(cookiefile)
+  cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
 
   new_data <- list(minCursor = 0,
                    total = Inf,
@@ -437,7 +432,7 @@ tt_get_following_hidden <- function(secuid,
         `Accept-Encoding` = "gzip, deflate, br",
         TE = "trailers",
       ) |>
-      httr2::req_options(cookie = prep_cookies(cookies)) |>
+      httr2::req_options(cookie = cookies) |>
       httr2::req_retry(max_tries = max_tries) |>
       httr2::req_perform()
 
@@ -468,7 +463,8 @@ tt_get_follower_hidden <- function(secuid,
                                    cookiefile = NULL,
                                    verbose = TRUE) {
 
-  cookies <- auth_hidden(cookiefile)
+  if (!is.null(cookiefile)) cookiemonster::add_cookies(cookiefile)
+  cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
 
   new_data <- list(minCursor = 0,
                    total = Inf,
@@ -496,7 +492,7 @@ tt_get_follower_hidden <- function(secuid,
         `Accept-Encoding` = "gzip, deflate, br",
         TE = "trailers",
       ) |>
-      httr2::req_options(cookie = prep_cookies(cookies)) |>
+      httr2::req_options(cookie = cookies) |>
       httr2::req_retry(max_tries = max_tries) |>
       httr2::req_perform()
 

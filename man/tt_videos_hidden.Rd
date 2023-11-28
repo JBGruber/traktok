@@ -39,10 +39,9 @@ drawn.}
 
 \item{max_tries}{how often to retry if a request fails.}
 
-\item{cookiefile}{path to your cookiefile. Default is to request a new one
-from TikTok.com and place it in the location returned by
-\code{tools::R_user_dir("traktok", "config")} and set the option cookiefile
-to this location.}
+\item{cookiefile}{path to your cookiefile. See
+\code{vignette("unofficial-api", package = "traktok")} for more information
+on authentication.}
 
 \item{verbose}{logical. Print status messages.}
 
@@ -53,8 +52,8 @@ to this location.}
 a data.frame
 }
 \description{
-\ifelse{html}{\figure{api-unofficial}{options:
-  alt='[Works on: Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
+\ifelse{html}{\figure{api-unofficial}{options: alt='[Works on:
+  Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
 }
 \details{
 The function will wait between scraping two videos to make it less
@@ -62,8 +61,8 @@ The function will wait between scraping two videos to make it less
   from the `sleep_pool` and multiplied by a random fraction.
 
 Note that the video file has to be requested in the same session as
-the metadata. So while the URL to the video file is included in the metadata,
-this link will not work in most cases.
+  the metadata. So while the URL to the video file is included in the
+  metadata, this link will not work in most cases.
 }
 \examples{
 \dontrun{

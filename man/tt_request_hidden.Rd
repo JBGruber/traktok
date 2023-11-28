@@ -9,13 +9,11 @@ tt_request_hidden(url, max_tries = 5L, cookiefile = NULL)
 \arguments{
 \item{url}{a URL to a TikTok video or account}
 
-\item{max_tries}{how often should the request be tried before throwing an
-error}
+\item{max_tries}{how often to retry if a request fails.}
 
-\item{cookiefile}{path to your cookiefile. Default is to request a new one
-from TikTok.com and place it in the location returned by
-\code{tools::R_user_dir("traktok", "config")} and set the option cookiefile
-to this location.}
+\item{cookiefile}{path to your cookiefile. See
+\code{vignette("unofficial-api", package = "traktok")} for more information
+on authentication.}
 }
 \description{
 \ifelse{html}{\figure{api-unofficial}{options:
