@@ -5,8 +5,10 @@
 #'
 #'   Searches videos using either the Research API (if an authentication token
 #'   is present, see \link{auth_research}) or otherwise the unofficial hidden
-#'   API. See \link{tt_search_api} or \link{tt_search_hidden} respectivly for
+#'   API. See \link{tt_search_api} or \link{tt_search_hidden} respectively for
 #'   information about these functions.
+#'
+#' @param ... arguments passed to \link{tt_search_api} or \link{tt_search_hidden}
 #'
 #' @return a data.frame
 #' @export
@@ -33,7 +35,7 @@ tt_videos <- function(...) {
 }
 
 
-#' @rdname tt_videos_hidden
+#' @rdname tt_user_videos_api
 #' @export
 tt_user_videos <- tt_user_videos_api
 

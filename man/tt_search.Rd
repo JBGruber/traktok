@@ -6,6 +6,9 @@
 \usage{
 tt_search(...)
 }
+\arguments{
+\item{...}{arguments passed to \link{tt_search_api} or \link{tt_search_hidden}}
+}
 \value{
 a data.frame
 }
@@ -15,6 +18,6 @@ a data.frame
 
   Searches videos using either the Research API (if an authentication token
   is present, see \link{auth_research}) or otherwise the unofficial hidden
-  API. See \link{tt_search_api} or \link{tt_search_hidden} respectivly for
+  API. See \link{tt_search_api} or \link{tt_search_hidden} respectively for
   information about these functions.
 }

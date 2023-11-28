@@ -62,6 +62,8 @@ a data.frame of followers
 \description{
 \ifelse{html}{\figure{api-unofficial}{options:
   alt='[Works on: Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
+
+  Get up to 5,000 accounts who follow a user or accounts a user follows.
 }
 \examples{
 \dontrun{

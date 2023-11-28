@@ -3,7 +3,6 @@
 \name{tt_videos_hidden}
 \alias{tt_videos_hidden}
 \alias{tt_videos}
-\alias{tt_user_videos}
 \title{Get video metadata and video files from URLs}
 \usage{
 tt_videos_hidden(
@@ -20,8 +19,6 @@ tt_videos_hidden(
 )
 
 tt_videos(...)
-
-tt_user_videos(username, fields = "all", verbose = TRUE, token = NULL)
 }
 \arguments{
 \item{video_urls}{vector of URLs to TikTok videos.}
