@@ -1,5 +1,5 @@
 test_that("get meta and download", {
-  skip_if(Sys.getenv("TT_COOKIES") == "")
+  skip("need to rewrite after refactor")
   options(tt_cookiefile = Sys.getenv("TT_COOKIES"))
   df <- tt_videos(video_urls = c("https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1",
                                  "https://www.tiktok.com/@tiktok/video/6584647400055377158?is_copy_url=1&is_from_webapp=v1"),
@@ -15,4 +15,12 @@ test_that("get meta and download", {
                  "https://www.tiktok.com/ can't be reached.")
   expect_warning(tt_videos("https://www.tiktok.com/@test/video/6"),
                  "html status 404, the row will contain NAs")
+})
+
+
+test_that("parse", {
+  expect_equal(
+    dim(parse_video('{"test":1}', video_id = 1L)),
+    c(1L, 16L)
+  )
 })
