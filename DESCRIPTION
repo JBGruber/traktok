@@ -37,7 +37,7 @@ Suggests:
     rmarkdown,
     spelling,
     testthat (>= 3.0.0)
-URL: https://github.com/JBGruber/traktok
+URL: https://github.com/JBGruber/traktok, https://jbgruber.github.io/traktok/
 BugReports: https://github.com/JBGruber/traktok/issues
 Encoding: UTF-8
 RoxygenNote: 7.2.3
