@@ -82,10 +82,10 @@ query() |>
             operation = "IN",
             field_values = c("JP", "US")) |>
   query_or(field_name = "hashtag_name",
-            operation = "EQ",
+            operation = "EQ", # rstats is the only hashtag
             field_values = "rstats") |>
   query_or(field_name = "keyword",
-           operation = "EQ",
+           operation = "IN", # rstats is one of the keywords
            field_values = "rstats") |>
   query_not(operation = "EQ",
             field_name = "video_length",

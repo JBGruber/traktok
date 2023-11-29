@@ -15,21 +15,22 @@ License: GPL-3
 Depends:
     R (>= 4.1.0)
 Imports:
-    curl,
     askpass,
-    lobstr,
-    rlang,
     cli,
+    cookiemonster,
+    curl,
     dplyr,
     glue,
     httr2,
     jsonlite,
+    lobstr,
     methods,
+    openssl,
     purrr,
+    rlang,
     rvest,
     stats,
-    tibble,
-    openssl
+    tibble
 Suggests:
     covr,
     knitr,

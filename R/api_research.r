@@ -36,10 +36,10 @@
 #'             operation = "IN",
 #'             field_values = c("JP", "US")) |>
 #'   query_or(field_name = "hashtag_name",
-#'             operation = "EQ",
+#'             operation = "EQ", # rstats is the only hashtag
 #'             field_values = "rstats") |>
 #'   query_or(field_name = "keyword",
-#'            operation = "EQ",
+#'            operation = "IN", # rstats is one of the keywords
 #'            field_values = "rstats") |>
 #'   query_not(operation = "EQ",
 #'             field_name = "video_length",
@@ -62,12 +62,12 @@ tt_search_api <- function(query,
     query <- query(or = list(
       list(
         field_name = "hashtag_name",
-        operation = "EQ",
+        operation = "IN",
         field_values = as.list(sub("#", "", strsplit(query, " ", fixed = TRUE)))
       ),
       list(
         field_name = "keyword",
-        operation = "EQ",
+        operation = "IN",
         field_values = as.list(strsplit(query, " ", fixed = TRUE))
       )
     ))
@@ -146,7 +146,7 @@ tt_query_videos <- tt_search_api
 #' @description \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:
 #'   Research API]'}}{\strong{[Works on: Research API]}}
 #'
-#' @param username name of the user to be queried
+#' @param username name(s) of the user(s) to be queried
 #' @param fields The fields to be returned (defaults to all)
 #' @inheritParams tt_search_api
 #'
@@ -166,37 +166,41 @@ tt_user_info_api <- function(username,
                              verbose = TRUE,
                              token = NULL) {
 
-  # if username is given as URL
-  if (grepl("/", username)) {
-    username <- extract_regex(
-      username,
-      "(?<=.com/@)(.+?)(?=\\?|$|/)"
-    )
-  }
-
-  if (is.null(token)) token <- get_token()
-
-  if (fields == "all")
-    fields <- "display_name,bio_description,avatar_url,is_verified,follower_count,following_count,likes_count,video_count"
-
-  # /tests/testthat/example_resp_q_user.json
-  httr2::request("https://open.tiktokapis.com/v2/research/user/info/") |>
-    httr2::req_method("POST") |>
-    httr2::req_url_query(fields = fields) |>
-    httr2::req_headers("Content-Type" = "application/json") |>
-    httr2::req_auth_bearer_token(token$access_token) |>
-    httr2::req_body_json(data = list(username = username)) |>
-    httr2::req_error(body = function(resp) {
-      c(
-        paste("status:", httr2::resp_body_json(resp)$error$code),
-        paste("message:", httr2::resp_body_json(resp)$error$message),
-        paste("log_id:", httr2::resp_body_json(resp)$error$log_id)
+  purrr::map(username, function(u) {
+    # if username is given as URL
+    if (grepl("/", u)) {
+      u <- extract_regex(
+        u,
+        "(?<=.com/@)(.+?)(?=\\?|$|/)"
       )
-    }) |>
-    httr2::req_perform() |>
-    httr2::resp_body_json(bigint_as_char = TRUE) |>
-    purrr::pluck("data") |>
-    tibble::as_tibble()
+    }
+
+    if (is.null(token)) token <- get_token()
+
+    if (fields == "all")
+      fields <- "display_name,bio_description,avatar_url,is_verified,follower_count,following_count,likes_count,video_count"
+
+    # /tests/testthat/example_resp_q_user.json
+    httr2::request("https://open.tiktokapis.com/v2/research/user/info/") |>
+      httr2::req_method("POST") |>
+      httr2::req_url_query(fields = fields) |>
+      httr2::req_headers("Content-Type" = "application/json") |>
+      httr2::req_auth_bearer_token(token$access_token) |>
+      httr2::req_body_json(data = list(username = u)) |>
+      httr2::req_error(body = function(resp) {
+        c(
+          paste("status:", httr2::resp_body_json(resp)$error$code),
+          paste("message:", httr2::resp_body_json(resp)$error$message),
+          paste("log_id:", httr2::resp_body_json(resp)$error$log_id)
+        )
+      }) |>
+      httr2::req_perform() |>
+      httr2::resp_body_json(bigint_as_char = TRUE) |>
+      purrr::pluck("data") |>
+      tibble::as_tibble()
+  }) |>
+    dplyr::bind_rows()
+
 }
 
 

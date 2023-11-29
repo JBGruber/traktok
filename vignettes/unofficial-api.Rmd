@@ -53,7 +53,7 @@ cookiemonster::add_cookies("tiktok.com_cookies.txt")
 ```
 
 And that's it!
-`traktok` will access these cookies whenever neccesary.
+`traktok` will access these cookies whenever necessary.
 
 
 # Usage

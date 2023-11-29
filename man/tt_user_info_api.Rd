@@ -3,14 +3,14 @@
 \name{tt_user_info_api}
 \alias{tt_user_info_api}
 \alias{tt_user_videos}
-\title{Lookup TikTok videos by a user using the research API}
+\title{Lookup TikTok information about a user using the research API}
 \usage{
 tt_user_info_api(username, fields = "all", verbose = TRUE, token = NULL)
 
 tt_user_videos(username, fields = "all", verbose = TRUE, token = NULL)
 }
 \arguments{
-\item{username}{name of the user to be queried}
+\item{username}{name(s) of the user(s) to be queried}
 
 \item{fields}{The fields to be returned (defaults to all)}
 
@@ -24,7 +24,8 @@ automatically after running auth_research once)}
 A data.frame of parsed TikTok videos the user has posted
 }
 \description{
-\ifelse{html}{\figure{api-research.svg}{options: alt='[Works on: Research API]'}}{\strong{[Works on: Research API]}}
+\ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:
+  Research API]'}}{\strong{[Works on: Research API]}}
 }
 \examples{
 \dontrun{
