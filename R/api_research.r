@@ -63,7 +63,7 @@ tt_search_api <- function(query,
       list(
         field_name = "hashtag_name",
         operation = "EQ",
-        field_values = as.list(strsplit(query, " ", fixed = TRUE))
+        field_values = as.list(sub("#", "", strsplit(query, " ", fixed = TRUE)))
       ),
       list(
         field_name = "keyword",
