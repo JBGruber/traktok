@@ -6,3 +6,6 @@ tiktok.com_cookies.txt
 ^\.github$
 ^doc$
 ^Meta$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
