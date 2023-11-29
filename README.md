@@ -18,7 +18,7 @@ coverage](https://codecov.io/gh/JBGruber/traktok/branch/main/graph/badge.svg)](h
 |:----------------------------|:-----------------|:-------------------|:------------------------|
 | search videos               | tt_search        | tt_search_api      | tt_search_hidden        |
 | get video detail (+file)    | tt_videos        | \-                 | tt_videos_hidden        |
-| get user videos             | tt_user_videos   | tt_user_videos_api | \-                      |
+| get user videos             | tt_user_info   | tt_user_info_api | \-                      |
 | get comments under a video  | tt_comments      | tt_comments_api    | \-                      |
 | get who follows a user      | tt_get_follower  | \-                 | tt_get_follower_hidden  |
 | get who a user is following | tt_get_following | \-                 | tt_get_following_hidden |

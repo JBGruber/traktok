@@ -50,7 +50,6 @@ To read the cookies into a specific encrypted file, simply use:
 
 ```r
 cookiemonster::add_cookies("tiktok.com_cookies.txt")
-✔ Cookies for tiktok.com, www.tiktok.com put in the jar!
 ```
 
 And that's it!
@@ -68,38 +67,33 @@ To get the first two pages of search results (one page has 12 videos), you can u
 rstats_df <- tt_search_hidden("#rstats", max_pages = 2)
 #> 
 ℹ Getting page 1
-
-⏲ waiting 1.7 seconds
-
-                      
+⏲ waiting 0.5 seconds
 ℹ Getting page 1
-
-✔ Got page 1. Found 12 videos. [3.1s]
+✔ Got page 1. Found 12 videos. [1.9s]
 #> 
 ℹ Getting page 2
-
-✔ Got page 2. Found 12 videos. [706ms]
+✔ Got page 2. Found 12 videos. [690ms]
 rstats_df
 #> # A tibble: 24 × 20
-#>    video_id           video_timestamp     video_url video_length video_title
-#>    <chr>              <dttm>              <glue>           <int> <chr>      
-#>  1 71151144193145602… 2022-06-30 19:17:53 https://…          135 "R for Beg…
-#>  2 72522261538285847… 2023-07-05 07:01:45 https://…           36 "Wow!!! TH…
-#>  3 72134135989980562… 2023-03-22 16:49:12 https://…            6 "R and me …
-#>  4 72420686804844085… 2023-06-07 22:05:16 https://…           34 "R GRAPHIC…
-#>  5 72576898902452011… 2023-07-20 00:23:40 https://…           56 "Pie chart…
-#>  6 72999870594170422… 2023-11-10 23:58:21 https://…           51 "Quick R Q…
-#>  7 72783048979114918… 2023-09-13 13:40:21 https://…           36 "Quick R Q…
-#>  8 73029706679079928… 2023-11-19 00:56:09 https://…          163 "What is c…
-#>  9 71670108637846930… 2022-11-17 15:42:56 https://…           58 "Here’s an…
-#> 10 72933174570354312… 2023-10-24 00:36:48 https://…            9 "#CapCut #…
+#>    video_id  video_timestamp     video_url video_length video_title
+#>    <chr>     <dttm>              <glue>           <int> <chr>      
+#>  1 71151144… 2022-06-30 19:17:53 https://…          135 "R for Beg…
+#>  2 72522261… 2023-07-05 07:01:45 https://…           36 "Wow!!! TH…
+#>  3 72420686… 2023-06-07 22:05:16 https://…           34 "R GRAPHIC…
+#>  4 72134135… 2023-03-22 16:49:12 https://…            6 "R and me …
+#>  5 72576898… 2023-07-20 00:23:40 https://…           56 "Pie chart…
+#>  6 72999870… 2023-11-10 23:58:21 https://…           51 "Quick R Q…
+#>  7 72783048… 2023-09-13 13:40:21 https://…           36 "Quick R Q…
+#>  8 73029706… 2023-11-19 00:56:09 https://…          163 "What is c…
+#>  9 71670108… 2022-11-17 15:42:56 https://…           58 "Here’s an…
+#> 10 72933174… 2023-10-24 00:36:48 https://…            9 "#CapCut #…
 #> # ℹ 14 more rows
-#> # ℹ 15 more variables: video_diggcount <int>, video_sharecount <int>,
-#> #   video_commentcount <int>, video_playcount <int>, video_is_ad <lgl>,
-#> #   author_name <chr>, author_nickname <chr>, author_followercount <int>,
+#> # ℹ 15 more variables: video_diggcount <int>,
+#> #   video_sharecount <int>, video_commentcount <int>,
+#> #   video_playcount <int>, video_is_ad <lgl>, author_name <chr>,
+#> #   author_nickname <chr>, author_followercount <int>,
 #> #   author_followingcount <int>, author_heartcount <int>,
-#> #   author_videocount <int>, author_diggcount <int>, music <list>,
-#> #   challenges <list>, download_url <chr>
+#> #   author_videocount <int>, author_diggcount <int>, …
 ```
 
 This already gives you pretty much all information you could want about the videos that were found.
@@ -111,9 +105,27 @@ However, you can obtain some more information, and importantly the video file, u
 
 ```r
 rstats_df2 <- tt_videos(rstats_df$video_url[1:2], save_video = TRUE)
-#> Error in dir.create(cache_dir, showWarnings = FALSE): invalid 'path' argument
+#> 
+ℹ Getting video 7115114419314560298
+⏲ waiting 0.2 seconds              
+ℹ Getting video 7115114419314560298
+✔ Got video 7115114419314560298 (1/2). File size: 2.5 Mb. [2.5s]
+#> 
+ℹ Getting video 7252226153828584731
+✔ Got video 7252226153828584731 (2/2). File size: 1.7 Mb. [999ms]
 rstats_df2
-#> Error in eval(expr, envir, enclos): object 'rstats_df2' not found
+#> # A tibble: 2 × 19
+#>   video_id   video_url video_timestamp     video_length video_title
+#>   <glue>     <chr>     <dttm>                     <int> <chr>      
+#> 1 711511441… https://… 2022-06-30 19:17:53          135 R for Begi…
+#> 2 725222615… https://… 2023-07-05 07:01:45           36 Wow!!! THI…
+#> # ℹ 14 more variables: video_locationcreated <chr>,
+#> #   video_diggcount <int>, video_sharecount <int>,
+#> #   video_commentcount <int>, video_playcount <int>,
+#> #   author_username <chr>, author_nickname <chr>,
+#> #   author_bio <chr>, download_url <chr>, html_status <int>,
+#> #   music <list>, challenges <list>, is_classified <lgl>,
+#> #   video_fn <chr>
 ```
 
 Per default, the function waits between one and ten seconds (chosen at random) between making two calls, to not make it too obvious that data is scraped from TikTok.
@@ -122,9 +134,27 @@ You can speed up the process (at your own risk), by changing the `sleep_pool` ar
 
 ```r
 rstats_df3 <- tt_videos(rstats_df$video_url[3:4], save_video = TRUE, sleep_pool = 0.1)
-#> Error in dir.create(cache_dir, showWarnings = FALSE): invalid 'path' argument
+#> 
+ℹ Getting video 7242068680484408581
+⏲ waiting 0.1 seconds              
+ℹ Getting video 7242068680484408581
+✔ Got video 7242068680484408581 (1/2). File size: 1.8 Mb. [2.6s]
+#> 
+ℹ Getting video 7213413598998056234
+✔ Got video 7213413598998056234 (2/2). File size: 598.1 Kb. [1.7s]
 rstats_df3
-#> Error in eval(expr, envir, enclos): object 'rstats_df3' not found
+#> # A tibble: 2 × 19
+#>   video_id   video_url video_timestamp     video_length video_title
+#>   <glue>     <chr>     <dttm>                     <int> <chr>      
+#> 1 724206868… https://… 2023-06-07 22:05:16           34 "R GRAPHIC…
+#> 2 721341359… https://… 2023-03-22 16:49:12            6 "R and me …
+#> # ℹ 14 more variables: video_locationcreated <chr>,
+#> #   video_diggcount <int>, video_sharecount <int>,
+#> #   video_commentcount <int>, video_playcount <int>,
+#> #   author_username <chr>, author_nickname <chr>,
+#> #   author_bio <chr>, download_url <chr>, html_status <int>,
+#> #   music <list>, challenges <list>, is_classified <lgl>,
+#> #   video_fn <chr>
 ```
 
 When you are scraping a lot of URLs, the function might fail eventually, due to a poor connection or because TikTok is blocking your requests.
@@ -135,17 +165,12 @@ It therefore usually makes sense to save your progress in a cache directory:
 rstats_df3 <- tt_videos(rstats_df$video_url[5:6], cache_dir = "rstats")
 #> 
 ℹ Getting video 7257689890245201153
-
-⏲ waiting 6.7 seconds              
-
-                      
+⏲ waiting 1.7 seconds
 ℹ Getting video 7257689890245201153
-
-✔ Got video 7257689890245201153 (1/2). File size: 1.7 Mb. [10.5s]
+✔ Got video 7257689890245201153 (1/2). File size: 1.7 Mb. [2.6s]
 #> 
 ℹ Getting video 7299987059417042209
-
-✔ Got video 7299987059417042209 (2/2). File size: 1.2 Mb. [2.4s]
+✔ Got video 7299987059417042209 (2/2). File size: 1.2 Mb. [1.8s]
 list.files("rstats")
 #> [1] "7257689890245201153.json" "7299987059417042209.json"
 ```
@@ -182,133 +207,58 @@ Once you have this `authorSecId` you can look up a maximum of 5,000 followers pe
 
 
 ```r
-tt_get_follower(secuid = "MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi")
+tt_get_follower(secuid = "MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi",
+                verbose = FALSE)
 #> 
-ℹ Getting followers...
-
-⏲ waiting 1 seconds   
-
-                    
-ℹ Getting followers...
-
-✔ Got 198 followers. [2s]
-#> 
-ℹ Getting more followers...
-
-⏲ waiting 0.4 seconds      
-
-                      
-ℹ Getting more followers...
-
-✔ Got 396 followers. [1.4s]
-#> 
-ℹ Getting more followers...
-
-⏲ waiting 7.3 seconds      
-
-                      
-ℹ Getting more followers...
-
-✔ Got 593 followers. [8.4s]
-#> 
-ℹ Getting more followers...
-
-⏲ waiting 3.5 seconds      
-
-                      
-ℹ Getting more followers...
-
-✔ Got 789 followers. [4.5s]
-#> 
-ℹ Getting more followers...
-
-⏲ waiting 7 seconds        
-
-                    
-ℹ Getting more followers...
-
-✔ Got 986 followers. [8s]  
-#> 
-ℹ Getting more followers...
-
-✔ Got 1115 followers. [999ms]
-#> 
-ℹ Parsing results
-
-✔ Parsing results [510ms]
-#> # A tibble: 1,115 × 27
-#>    avatarLarger      avatarMedium avatarThumb commentSetting downloadSetting
-#>    <chr>             <chr>        <chr>                <int>           <int>
-#>  1 https://p16-sign… https://p16… https://p1…              0               0
-#>  2 https://p16-sign… https://p16… https://p1…              0               0
-#>  3 https://p16-sign… https://p16… https://p1…              0               0
-#>  4 https://p16-sign… https://p16… https://p1…              0               3
-#>  5 https://p16-sign… https://p16… https://p1…              0               0
-#>  6 https://p16-sign… https://p16… https://p1…              0               0
-#>  7 https://p16-sign… https://p16… https://p1…              0               3
-#>  8 https://p16-sign… https://p16… https://p1…              0               3
-#>  9 https://p16-sign… https://p16… https://p1…              0               3
-#> 10 https://p16-sign… https://p16… https://p1…              0               3
-#> # ℹ 1,105 more rows
-#> # ℹ 22 more variables: duetSetting <int>, ftc <lgl>, id <chr>,
-#> #   isADVirtual <lgl>, nickname <chr>, openFavorite <lgl>,
-#> #   privateAccount <lgl>, relation <int>, secUid <chr>, secret <lgl>,
-#> #   signature <chr>, stitchSetting <int>, ttSeller <lgl>, uniqueId <chr>,
-#> #   verified <lgl>, diggCount <int>, followerCount <int>,
-#> #   followingCount <int>, friendCount <int>, heart <int>, …
+#> # A tibble: 1,116 × 27
+#>    avatarLarger             avatarMedium avatarThumb commentSetting
+#>    <chr>                    <chr>        <chr>                <int>
+#>  1 https://p16-sign-sg.tik… https://p16… https://p1…              0
+#>  2 https://p16-sign-va.tik… https://p16… https://p1…              0
+#>  3 https://p16-sign-va.tik… https://p16… https://p1…              0
+#>  4 https://p16-sign-va.tik… https://p16… https://p1…              0
+#>  5 https://p16-sign-va.tik… https://p16… https://p1…              0
+#>  6 https://p16-sign-va.tik… https://p16… https://p1…              0
+#>  7 https://p16-sign-va.tik… https://p16… https://p1…              0
+#>  8 https://p16-sign-va.tik… https://p16… https://p1…              0
+#>  9 https://p16-sign-va.tik… https://p16… https://p1…              0
+#> 10 https://p16-sign-va.tik… https://p16… https://p1…              0
+#> # ℹ 1,106 more rows
+#> # ℹ 23 more variables: downloadSetting <int>, duetSetting <int>,
+#> #   ftc <lgl>, id <chr>, isADVirtual <lgl>, nickname <chr>,
+#> #   openFavorite <lgl>, privateAccount <lgl>, relation <int>,
+#> #   secUid <chr>, secret <lgl>, signature <chr>,
+#> #   stitchSetting <int>, ttSeller <lgl>, uniqueId <chr>,
+#> #   verified <lgl>, diggCount <int>, followerCount <int>, …
 ```
 
 Likewise, you can also check who this account follows:
 
 
 ```r
-tt_get_following(secuid = "MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi")
+tt_get_following(secuid = "MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi",
+                 verbose = FALSE)
 #> 
-ℹ Getting followers...
-
-⏲ waiting 0 seconds   
-
-                    
-ℹ Getting followers...
-
-✔ Got 194 followers. [557ms]
-#> 
-ℹ Getting more followers...
-
-⏲ waiting 2.9 seconds      
-
-                      
-ℹ Getting more followers...
-
-✔ Got 387 followers. [3.5s]
-#> 
-ℹ Getting more followers...
-
-✔ Got 489 followers. [553ms]
-#> 
-ℹ Parsing results
-
-✔ Parsing results [178ms]
-#> # A tibble: 489 × 27
-#>    avatarLarger      avatarMedium avatarThumb commentSetting downloadSetting
-#>    <chr>             <chr>        <chr>                <int>           <int>
-#>  1 https://p16-sign… https://p16… https://p1…              0               0
-#>  2 https://p16-sign… https://p16… https://p1…              0               0
-#>  3 https://p16-sign… https://p16… https://p1…              0               0
-#>  4 https://p16-sign… https://p16… https://p1…              0               0
-#>  5 https://p16-sign… https://p16… https://p1…              0               0
-#>  6 https://p16-sign… https://p16… https://p1…              0               0
-#>  7 https://p16-sign… https://p16… https://p1…              0               0
-#>  8 https://p16-sign… https://p16… https://p1…              0               0
-#>  9 https://p16-sign… https://p16… https://p1…              0               0
-#> 10 https://p16-sign… https://p16… https://p1…              0               3
+#> # A tibble: 489 × 28
+#>    avatarLarger             avatarMedium avatarThumb commentSetting
+#>    <chr>                    <chr>        <chr>                <int>
+#>  1 https://p16-sign-va.tik… https://p16… https://p1…              0
+#>  2 https://p16-sign-va.tik… https://p16… https://p1…              0
+#>  3 https://p16-sign-va.tik… https://p16… https://p1…              0
+#>  4 https://p16-sign-va.tik… https://p16… https://p1…              0
+#>  5 https://p16-sign-va.tik… https://p16… https://p1…              0
+#>  6 https://p16-sign-va.tik… https://p16… https://p1…              0
+#>  7 https://p16-sign-va.tik… https://p16… https://p1…              0
+#>  8 https://p16-sign-va.tik… https://p16… https://p1…              0
+#>  9 https://p16-sign-va.tik… https://p16… https://p1…              0
+#> 10 https://p16-sign-va.tik… https://p16… https://p1…              0
 #> # ℹ 479 more rows
-#> # ℹ 22 more variables: duetSetting <int>, ftc <lgl>, id <chr>,
-#> #   isADVirtual <lgl>, nickname <chr>, openFavorite <lgl>,
-#> #   privateAccount <lgl>, relation <int>, secUid <chr>, secret <lgl>,
-#> #   signature <chr>, stitchSetting <int>, ttSeller <lgl>, uniqueId <chr>,
-#> #   verified <lgl>, diggCount <int>, followerCount <int>,
-#> #   followingCount <int>, friendCount <int>, heart <dbl>, …
+#> # ℹ 24 more variables: downloadSetting <int>, duetSetting <int>,
+#> #   ftc <lgl>, id <chr>, isADVirtual <lgl>, nickname <chr>,
+#> #   openFavorite <lgl>, privateAccount <lgl>, relation <int>,
+#> #   secUid <chr>, secret <lgl>, signature <chr>,
+#> #   stitchSetting <int>, ttSeller <lgl>, uniqueId <chr>,
+#> #   verified <lgl>, diggCount <int>, followerCount <int>, …
 ```
 
 

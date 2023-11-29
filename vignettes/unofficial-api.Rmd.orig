@@ -13,7 +13,6 @@ knitr::opts_chunk$set(
   comment = "#>",
   eval = TRUE
 )
-cookies_png <- "cookies.png"
 ```
 
 The unofficial or hidden API is essentially what the TikTok website uses to display you content.
@@ -34,7 +33,7 @@ To use these functions, you have to log into <tiktok.com> first and then give `R
 The easiest way to get the cookies needed for authentication is to export the necessary cookies from your browser using a browser extension (after logging in at TikTok.com at least once).
 I can recommend ["Get cookies.txt"](https://chrome.google.com/webstore/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc) for Chromium based browsers or ["cookies.txt"](https://addons.mozilla.org/en-US/firefox/addon/cookies-txt/) for Firefox (note that almost all browsers used today are based on one of these).
 
-`r knitr::include_graphics(cookies_png)`
+`r knitr::include_graphics("cookies.png")`
 
 Save the cookies.txt file, which will look something like this:
 
@@ -54,7 +53,7 @@ Save the cookies.txt file, which will look something like this:
 **It does not matter if you download all cookies or just the ones specific to TikTok**, as we use the `cookiemonster` package to deal with that.
 To read the cookies into a specific encrypted file, simply use:
 
-```{r}
+```{r eval=FALSE}
 cookiemonster::add_cookies("tiktok.com_cookies.txt")
 ```
 
@@ -130,13 +129,15 @@ You can then search for and copy the `authorSecId` value:
 Once you have this `authorSecId` you can look up a maximum of 5,000 followers per account:
 
 ```{r}
-tt_get_follower(secuid = "MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi")
+tt_get_follower(secuid = "MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi",
+                verbose = FALSE)
 ```
 
 Likewise, you can also check who this account follows:
 
 ```{r}
-tt_get_following(secuid = "MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi")
+tt_get_following(secuid = "MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi",
+                 verbose = FALSE)
 ```
 
 

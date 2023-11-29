@@ -47,16 +47,16 @@
 #'   tt_search_api()
 #' }
 tt_search_api <- function(query,
-                            start_date = Sys.Date() - 1,
-                            end_date = Sys.Date(),
-                            fields = "all",
-                            start_cursor = 0L,
-                            search_id = NULL,
-                            is_random = FALSE,
-                            max_pages = 1,
-                            cache = TRUE,
-                            verbose = TRUE,
-                            token = NULL) {
+                          start_date = Sys.Date() - 1,
+                          end_date = Sys.Date(),
+                          fields = "all",
+                          start_cursor = 0L,
+                          search_id = NULL,
+                          is_random = FALSE,
+                          max_pages = 1,
+                          cache = TRUE,
+                          verbose = TRUE,
+                          token = NULL) {
 
   if (is.character(query)) {
     query <- query(or = list(
@@ -141,10 +141,10 @@ tt_search_api <- function(query,
 tt_query_videos <- tt_search_api
 
 
-#' Lookup TikTok videos by a user using the research API
+#' Lookup TikTok information about a user using the research API
 #'
-#' @description
-#' \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on: Research API]'}}{\strong{[Works on: Research API]}}
+#' @description \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:
+#'   Research API]'}}{\strong{[Works on: Research API]}}
 #'
 #' @param username name of the user to be queried
 #' @param fields The fields to be returned (defaults to all)
@@ -155,16 +155,16 @@ tt_query_videos <- tt_search_api
 #'
 #' @examples
 #' \dontrun{
-#' tt_user_videos_api("jbgruber")
+#' tt_user_info_api("jbgruber")
 #' # OR
-#' tt_user_videos_api("https://www.tiktok.com/@tiktok")
+#' tt_user_info_api("https://www.tiktok.com/@tiktok")
 #' # OR
-#' tt_user_videos("https://www.tiktok.com/@tiktok")
+#' tt_user_info("https://www.tiktok.com/@tiktok")
 #' }
-tt_user_videos_api <- function(username,
-                               fields = "all",
-                               verbose = TRUE,
-                               token = NULL) {
+tt_user_info_api <- function(username,
+                             fields = "all",
+                             verbose = TRUE,
+                             token = NULL) {
 
   # if username is given as URL
   if (grepl("/", username)) {

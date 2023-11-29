@@ -35,9 +35,9 @@ tt_videos <- function(...) {
 }
 
 
-#' @rdname tt_user_videos_api
+#' @rdname tt_user_info_api
 #' @export
-tt_user_videos <- tt_user_videos_api
+tt_user_videos <- tt_user_info_api
 
 
 #' @rdname tt_comments_api

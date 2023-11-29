@@ -2,40 +2,26 @@
 % Please edit documentation in R/auth_hidden.r
 \name{auth_hidden}
 \alias{auth_hidden}
-\title{Get cookies for the hidden API}
+\title{Authenticate for the hidden/unofficial API}
 \usage{
-auth_hidden(x = NULL, save = TRUE, name = "tiktok.com_cookies")
+auth_hidden(cookiefile)
 }
 \arguments{
-\item{x}{either file location, a cookie string, or can be left blank (see
-Details).}
-
-\item{save}{should a cookie file be saved in the default location. If x is
-already the default cookie file, is ignored.}
-
-\item{name}{name of the cookie file used for loading or saving a specific
-cookie file.}
+\item{cookiefile}{optional path to your cookiefile. See
+\code{vignette("unofficial-api", package = "traktok")} for more information
+on authentication.}
 }
 \value{
-a named list of cookies
+nothing. Called to set up authentication
 }
 \description{
-Wraps different ways to get valid cookies for traktok. See
-  details.
-}
-\details{
-to make requests to TikTok, traktok needs user cookies. By running
-  \code{auth_hidden()} without arguments, you can obtain anonymous
-  cookies. Most functions will not work with these, however. To get cookies
-  for a logged in user, you can use a browser extension to export the
-  necessary cookies from your browser (after visiting TikTok.com at least
-  once). I can recommend "Get cookies.txt" for Chromium based browsers or
-  "cookies.txt" for Firefox. See \code{vignette("authentication", package =
-  "traktok")} for details. By default, cookies are stored in the location
-  returned by \code{tools::R_user_dir("traktok", "config")}.
+Guides you through authentication for the hidden/unofficial API#'
 }
 \examples{
 \dontrun{
+# to run through the steps of authentication
+auth_hidden()
+# or point to a cookie file directly
 auth_hidden("www.tiktok.com_cookies.txt")
 }
 }
