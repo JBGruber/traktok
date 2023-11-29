@@ -1,0 +1,159 @@
+---
+title: "Unofficial API"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{unofficial-api}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = TRUE
+)
+```
+
+TikTok's [Research API](https://developers.tiktok.com/products/research-api/), which was made available to researchers in the US and Europe in 2023, offers three endpoints, which are wrapped in three `traktok` functions:
+
+1. You can [search videos](https://developers.tiktok.com/doc/research-api-specs-query-videos) with `tt_search_api` or `tt_search`
+2. You can [get basic user information](https://developers.tiktok.com/doc/research-api-specs-query-user-info) with `tt_user_info_api` or `tt_user_info`
+3. You can [obtain all comments of a video](https://developers.tiktok.com/doc/research-api-specs-query-video-comments) with `tt_comments_api` or `tt_comments`
+
+
+# Authentication
+
+To get access to the Research API, you need to:
+
+1. [be eligible](https://developers.tiktok.com/products/research-api);
+2. [create a developer account](https://developers.tiktok.com/signup);
+3. and then apply for access to the research API: <https://developers.tiktok.com/application/research-api>
+
+Once are approved and have your client key and client secret, you can authenticate with:
+
+```{r eval=FALSE}
+library(traktok)
+auth_research()
+```
+
+```{r echo=FALSE}
+library(traktok)
+```
+
+It is recommended that you run this function only once without arguments, so that your key and secret can be entered through the pop up mask and do not remain unencrypted in your R history or a script.
+The function then runs through authentication for you and saves the resulting token encrypted on your hard drive.
+Just run it again in case your credentials change.
+
+
+# Usage
+## Search Videos
+
+TikTok uses a fine-grained, yet complicated [query syntax](https://developers.tiktok.com/doc/research-api-specs-query-videos#query).
+For convenience, I wrapped this in internally, so you can search with a key phrase directly:
+
+```{r}
+tt_query_videos("#rstats", max_pages = 2L)
+```
+
+This will match your keyword or phrase against keywords and hashtags and return up to 200 results (each pages has 100 results and 2 pages are requested) from today and yesterday.
+Every whitespace is treated as an AND operator.
+To extend the data range, you can set a start and end (which can be a maximum of 30 days apart, but there is no limit how far you can go back):
+
+```{r}
+tt_query_videos("#rstats",
+                max_pages = 2L,
+                start_date = as.Date("2023-11-01"),
+                end_date = as.Date("2023-11-29"))
+```
+
+As said, the query syntax that TikTok uses is a little complicated, as you can use AND, OR and NOT boolean operators on a number of fields (`"create_date"`, `"username"`, `"region_code"`, `"video_id"`, `"hashtag_name"`, `"keyword"`, `"music_id"`, `"effect_id"`, and `"video_length"`):
+
+| Operator | Results are returned if...                 |
+| -------- | ------------------------------------------ |
+| AND      | ...all specified conditions are met        |
+| OR       | ...any of the specified conditions are met |
+| NOT      | ...the not conditions are not met          |
+
+To make this easier to use, `traktok` uses a tidyverse style approach to building queries.
+For example, to get to the same query that matches #rstats against keywords and hashtags, you need to build the query like this:
+
+```{r}
+query() |>                                # start by using query()
+  query_or(field_name = "hashtag_name",   # add an OR condition on the hashtag field
+           operation = "IN",              # the value should IN the list of hashtags
+           field_values = "rstats") |>    # the hashtag field does not accept the #-symbol
+  query_or(field_name = "keyword",        # add another OR condition
+           operation = "IN",
+           field_values = "#rstats")
+```
+
+If #rstats is found in either the hashtag or keywords of a video, that video is then returned.
+Besides checking for `EQ`ual, you can also use one of the other operations:
+
+| Operation | Results are returned if field_values are...     |
+| --------- | ----------------------------------------------- |
+| EQ        | equal to the value in the field                 |
+| IN        | equal to a value in the field                   |
+| GT        | greater than the value in the field             |
+| GTE       | greater than or equal to the value in the field |
+| LT        | lower than the value in the field               |
+| LTE       | lower than or equal to the value in the field   |
+
+
+This makes building queries relatively complex, but allows for fine-grained searches in the TikTok data:
+
+```{r}
+search_df <- query() |>
+  query_and(field_name = "region_code",
+            operation = "IN",
+            field_values = c("JP", "US")) |>
+  query_or(field_name = "hashtag_name",
+            operation = "EQ", # rstats is the only hashtag
+            field_values = "rstats") |>
+  query_or(field_name = "keyword",
+           operation = "IN", # rstats is one of the keywords
+           field_values = "rstats") |>
+  query_not(operation = "EQ",
+            field_name = "video_length",
+            field_values = "SHORT") |>
+  tt_search_api(start_date = as.Date("2023-11-01"),
+                end_date = as.Date("2023-11-29"))
+search_df
+```
+
+This will return videos posted in the US or Japan, that have rstats as the only hashtag or as one of the keywords and have a length of `"MID"`, `"LONG"`, or `"EXTRA_LONG"`.^[
+See <https://developers.tiktok.com/doc/research-api-specs-query-videos#condition_fields> for possible values of each field.
+]
+
+## Get Basic User Information
+
+There is not really much to getting basic user info, but this is how you can do it:
+
+```{r}
+tt_user_info_api(username = c("tiktok", "https://www.tiktok.com/@statisticsglobe"))
+```
+
+## Obtain all Comments of a Video
+
+There is again, not much to talk about when it comes to the comments API.
+You need to supply a video ID, which you either have already:
+
+```{r}
+tt_comments_api(video_id = "7302470379501604128")
+```
+
+Or you got it from a search:
+
+```{r}
+tt_comments_api(video_id = search_df$video_id[1])
+```
+
+Or you let the function extract if from a URL to a video:
+
+```{r}
+tt_comments_api(video_id = "https://www.tiktok.com/@nicksinghtech/video/7195762648716152107?q=%23rstats")
+```
+
+And that is essentially it.
+Note, that if you find the functionality of the Research API lacking, there is nothing that keeps you from using the unofficial API functions.
