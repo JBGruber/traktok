@@ -53,7 +53,8 @@ tt_videos_hidden <- function(video_urls,
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
   f_name <- ""
 
-  if (!is.null(cache_dir)) dir.create(cache_dir, showWarnings = FALSE)
+  check_dir(dir, "dir")
+  check_dir(cache_dir, "cache_dir")
 
   dplyr::bind_rows(purrr::map(video_urls, function(u) {
     video_id <- extract_regex(

@@ -10,6 +10,23 @@ extract_regex <- function(str, pattern) {
 }
 
 
+# check if selected directory exists
+#' @noRd
+check_dir <- function(dir, name) {
+  if (!is.null(dir)) {
+    if (!dir.exists(dir)) {
+      msg <- paste0("The selected `", name,
+                   "` directory does not exist.")
+      if (askYesNo(paste(msg, "Do you want to create it?"))) {
+        dir.create(dir, showWarnings = FALSE)
+      } else {
+        stop(msg)
+      }
+    }
+  }
+}
+
+
 #' @noRd
 wait <- function(sleep_pool, verbose = TRUE) {
   sleep <- stats::runif(1) * sample(sleep_pool, 1L)
