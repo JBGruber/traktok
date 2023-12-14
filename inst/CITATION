@@ -2,12 +2,12 @@ citHeader("To cite traktok in publications use:")
 
 citEntry(
   entry    = "Manual",
-  title    = "traktok. An {R} package to scrape data from {T}ikTok",
+  title    = "traktok. Getting TikTok data through the official and unofficial APIs",
   author   = "Johannes B. Gruber",
-  year     = 2022,
+  year     = 2023,
   url      = "https://github.com/JBGruber/traktok",
-  note     = "R package version 0.0.1.9000",
+  note     = "R package version 0.0.4.9000",
   textVersion = paste(
-    "Gruber, Johannes B. (2022). traktok. An R package to scrape data from TikTok. R package version 0.0.1.9000. https://github.com/JBGruber/traktok."
+    "Gruber, Johannes B. (2023). traktok. An R package to scrape data from TikTok. R package version 0.0.4.9000. https://github.com/JBGruber/traktok."
   )
 )
