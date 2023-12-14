@@ -19,8 +19,14 @@ test_that("get meta and download", {
 
 
 test_that("parse", {
+  expect_error(parse_video('{"test":1}', video_id = 1L),
+               "No video data found")
   expect_equal(
-    dim(parse_video('{"test":1}', video_id = 1L)),
+    dim(parse_video('{"ItemModule":{"test":1}}', video_id = 1L)),
     c(1L, 16L)
+  )
+  expect_equal(
+    dim(parse_video('{"__DEFAULT_SCOPE__":{"webapp.video-detail":{"itemInfo":{"itemStruct":{"test":1}}}}}', video_id = 1L)),
+    c(1L, 19L)
   )
 })
