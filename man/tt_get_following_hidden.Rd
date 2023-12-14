@@ -40,9 +40,8 @@ tt_get_following(
 )
 }
 \arguments{
-\item{secuid}{The secuid of a user. Currently no better way to obtain it than
-opening a users site in the browser, right click to to view page source,
-then search for "secUid".}
+\item{secuid}{The secuid of a user. You can get it with \link{tt_videos} by
+querying the video of an account.}
 
 \item{sleep_pool}{a vector of numbers from which a waiting period is randomly
 drawn.}
@@ -59,8 +58,8 @@ on authentication.}
 a data.frame of followers
 }
 \description{
-\ifelse{html}{\figure{api-unofficial}{options:
-  alt='[Works on: Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
+\ifelse{html}{\figure{api-unofficial}{options: alt='[Works on:
+  Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
 
   Get up to 5,000 accounts who follow a user or accounts a user follows.
 }

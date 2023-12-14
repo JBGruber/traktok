@@ -384,14 +384,13 @@ tt_search_hidden <- function(query,
 
 #' @title Get followers and following of a user from the hidden API
 #'
-#' @description \ifelse{html}{\figure{api-unofficial}{options:
-#'   alt='[Works on: Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
+#' @description \ifelse{html}{\figure{api-unofficial}{options: alt='[Works on:
+#'   Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
 #'
 #'   Get up to 5,000 accounts who follow a user or accounts a user follows.
 #'
-#' @param secuid The secuid of a user. Currently no better way to obtain it than
-#'   opening a users site in the browser, right click to to view page source,
-#'   then search for "secUid".
+#' @param secuid The secuid of a user. You can get it with \link{tt_videos} by
+#'   querying the video of an account.
 #' @inheritParams tt_search_hidden
 #'
 #' @return a data.frame of followers
