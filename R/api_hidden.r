@@ -211,7 +211,7 @@ tt_request_hidden <- function(url,
 
   out <- res |>
     httr2::resp_body_html() |>
-    rvest::html_node("[id='SIGI_STATE']") |>
+    rvest::html_node("#SIGI_STATE,#__UNIVERSAL_DATA_FOR_REHYDRATION__") |>
     rvest::html_text()
 
   if (nchar(out) < 10) stop("no json found")

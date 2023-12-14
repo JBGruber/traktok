@@ -5,31 +5,71 @@ parse_video <- function(json_string, video_id) {
 
   video_url <- attr(json_string, "url_full")
   html_status <- attr(json_string, "html_status")
-  video_timestamp <- purrr::pluck(tt_data, "ItemModule", video_id, "createTime",
-                                  .default = NA_character_) |>
-    as.integer() |>
-    as.POSIXct(tz = "UTC", origin = "1970-01-01")
 
-  tibble::tibble(
-    video_id              = video_id,
-    video_url             = video_url,
-    video_timestamp       = video_timestamp,
-    video_length          = spluck(tt_data, "ItemModule", video_id, "video", "duration"),
-    video_title           = spluck(tt_data, "ItemModule", video_id, "desc"),
-    video_locationcreated = spluck(tt_data, "ItemModule", video_id, "locationCreated"),
-    video_diggcount       = spluck(tt_data, "ItemModule", video_id, "stats", "diggCount"),
-    video_sharecount      = spluck(tt_data, "ItemModule", video_id, "stats", "shareCount"),
-    video_commentcount    = spluck(tt_data, "ItemModule", video_id, "stats", "commentCount"),
-    video_playcount       = spluck(tt_data, "ItemModule", video_id, "stats", "playCount"),
-    author_username       = spluck(tt_data, "ItemModule", video_id, "author"),
-    author_nickname       = spluck(tt_data, "UserModule", "users", 1, "nickname"),
-    author_bio            = spluck(tt_data, "UserModule", "users", 1, "signature"),
-    download_url          = spluck(tt_data, "ItemModule", video_id, "video", "downloadAddr"),
-    html_status           = html_status,
-    music                 = list(spluck(tt_data, "ItemModule", video_id, "music")),
-    challenges            = list(spluck(tt_data, "ItemModule", video_id, "challenges")),
-    is_classified         = isTRUE(spluck(tt_data, "ItemModule", video_id, "isContentClassified"))
-  )
+  video_data <- purrr::pluck(tt_data, "ItemModule")
+
+  if (!is.null(video_data)) {
+    video_timestamp <- purrr::pluck(video_data, video_id, "createTime",
+                                    .default = NA_character_) |>
+      as.integer() |>
+      as.POSIXct(tz = "UTC", origin = "1970-01-01")
+
+    return(tibble::tibble(
+      video_id              = video_id,
+      video_url             = video_url,
+      video_timestamp       = video_timestamp,
+      video_length          = spluck(video_data, video_id, "video", "duration"),
+      video_title           = spluck(video_data, video_id, "desc"),
+      video_locationcreated = spluck(video_data, video_id, "locationCreated"),
+      video_diggcount       = spluck(video_data, video_id, "stats", "diggCount"),
+      video_sharecount      = spluck(video_data, video_id, "stats", "shareCount"),
+      video_commentcount    = spluck(video_data, video_id, "stats", "commentCount"),
+      video_playcount       = spluck(video_data, video_id, "stats", "playCount"),
+      author_username       = spluck(video_data, video_id, "author"),
+      author_nickname       = spluck(tt_data, "UserModule", "users", 1, "nickname"),
+      author_bio            = spluck(tt_data, "UserModule", "users", 1, "signature"),
+      download_url          = spluck(video_data, video_id, "video", "downloadAddr"),
+      html_status           = html_status,
+      music                 = list(spluck(video_data, video_id, "music")),
+      challenges            = list(spluck(video_data, video_id, "challenges")),
+      is_classified         = isTRUE(spluck(video_data, video_id, "isContentClassified"))
+    ))
+  }
+
+  video_data <- purrr::pluck(tt_data, "__DEFAULT_SCOPE__", "webapp.video-detail", "itemInfo", "itemStruct")
+
+  if (!is.null(video_data)) {
+    video_timestamp <- purrr::pluck(video_data, "createTime",
+                                    .default = NA_character_) |>
+      as.integer() |>
+      as.POSIXct(tz = "UTC", origin = "1970-01-01")
+
+    return(tibble::tibble(
+      video_id              = video_id,
+      video_url             = video_url,
+      video_timestamp       = video_timestamp,
+      video_length          = spluck(video_data, "video", "duration"),
+      video_title           = spluck(video_data, "desc"),
+      video_locationcreated = spluck(video_data, "locationCreated"),
+      video_diggcount       = spluck(video_data, "stats", "diggCount"),
+      video_sharecount      = spluck(video_data, "stats", "shareCount"),
+      video_commentcount    = spluck(video_data, "stats", "commentCount"),
+      video_playcount       = spluck(video_data, "stats", "playCount"),
+      author_id             = spluck(video_data, "author", "id"),
+      author_secuid         = spluck(video_data, "author", "secUid"),
+      author_username       = spluck(video_data, "author", "uniqueId"),
+      author_nickname       = spluck(video_data, "author", "nickname"),
+      author_bio            = spluck(video_data, "author", "signature"),
+      download_url          = spluck(video_data, "video", "downloadAddr"),
+      html_status           = html_status,
+      music                 = list(spluck(video_data, "music")),
+      challenges            = list(spluck(video_data, "challenges")),
+      is_secret             = isTRUE(spluck(video_data, "secret")),
+      is_for_friend         = isTRUE(spluck(video_data, "forFriend"))
+    ))
+  } else {
+    cli::cli_abort("No video data found")
+  }
 
 }
 
