@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![R-CMD-check](https://github.com/JBGruber/traktok/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JBGruber/traktok/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/JBGruber/traktok/branch/main/graph/badge.svg)](https://codecov.io/gh/JBGruber/traktok?branch=main)
@@ -14,16 +14,16 @@ coverage](https://codecov.io/gh/JBGruber/traktok/branch/main/graph/badge.svg)](h
 
 ## Feature overview
 
-| Description                 | Shorthand        | Research API       | Hidden API              |
-|:----------------------------|:-----------------|:-------------------|:------------------------|
-| search videos               | tt_search        | tt_search_api      | tt_search_hidden        |
-| get video detail (+file)    | tt_videos        | \-                 | tt_videos_hidden        |
-| get user videos             | tt_user_info     | tt_user_info_api   | \-                      |
-| get comments under a video  | tt_comments      | tt_comments_api    | \-                      |
-| get who follows a user      | tt_get_follower  | \-                 | tt_get_follower_hidden  |
-| get who a user is following | tt_get_following | \-                 | tt_get_following_hidden |
-| get raw video data          | \-               | \-                 | tt_request_hidden       |
-| authenticate a session      | \-               | auth_research      | auth_hidden             |
+| Description                 | Shorthand        | Research API     | Hidden API              |
+|:----------------------------|:-----------------|:-----------------|:------------------------|
+| search videos               | tt_search        | tt_search_api    | tt_search_hidden        |
+| get video detail (+file)    | tt_videos        | \-               | tt_videos_hidden        |
+| get user videos             | tt_user_info     | tt_user_info_api | \-                      |
+| get comments under a video  | tt_comments      | tt_comments_api  | \-                      |
+| get who follows a user      | tt_get_follower  | \-               | tt_get_follower_hidden  |
+| get who a user is following | tt_get_following | \-               | tt_get_following_hidden |
+| get raw video data          | \-               | \-               | tt_request_hidden       |
+| authenticate a session      | \-               | auth_research    | auth_hidden             |
 
 The goal of traktok is to provide easy access to TikTok data. This
 package one started as an R port of Deen Freelon’s
@@ -40,6 +40,8 @@ hidden API applies:
 > This program may stop working suddenly if TikTok changes how it stores
 > its data ([see Freelon,
 > 2018](https://osf.io/preprints/socarxiv/56f4q/)).
+
+However, the last times, it was fixed rather quickly (e.g., \#12).
 
 ## Installation
 
