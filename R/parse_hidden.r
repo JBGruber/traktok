@@ -44,7 +44,7 @@ parse_video <- function(json_string, video_id) {
       as.integer() |>
       as.POSIXct(tz = "UTC", origin = "1970-01-01")
 
-    return(tibble::tibble(
+    out <- tibble::tibble(
       video_id              = video_id,
       video_url             = video_url,
       video_timestamp       = video_timestamp,
@@ -65,8 +65,16 @@ parse_video <- function(json_string, video_id) {
       music                 = list(spluck(video_data, "music")),
       challenges            = list(spluck(video_data, "challenges")),
       is_secret             = isTRUE(spluck(video_data, "secret")),
-      is_for_friend         = isTRUE(spluck(video_data, "forFriend"))
-    ))
+      is_for_friend         = isTRUE(spluck(video_data, "forFriend")),
+      is_slides             = FALSE
+    )
+    if (out$download_url == "") {
+      out$download_url <- purrr::pluck(video_data, "imagePost", "images", "imageURL", "urlList") |>
+        purrr::map_chr(1L) |>
+        jsonlite::toJSON()
+      out$is_slides <- TRUE
+    }
+    return(out)
   } else {
     cli::cli_abort("No video data found")
   }

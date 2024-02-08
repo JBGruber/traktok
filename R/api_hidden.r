@@ -77,22 +77,36 @@ tt_videos_hidden <- function(video_urls,
                            verbose = verbose)
 
     regex_url <- extract_regex(video_dat$video_url, "(?<=@).+?(?=\\?|$)")
-    video_fn <- file.path(dir, paste0(gsub("/", "_", regex_url), ".mp4"))
-
     if (save_video) {
+      if (!isTRUE(video_dat$is_slides)) {
+        video_fn <- file.path(dir, paste0(gsub("/", "_", regex_url), ".mp4"))
 
-      f_name <- save_video(video_url = video_dat$download_url,
-                           video_fn = video_fn,
-                           overwrite = overwrite,
-                           max_tries = max_tries,
-                           cookies = cookies)
-      f_size <- file.size(f_name)
-      if (isTRUE(f_size > 1000)) {
-        done_msg <- glue::glue("File size: {utils:::format.object_size(f_size, 'auto')}.")
-      } else {
-        cli::cli_warn("Video {video_id} has a very small file size (less than 1kB) and is likely corrupt.")
+        f_name <- save_video(video_url = video_dat$download_url,
+                             video_fn = video_fn,
+                             overwrite = overwrite,
+                             max_tries = max_tries,
+                             cookies = cookies)
+        f_size <- file.size(f_name)
+        if (isTRUE(f_size > 1000)) {
+          done_msg <- glue::glue("File size: {utils:::format.object_size(f_size, 'auto')}.")
+        } else {
+          cli::cli_warn("Video {video_id} has a very small file size (less than 1kB) and is likely corrupt.")
+        }
+        video_dat$video_fn <- video_fn
+      } else { # for slides
+        download_urls <- jsonlite::fromJSON(video_dat$download_url)
+        video_fns <- file.path(dir, paste0(gsub("/", "_", regex_url),
+                                           "_",
+                                           seq_along(download_urls),
+                                           ".jpeg"))
+        purrr::walk2(download_urls, video_fns, function(u, f) {
+          f_name <- save_video(video_url = u,
+                               video_fn = f,
+                               overwrite = overwrite,
+                               max_tries = max_tries,
+                               cookies = cookies)
+        })
       }
-      video_dat$video_fn <- video_fn
     }
 
     if (i != n_urls) wait(sleep_pool, verbose)
@@ -214,7 +228,7 @@ tt_request_hidden <- function(url,
     rvest::html_node("#SIGI_STATE,#__UNIVERSAL_DATA_FOR_REHYDRATION__") |>
     rvest::html_text()
 
-  if (nchar(out) < 10) stop("no json found")
+  if (isFALSE(nchar(out) > 10)) stop("no json found")
 
   attr(out, "url_full") <- res$url
   attr(out, "html_status") <- status
