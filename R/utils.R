@@ -17,7 +17,7 @@ check_dir <- function(dir, name) {
     if (!dir.exists(dir)) {
       msg <- paste0("The selected `", name,
                    "` directory does not exist.")
-      if (askYesNo(paste(msg, "Do you want to create it?"))) {
+      if (utils::askYesNo(paste(msg, "Do you want to create it?"))) {
         dir.create(dir, showWarnings = FALSE)
       } else {
         stop(msg)

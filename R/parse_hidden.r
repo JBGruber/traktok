@@ -68,7 +68,7 @@ parse_video <- function(json_string, video_id) {
       is_for_friend         = isTRUE(spluck(video_data, "forFriend")),
       is_slides             = FALSE
     )
-    if (out$download_url == "") {
+    if (identical(out$download_url, "")) {
       out$download_url <- purrr::pluck(video_data, "imagePost", "images", "imageURL", "urlList") |>
         purrr::map_chr(1L) |>
         jsonlite::toJSON()

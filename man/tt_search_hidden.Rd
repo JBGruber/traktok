@@ -37,10 +37,10 @@ on authentication.}
 a data.frame
 }
 \description{
-\ifelse{html}{\figure{api-both.svg}{options:
-  alt='[Both]'}}{\strong{[Both]}}
+\ifelse{html}{\figure{api-unofficial}{options: alt='[Works on:
+  Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
 
-  This is the version of \link{tt_search} that explicitly uses unofficial
+  This is the version of \link{tt_search} that explicitly uses the unofficial
   API. Use \link{tt_search_api} for the Research API version.
 }
 \details{

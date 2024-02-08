@@ -65,11 +65,11 @@ automatically after running auth_research once)}
 A data.frame of parsed TikTok videos
 }
 \description{
-\ifelse{html}{\figure{api-both.svg}{options:
-  alt='[Both]'}}{\strong{[Both]}}
+\ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:
+  Research API]'}}{\strong{[Works on: Research API]}}
 
   This is the version of \link{tt_search} that explicitly uses Research
-  API. Use \link{tt_search_hidden} for the Research API version.
+  API. Use \link{tt_search_hidden} for the unoffcial API version.
 }
 \examples{
 \dontrun{

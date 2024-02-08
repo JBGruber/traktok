@@ -7,7 +7,8 @@
 #' @return a list of unparsed videos
 #' @export
 last_query <- function() {
-  the$videos
+  attr(the$videos, "search_id") <- the$search_id
+  return(the$videos)
 }
 
 
