@@ -30,21 +30,20 @@ tt_comments(
 
 \item{fields}{The fields to be returned (defaults to all)}
 
-\item{start_cursor}{The starting cursor, i.e., how many results to
-skip (for picking up an old search)}
+\item{start_cursor}{The starting cursor, i.e., how many results to skip (for
+picking up an old search)}
 
-\item{max_pages}{results are returned in batches/pages with 100
-videos. How many should be requested before the function stops?}
+\item{max_pages}{results are returned in batches/pages with 100 videos. How
+many should be requested before the function stops?}
 
-\item{cache}{should progress be saved in the current session? It
-can then be retrieved with \code{last_query()} if an error
-occurs. But the function will use extra memory.}
+\item{cache}{should progress be saved in the current session? It can then be
+retrieved with \code{last_query()} if an error occurs. But the function
+will use extra memory.}
 
-\item{verbose}{should the function print status updates to the
-screen?}
+\item{verbose}{should the function print status updates to the screen?}
 
-\item{token}{The authentication token (usually supplied
-automatically after running auth_research once)}
+\item{token}{The authentication token (usually supplied automatically after
+running auth_research once)}
 }
 \value{
 A data.frame of parsed comments

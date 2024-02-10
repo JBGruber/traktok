@@ -21,8 +21,8 @@ parse_api_search <- function(x) {
                          vpluck(x, "id", val = "character"),
                          out$video_id)
 
+  attr(out, "search_id") <- attr(x, "search_id")
   class(out) <- c("tt_results", class(out))
-
   return(out)
 }
 
