@@ -4,7 +4,7 @@
 #'   Research API]'}}{\strong{[Works on: Research API]}}
 #'
 #'   This is the version of \link{tt_search} that explicitly uses Research API.
-#'   Use \link{tt_search_hidden} for the unoffcial API version.
+#'   Use \link{tt_search_hidden} for the unofficial API version.
 #'
 #' @param query A query string or object (see \link{query})
 #' @param start_date,end_date A start and end date to narrow the search

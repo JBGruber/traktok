@@ -68,7 +68,7 @@ A data.frame of parsed TikTok videos
   Research API]'}}{\strong{[Works on: Research API]}}
 
   This is the version of \link{tt_search} that explicitly uses Research API.
-  Use \link{tt_search_hidden} for the unoffcial API version.
+  Use \link{tt_search_hidden} for the unofficial API version.
 }
 \examples{
 \dontrun{
