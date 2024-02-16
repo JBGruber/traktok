@@ -109,7 +109,10 @@ tt_videos_hidden <- function(video_urls,
       }
     }
 
-    if (i != n_urls) wait(sleep_pool, verbose)
+    if (i != n_urls && !isTRUE(the$skipped)) {
+      wait(sleep_pool, verbose)
+      the$skipped <- FALSE
+    }
 
     return(video_dat)
   }))
@@ -132,9 +135,11 @@ get_video <- function(url,
 
   if (overwrite || !file.exists(json_fn)) {
     tt_json <- tt_request_hidden(url, max_tries = max_tries)
+    if (!is.null(cache_dir)) writeLines(tt_json, json_fn, useBytes = TRUE)
+  } else {
+    tt_json <- readChar(json_fn, nchars = file.size(json_fn), useBytes = TRUE)
+    attr(tt_json,"url_full") <- url
   }
-
-  if (!is.null(cache_dir)) writeLines(tt_json, json_fn, useBytes = TRUE)
 
   parse_video(tt_json, video_id)
 }
@@ -172,6 +177,7 @@ save_video <- function(video_url,
       }
     } else if (file.exists(video_fn)) {
       f <- video_fn
+      the$skipped <- TRUE
     }
 
   } else {
