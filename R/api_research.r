@@ -106,7 +106,9 @@ tt_search_api <- function(query,
     cli::cli_abort("{.code start_date} needs to be a valid date or a string like, e.g., \"20210102\"")
   }
 
-  if (verbose) cli::cli_progress_step("Making initial request")
+  if (verbose) {
+    cli::cli_progress_step("Making initial request")
+  }
 
   res <- tt_query_request(
     endpoint = "query/",
@@ -119,36 +121,48 @@ tt_search_api <- function(query,
     is_random = is_random,
     token = token
   )
-  if (verbose) cli::cli_progress_done()
   videos <- purrr::pluck(res, "data", "videos")
   the$search_id <- spluck(res, "data", "search_id")
+  the$cursor <- spluck(res, "data", "cursor")
   the$videos <- videos
 
-  page <- 1
-  # res <- jsonlite::read_json("tests/testthat/example_resp.json")
-  while (purrr::pluck(res, "data", "has_more", .default = FALSE) && page < max_pages) {
-    page <- page + 1
-    if (verbose) cli::cli_progress_step("Getting page {page}",
-                                        msg_done = "Got page {page}")
+  the$page <- 1
+
+  if (verbose) cli::cli_progress_bar(
+    format = "{cli::pb_spin} Got {page} page{?s} with {length(videos)} video{?s} {cli::col_silver('[', cli::pb_elapsed, ']')}",
+    format_done = "{cli::col_green(cli::symbol$tick)} Got {page} page{?s} with {length(videos)} video{?s}",
+    .envir = the
+  )
+
+  while (purrr::pluck(res, "data", "has_more", .default = FALSE) && the$page < max_pages) {
+    the$page <- the$page + 1
+    the$cursor <- spluck(res, "data", "cursor")
+    if (verbose) cli::cli_progress_update(force = TRUE, .envir = the)
     res <- tt_query_request(
       endpoint = "query/",
       query = query,
       start_date = start_date,
       end_date = end_date,
       fields = fields,
-      cursor = purrr::pluck(res, "data", "cursor", .default = NULL),
-      search_id = purrr::pluck(res, "data", "search_id", .default = NULL),
+      cursor = the$cursor,
+      search_id = the$search_id,
       is_random = is_random,
       token = token
     )
     videos <- c(videos, purrr::pluck(res, "data", "videos"))
-    if (cache) the$videos <- videos
+    if (cache) {
+      the$videos <- videos
+    }
     if (verbose) cli::cli_progress_done()
   }
 
-  if (verbose) cli::cli_progress_step("Parsing data")
+  if (verbose) {
+    cli::cli_progress_done()
+    cli::cli_progress_step("Parsing data")
+  }
   out <- parse_api_search(videos)
 
+  if (verbose) cli::cli_progress_done()
   return(out)
 }
 
@@ -261,6 +275,7 @@ tt_comments_api <- function(video_id,
     fields <- "id,video_id,text,like_count,reply_count,parent_comment_id,create_time"
 
   if (verbose) cli::cli_progress_step("Making initial request")
+
   res <- tt_query_request(
     endpoint = "comment/list/",
     video_id = video_id,
@@ -268,16 +283,19 @@ tt_comments_api <- function(video_id,
     cursor = start_cursor,
     token = token
   )
-  if (verbose) cli::cli_progress_done()
   comments <- purrr::pluck(res, "data", "comments")
   if (cache) the$comments <- comments
-  page <- 1
+  the$page <- 1
 
-  # res <- jsonlite::read_json("tests/testthat/example_resp_comments.json")
-  while (purrr::pluck(res, "data", "has_more", .default = FALSE) && page < max_pages) {
-    page <- page + 1
-    if (verbose) cli::cli_progress_step("Getting page {page}",
-                                        msg_done = "Got page {page}")
+  if (verbose) cli::cli_progress_bar(
+    format = "{cli::pb_spin} Got {page} page{?s} with {length(the$comments)} comment{?s} {cli::col_silver('[', cli::pb_elapsed, ']')}",
+    format_done = "{cli::col_green(cli::symbol$tick)} Got {page} page{?s} with {length(the$comments)} comment{?s}",
+    .envir = the
+  )
+
+  while (purrr::pluck(res, "data", "has_more", .default = FALSE) && the$page < max_pages) {
+    the$page <- the$page + 1
+    if (verbose) cli::cli_progress_update(.envir = the)
     res <- tt_query_request(
       endpoint = "comment/list/",
       video_id = video_id,
@@ -290,7 +308,10 @@ tt_comments_api <- function(video_id,
     if (verbose) cli::cli_progress_done()
   }
 
-  if (verbose) cli::cli_progress_step("Parsing data")
+  if (verbose) {
+    cli::cli_progress_done()
+    cli::cli_progress_step("Parsing data")
+  }
   out <- parse_api_comments(comments)
 
   return(out)
@@ -343,7 +364,8 @@ tt_query_request <- function(endpoint,
     httr2::req_retry(
       max_tries = 5L,
       # don't retry when daily quota is reached
-      is_transient = function(resp) httr2::resp_status(resp) != 429,
+      is_transient = function(resp)
+        httr2::resp_status(resp) %in% c(301:399, 401:428, 430:599),
       # increase backoff after each try
       backoff = function(t) t ^ 3
     ) |>

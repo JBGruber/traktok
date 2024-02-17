@@ -157,3 +157,47 @@ tt_comments_api(video_id = "https://www.tiktok.com/@nicksinghtech/video/71957626
 
 And that is essentially it.
 Note, that if you find the functionality of the Research API lacking, there is nothing that keeps you from using the unofficial API functions.
+
+
+# Dealing with rate limits and continuing old searches
+
+At the moment of writing this vignette, the TikTok rate limits the Research API as follows:
+
+> Currently, the daily limit is set at 1000 requests per day, allowing you to obtain up to 100,000 records per day across our APIs. (Video and Comments API can return 100 records per request). The daily quota gets reset at 12 AM UTC. [[Source](https://developers.tiktok.com/doc/research-api-faq?enter_method=left_navigation)]
+
+Depending on what you would like to do, this might not be enough for you.
+In this case, you can actually save a search and pick it back up after the reset.
+To facilitate this, search result objects contain two extra pieces of information in the attributes:
+
+```{r}
+search_df <- query() |>
+  query_and(field_name = "region_code",
+            operation = "IN",
+            field_values = c("JP", "US")) |>
+  tt_search_api(start_date = as.Date("2023-11-01"),
+                end_date = as.Date("2023-11-29"), 
+                max_pages = 1)
+
+attr(search_df, "search_id")
+attr(search_df, "cursor")
+```
+
+When you want to continue this search, whether because of rate limit or because you decided you want more results, you can do so by providing `search_id` and `cursor` to `tt_search_api`:
+
+```{r}
+search_df2 <- query() |>
+  query_and(field_name = "region_code",
+            operation = "IN",
+            field_values = c("JP", "US")) |>
+  tt_search_api(start_date = as.Date("2023-11-01"),
+                end_date = as.Date("2023-11-29"), 
+                
+                # this part is new
+                start_cursor = attr(search_df, "cursor"), 
+                search_id = attr(search_df, "search_id"),
+                ####
+                max_pages = 1)
+```
+
+Note that the cursor is not equal to how many videos you got before, as the API also counts videos that are "deleted/marked as private by users etc." [See `max_count` in [Query Videos](https://developers.tiktok.com/doc/research-api-specs-query-videos)].
+

@@ -12,6 +12,7 @@ last_query <- function() {
   out <- try(parse_api_search(q), silent = TRUE)
   if (methods::is(out, "try-error")) {
     attr(q, "search_id") <- the$search_id
+    attr(out, "cursor") <- the$cursor
     return(q)
   }
   return(out)

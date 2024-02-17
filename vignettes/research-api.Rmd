@@ -1,8 +1,8 @@
 ---
-title: "Research API"
+title: "Unofficial API"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{research-api}
+  %\VignetteIndexEntry{unofficial-api}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -49,19 +49,21 @@ For convenience, I wrapped this in internally, so you can search with a key phra
 ```r
 tt_query_videos("#rstats", max_pages = 2L)
 #> 
-ℹ Making initial request[K
+ℹ Making initial request
 
-✔ Making initial request [90ms][K
+✔ Making initial request [734ms]
 #> 
-ℹ Parsing data[K
+ℹ Parsing data
 
-✔ Parsing data [12ms][K
-#> ── search id: NA ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+✔ Parsing data [21ms]
+#> ── search id: NA ───────────────────────────────────────────
 #> # A tibble: 0 × 11
-#> # ℹ 11 variables: video_id <lgl>, author_name <chr>, view_count <int>,
-#> #   comment_count <int>, region_code <chr>, create_time <dttm>,
-#> #   effect_ids <list>, music_id <chr>, video_description <chr>,
-#> #   hashtag_names <list>, voice_to_text <chr>
+#> # ℹ 11 variables: video_id <lgl>, author_name <chr>,
+#> #   view_count <int>, comment_count <int>,
+#> #   region_code <chr>, create_time <dttm>,
+#> #   effect_ids <list>, music_id <chr>,
+#> #   video_description <chr>, hashtag_names <list>,
+#> #   voice_to_text <chr>
 ```
 
 This will match your keyword or phrase against keywords and hashtags and return up to 200 results (each pages has 100 results and 2 pages are requested) from today and yesterday.
@@ -75,37 +77,40 @@ tt_query_videos("#rstats",
                 start_date = as.Date("2023-11-01"),
                 end_date = as.Date("2023-11-29"))
 #> 
-ℹ Making initial request[K
+ℹ Making initial request
 
-✔ Making initial request [469ms][K
+✔ Making initial request [1.1s]
 #> 
-ℹ Parsing data[K
+ℹ Parsing data
 
-✔ Parsing data [13ms][K
-#> ── search id: 7306753928492848170 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-#> # A tibble: 18 × 11
-#>    video_id author_name view_count comment_count region_code create_time        
-#>    <chr>    <chr>            <int>         <int> <chr>       <dttm>             
-#>  1 7305014… picanumeros         11             1 ES          2023-11-24 13:07:11
-#>  2 7304068… casaresfel…        603             0 AR          2023-11-21 23:56:02
-#>  3 7302970… smooth.lea…       4786             7 AU          2023-11-19 00:56:09
-#>  4 7302470… statistics…         44             1 DE          2023-11-17 16:34:44
-#>  5 7300977… statistics…       1397             0 DE          2023-11-13 16:01:47
-#>  6 7300931… rigochando        1494             5 MX          2023-11-13 13:02:59
-#>  7 7300922… elartedeld…         86             0 ES          2023-11-13 12:27:30
-#>  8 7299987… statistics…         81             1 DE          2023-11-10 23:58:21
-#>  9 7299657… rigochando         795             5 MX          2023-11-10 02:39:21
-#> 10 7299342… rigochando         375             1 MX          2023-11-09 06:18:41
-#> 11 7298966… rigochando        1183             2 MX          2023-11-08 05:58:35
-#> 12 7296911… biofreelan…       2537             5 MX          2023-11-02 17:03:20
-#> 13 7296911… biofreelan…       1363             0 MX          2023-11-02 17:03:20
-#> 14 7296911… biofreelan…        680             1 MX          2023-11-02 17:03:20
-#> 15 7296688… mrpecners           60             2 US          2023-11-02 02:39:29
-#> 16 7296518… l_a_kelly           10             5 GB          2023-11-01 15:38:54
-#> 17 7296498… mrpecners           19             0 US          2023-11-01 14:21:30
-#> 18 7296288… casaresfel…        266             0 AR          2023-11-01 00:47:12
-#> # ℹ 5 more variables: effect_ids <list>, music_id <chr>,
-#> #   video_description <chr>, hashtag_names <list>, voice_to_text <chr>
+✔ Parsing data [30ms]
+#> ── search id: 7336340473469998126 ──────────────────────────
+#> # A tibble: 19 × 11
+#>    video_id author_name view_count comment_count region_code
+#>    <chr>    <chr>            <int>         <int> <chr>      
+#>  1 7306893… statistics…         21             4 DE         
+#>  2 7306307… learningca…        129            12 US         
+#>  3 7305014… picanumeros         57             1 ES         
+#>  4 7302970… smooth.lea…       5568             7 AU         
+#>  5 7302470… statistics…         45             1 DE         
+#>  6 7300977… statistics…       1403             0 DE         
+#>  7 7300931… rigochando        1541             5 MX         
+#>  8 7300922… elartedeld…         87             0 ES         
+#>  9 7299987… statistics…         81             1 DE         
+#> 10 7299657… rigochando         795             5 MX         
+#> 11 7299342… rigochando         375             1 MX         
+#> 12 7298966… rigochando        1183             2 MX         
+#> 13 7296911… biofreelan…       2537             5 MX         
+#> 14 7296911… biofreelan…       1363             0 MX         
+#> 15 7296911… biofreelan…        680             1 MX         
+#> 16 7296688… mrpecners           60             2 US         
+#> 17 7296518… l_a_kelly           10             5 GB         
+#> 18 7296498… mrpecners           19             0 US         
+#> 19 7296288… casaresfel…        266             0 AR         
+#> # ℹ 6 more variables: create_time <dttm>,
+#> #   effect_ids <list>, music_id <chr>,
+#> #   video_description <chr>, hashtag_names <list>,
+#> #   voice_to_text <chr>
 ```
 
 As said, the query syntax that TikTok uses is a little complicated, as you can use AND, OR and NOT boolean operators on a number of fields (`"create_date"`, `"username"`, `"region_code"`, `"video_id"`, `"hashtag_name"`, `"keyword"`, `"music_id"`, `"effect_id"`, and `"video_length"`):
@@ -175,22 +180,24 @@ search_df <- query() |>
   tt_search_api(start_date = as.Date("2023-11-01"),
                 end_date = as.Date("2023-11-29"))
 #> 
-ℹ Making initial request[K
+ℹ Making initial request
 
-✔ Making initial request [462ms][K
+✔ Making initial request [734ms]
 #> 
-ℹ Parsing data[K
+ℹ Parsing data
 
-✔ Parsing data [12ms][K
+✔ Parsing data [17ms]
 search_df
-#> ── search id: 7306753928492864554 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── search id: 7336340473470030894 ──────────────────────────
 #> # A tibble: 2 × 11
-#>   video_id  author_name view_count comment_count region_code create_time        
-#>   <chr>     <chr>            <int>         <int> <chr>       <dttm>             
-#> 1 72966888… mrpecners           60             2 US          2023-11-02 02:39:29
-#> 2 72964986… mrpecners           19             0 US          2023-11-01 14:21:30
-#> # ℹ 5 more variables: effect_ids <list>, music_id <chr>,
-#> #   video_description <chr>, hashtag_names <list>, voice_to_text <chr>
+#>   video_id  author_name view_count comment_count region_code
+#>   <chr>     <chr>            <int>         <int> <chr>      
+#> 1 72966888… mrpecners           60             2 US         
+#> 2 72964986… mrpecners           19             0 US         
+#> # ℹ 6 more variables: create_time <dttm>,
+#> #   effect_ids <list>, music_id <chr>,
+#> #   video_description <chr>, hashtag_names <list>,
+#> #   voice_to_text <chr>
 ```
 
 This will return videos posted in the US or Japan, that have rstats as the only hashtag or as one of the keywords and have a length of `"MID"`, `"LONG"`, or `"EXTRA_LONG"`.^[
@@ -205,12 +212,12 @@ There is not really much to getting basic user info, but this is how you can do 
 ```r
 tt_user_info_api(username = c("tiktok", "https://www.tiktok.com/@statisticsglobe"))
 #> # A tibble: 2 × 8
-#>   video_count avatar_url             bio_description display_name follower_count
-#>         <int> <chr>                  <chr>           <chr>                 <int>
-#> 1        1375 https://p19-sign.tikt… "TikTok In The… TikTok             76371372
-#> 2          18 https://p16-sign-usea… "Hi, I'm Joach… Statistics …            179
-#> # ℹ 3 more variables: following_count <int>, is_verified <lgl>,
-#> #   likes_count <int>
+#>   display_name    follower_count following_count is_verified
+#>   <chr>                    <int>           <int> <lgl>      
+#> 1 TikTok                78785286              30 TRUE       
+#> 2 Statistics Glo…            289               1 FALSE      
+#> # ℹ 4 more variables: likes_count <int>, video_count <int>,
+#> #   avatar_url <chr>, bio_description <chr>
 ```
 
 ## Obtain all Comments of a Video
@@ -222,18 +229,20 @@ You need to supply a video ID, which you either have already:
 ```r
 tt_comments_api(video_id = "7302470379501604128")
 #> 
-ℹ Making initial request[K
+ℹ Making initial request
 
-✔ Making initial request [917ms][K
+✔ Making initial request [7.2s]
 #> 
-ℹ Parsing data[K
+ℹ Parsing data
 
-✔ Parsing data [8ms][K
-#> ── search id:  ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+✔ Parsing data [18ms]
+#> ── search id:  ─────────────────────────────────────────────
 #> # A tibble: 1 × 7
-#>   like_count parent_comment_id   reply_count text     video_id create_time id   
-#>        <int> <chr>                     <int> <chr>    <chr>          <int> <chr>
-#> 1          0 7302470379501604128           0 and why… 7302470…  1700243424 7302…
+#>   text                 video_id create_time id    like_count
+#>   <chr>                <chr>          <int> <chr>      <int>
+#> 1 and why would we do… 7302470…  1700243424 7302…          0
+#> # ℹ 2 more variables: parent_comment_id <chr>,
+#> #   reply_count <int>
 ```
 
 Or you got it from a search:
@@ -242,19 +251,18 @@ Or you got it from a search:
 ```r
 tt_comments_api(video_id = search_df$video_id[1])
 #> 
-ℹ Making initial request[K
-
-✔ Making initial request [4s][K
+✔ Making initial request [55.7s]
 #> 
-ℹ Parsing data[K
+ℹ Parsing data
 
-✔ Parsing data [8ms][K
-#> ── search id:  ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+✔ Parsing data [18ms]
+#> ── search id:  ─────────────────────────────────────────────
 #> # A tibble: 2 × 7
-#>   text       video_id create_time id    like_count parent_comment_id reply_count
-#>   <chr>      <chr>          <int> <chr>      <int> <chr>                   <int>
-#> 1 So cool!!! 7296688…  1698893206 7296…          1 7296688856609475…           1
-#> 2 Thanks!    7296688…  1698893251 7296…          0 7296690681388204…           0
+#>   like_count parent_comment_id   reply_count text   video_id
+#>        <int> <chr>                     <int> <chr>  <chr>   
+#> 1          1 7296688856609475882           1 So co… 7296688…
+#> 2          0 7296690681388204831           0 Thank… 7296688…
+#> # ℹ 2 more variables: create_time <int>, id <chr>
 ```
 
 Or you let the function extract if from a URL to a video:
@@ -263,29 +271,95 @@ Or you let the function extract if from a URL to a video:
 ```r
 tt_comments_api(video_id = "https://www.tiktok.com/@nicksinghtech/video/7195762648716152107?q=%23rstats")
 #> 
-ℹ Making initial request[K
+ℹ Making initial request
 
-✔ Making initial request [4.4s][K
+✔ Making initial request [2m 16.7s]
 #> 
-ℹ Parsing data[K
+ℹ Parsing data
 
-✔ Parsing data [12ms][K
-#> ── search id:  ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+✔ Parsing data [19ms]
+#> ── search id:  ─────────────────────────────────────────────
 #> # A tibble: 96 × 7
-#>    parent_comment_id   reply_count text    video_id create_time id    like_count
-#>    <chr>                     <int> <chr>   <chr>          <int> <chr>      <int>
-#>  1 7195762648716152107          10 You go… 7195762…  1675394834 7195…        314
-#>  2 7195762648716152107          11 R is t… 7195762…  1675457114 7196…        232
-#>  3 7195762648716152107           7 Ppl wh… 7195762…  1675458796 7196…        177
-#>  4 7195765969909252906           0 Fair b… 7195762…  1675395061 7195…        166
-#>  5 7195762648716152107           2 babe R… 7195762…  1675624739 7196…         71
-#>  6 7195762648716152107          12 Excel … 7195762…  1675465779 7196…         71
-#>  7 7195762648716152107           3 NOT TH… 7195762…  1675494738 7196…         27
-#>  8 7196040663480222506           0 I won'… 7195762…  1675691471 7197…         17
-#>  9 7195762648716152107           2 No lov… 7195762…  1675656122 7196…         16
-#> 10 7195762648716152107           2 I use … 7195762…  1675440749 7195…         16
+#>    create_time id               like_count parent_comment_id
+#>          <int> <chr>                 <int> <chr>            
+#>  1  1675394834 719576596990925…        314 7195762648716152…
+#>  2  1675457114 719603344301613…        232 7195762648716152…
+#>  3  1675458796 719604066348022…        177 7195762648716152…
+#>  4  1675395061 719576692726561…        166 7195765969909252…
+#>  5  1675624739 719675339339355…         71 7195762648716152…
+#>  6  1675465779 719607064381200…         71 7195762648716152…
+#>  7  1675494738 719619490971140…         27 7195762648716152…
+#>  8  1675691471 719703995331384…         17 7196040663480222…
+#>  9  1675656122 719688817955866…         16 7195762648716152…
+#> 10  1675440749 719596313215706…         16 7195762648716152…
 #> # ℹ 86 more rows
+#> # ℹ 3 more variables: reply_count <int>, text <chr>,
+#> #   video_id <chr>
 ```
 
 And that is essentially it.
 Note, that if you find the functionality of the Research API lacking, there is nothing that keeps you from using the unofficial API functions.
+
+
+# Dealing with rate limits and continuing old searches
+
+At the moment of writing this vignette, the TikTok rate limits the Research API as follows:
+
+> Currently, the daily limit is set at 1000 requests per day, allowing you to obtain up to 100,000 records per day across our APIs. (Video and Comments API can return 100 records per request). The daily quota gets reset at 12 AM UTC. [[Source](https://developers.tiktok.com/doc/research-api-faq?enter_method=left_navigation)]
+
+Depending on what you would like to do, this might not be enough for you.
+In this case, you can actually save a search and pick it back up after the reset.
+To facilitate this, search result objects contain two extra pieces of information in the attributes:
+
+
+```r
+search_df <- query() |>
+  query_and(field_name = "region_code",
+            operation = "IN",
+            field_values = c("JP", "US")) |>
+  tt_search_api(start_date = as.Date("2023-11-01"),
+                end_date = as.Date("2023-11-29"), 
+                max_pages = 1)
+#> 
+ℹ Making initial request
+
+✔ Making initial request [1.9s]
+#> 
+ℹ Parsing data
+
+✔ Parsing data [20ms]
+
+attr(search_df, "search_id")
+#> [1] "7336340473470063662"
+attr(search_df, "cursor")
+#> [1] 100
+```
+
+When you want to continue this search, whether because of rate limit or because you decided you want more results, you can do so by providing `search_id` and `cursor` to `tt_search_api`:
+
+
+```r
+search_df2 <- query() |>
+  query_and(field_name = "region_code",
+            operation = "IN",
+            field_values = c("JP", "US")) |>
+  tt_search_api(start_date = as.Date("2023-11-01"),
+                end_date = as.Date("2023-11-29"), 
+                
+                # this part is new
+                start_cursor = attr(search_df, "cursor"), 
+                search_id = attr(search_df, "search_id"),
+                ####
+                max_pages = 1)
+#> 
+ℹ Making initial request
+
+✔ Making initial request [5.1s]
+#> 
+ℹ Parsing data
+
+✔ Parsing data [21ms]
+```
+
+Note that the cursor is not equal to how many videos you got before, as the API also counts videos that are "deleted/marked as private by users etc." [See `max_count` in [Query Videos](https://developers.tiktok.com/doc/research-api-specs-query-videos)].
+

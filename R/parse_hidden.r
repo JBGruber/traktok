@@ -32,7 +32,9 @@ parse_video <- function(json_string, video_id) {
       html_status           = html_status,
       music                 = list(spluck(video_data, video_id, "music")),
       challenges            = list(spluck(video_data, video_id, "challenges")),
-      is_classified         = isTRUE(spluck(video_data, video_id, "isContentClassified"))
+      is_classified         = isTRUE(spluck(video_data, video_id, "isContentClassified")),
+      video_status          = spluck(tt_data, "__DEFAULT_SCOPE__", "webapp.video-detail", "statusMsg"),
+      video_status_code     = spluck(tt_data, "__DEFAULT_SCOPE__", "webapp.video-detail", "statusCode")
     ))
   }
 
@@ -66,7 +68,9 @@ parse_video <- function(json_string, video_id) {
       challenges            = list(spluck(video_data, "challenges")),
       is_secret             = isTRUE(spluck(video_data, "secret")),
       is_for_friend         = isTRUE(spluck(video_data, "forFriend")),
-      is_slides             = FALSE
+      is_slides             = FALSE,
+      video_status          = spluck(tt_data, "__DEFAULT_SCOPE__", "webapp.video-detail", "statusMsg"),
+      video_status_code     = spluck(tt_data, "__DEFAULT_SCOPE__", "webapp.video-detail", "statusCode")
     )
     if (identical(out$download_url, "")) {
       out$download_url <- purrr::pluck(video_data, "imagePost", "images", "imageURL", "urlList") |>
@@ -76,7 +80,33 @@ parse_video <- function(json_string, video_id) {
     }
     return(out)
   } else {
-    cli::cli_abort("No video data found")
+    out <- tibble::tibble(
+      video_id              = video_id,
+      video_url             = video_url,
+      video_timestamp       = NA,
+      video_length          = NA,
+      video_title           = NA,
+      video_locationcreated = NA,
+      video_diggcount       = NA,
+      video_sharecount      = NA,
+      video_commentcount    = NA,
+      video_playcount       = NA,
+      author_id             = NA,
+      author_secuid         = NA,
+      author_username       = NA,
+      author_nickname       = NA,
+      author_bio            = NA,
+      download_url          = NA,
+      html_status           = html_status,
+      music                 = NA,
+      challenges            = NA,
+      is_secret             = NA,
+      is_for_friend         = NA,
+      is_slides             = NA,
+      video_status          = spluck(tt_data, "__DEFAULT_SCOPE__", "webapp.video-detail", "statusMsg"),
+      video_status_code     = spluck(tt_data, "__DEFAULT_SCOPE__", "webapp.video-detail", "statusCode")
+    )
+    cli::cli_warn("No video data found")
   }
 
 }
