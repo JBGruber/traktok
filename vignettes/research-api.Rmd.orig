@@ -197,6 +197,8 @@ search_df2 <- query() |>
                 search_id = attr(search_df, "search_id"),
                 ####
                 max_pages = 1)
+attr(search_df2, "search_id")
+attr(search_df2, "cursor")
 ```
 
 Note that the cursor is not equal to how many videos you got before, as the API also counts videos that are "deleted/marked as private by users etc." [See `max_count` in [Query Videos](https://developers.tiktok.com/doc/research-api-specs-query-videos)].

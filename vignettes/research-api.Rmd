@@ -359,6 +359,10 @@ search_df2 <- query() |>
 ℹ Parsing data
 
 ✔ Parsing data [21ms]
+attr(search_df2, "search_id")
+#> [1] "7336340473470063662"
+attr(search_df2, "cursor")
+#> [1] 200
 ```
 
 Note that the cursor is not equal to how many videos you got before, as the API also counts videos that are "deleted/marked as private by users etc." [See `max_count` in [Query Videos](https://developers.tiktok.com/doc/research-api-specs-query-videos)].
