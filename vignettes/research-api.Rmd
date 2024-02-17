@@ -1,8 +1,8 @@
 ---
-title: "Unofficial API"
+title: "Research API"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{unofficial-api}
+  %\VignetteIndexEntry{research-api}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

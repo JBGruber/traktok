@@ -1,8 +1,8 @@
 ---
-title: "Unofficial API"
+title: "Research API"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{unofficial-api}
+  %\VignetteIndexEntry{research-api}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -175,7 +175,7 @@ search_df <- query() |>
             operation = "IN",
             field_values = c("JP", "US")) |>
   tt_search_api(start_date = as.Date("2023-11-01"),
-                end_date = as.Date("2023-11-29"), 
+                end_date = as.Date("2023-11-29"),
                 max_pages = 1)
 
 attr(search_df, "search_id")
@@ -190,10 +190,10 @@ search_df2 <- query() |>
             operation = "IN",
             field_values = c("JP", "US")) |>
   tt_search_api(start_date = as.Date("2023-11-01"),
-                end_date = as.Date("2023-11-29"), 
-                
+                end_date = as.Date("2023-11-29"),
+
                 # this part is new
-                start_cursor = attr(search_df, "cursor"), 
+                start_cursor = attr(search_df, "cursor"),
                 search_id = attr(search_df, "search_id"),
                 ####
                 max_pages = 1)
