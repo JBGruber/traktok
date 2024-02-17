@@ -113,8 +113,8 @@ tt_videos_hidden <- function(video_urls,
 
     if (i != n_urls && !isTRUE(the$skipped)) {
       wait(sleep_pool, verbose)
-      the$skipped <- FALSE
     }
+    the$skipped <- FALSE
 
     return(video_dat)
   }))
@@ -230,13 +230,15 @@ tt_request_hidden <- function(url,
 
   res <- httr2::req_perform(req)
   status <- httr2::resp_status(res)
-  if (status >= 400)
+  if (status >= 400) {
     cli::cli_warn("Retrieving {url} resulted in html status {status}, the row will contain NAs.")
-
-  out <- res |>
-    httr2::resp_body_html() |>
-    rvest::html_node("#SIGI_STATE,#__UNIVERSAL_DATA_FOR_REHYDRATION__") |>
-    rvest::html_text()
+    out <- paste0('{"__DEFAULT_SCOPE__":{"webapp.video-detail":{"statusCode":"', status, '","statusMsg":"html_error"}}}')
+  } else {
+    out <- res |>
+      httr2::resp_body_html() |>
+      rvest::html_node("#SIGI_STATE,#__UNIVERSAL_DATA_FOR_REHYDRATION__") |>
+      rvest::html_text()
+  }
 
   if (isFALSE(nchar(out) > 10)) stop("no json found")
 
