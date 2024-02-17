@@ -468,7 +468,11 @@ or because you decided you want more results, you can do so by providing
 <span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>ℹ Parsing data</span>
 <span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>✔ Parsing data [21ms]</span></code></pre></div>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>✔ Parsing data [21ms]</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="fu">attr</span>(search_df2, <span class="st">"search_id"</span>)</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "7336340473470063662"</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="fu">attr</span>(search_df2, <span class="st">"cursor"</span>)</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 200</span></span></code></pre></div>
 <p>Note that the cursor is not equal to how many videos you got before,
 as the API also counts videos that are “deleted/marked as private by
 users etc.” [See <code>max_count</code> in <a href="https://developers.tiktok.com/doc/research-api-specs-query-videos" class="external-link">Query
