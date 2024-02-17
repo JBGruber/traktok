@@ -59,7 +59,7 @@ tt_videos_hidden <- function(video_urls,
   dplyr::bind_rows(purrr::map(video_urls, function(u) {
     video_id <- extract_regex(
       u,
-      "(?<=/video/)(.+?)(?=\\?|$)|(?<=https://vm.tiktok.com/).+?(?=/|$)"
+      "(?<=/video/)(.+?)(?=\\?|$)|(?<=/photo/)(.+?)(?=\\?|$)|(?<=https://vm.tiktok.com/).+?(?=/|$)"
     )
     i <- which(u == video_urls)
     done_msg <- ""
@@ -138,7 +138,9 @@ get_video <- function(url,
     if (!is.null(cache_dir)) writeLines(tt_json, json_fn, useBytes = TRUE)
   } else {
     tt_json <- readChar(json_fn, nchars = file.size(json_fn), useBytes = TRUE)
+    # TODO: not ideal as not consistent with request
     attr(tt_json,"url_full") <- url
+    attr(tt_json,"html_status") <- 200L
   }
 
   parse_video(tt_json, video_id)

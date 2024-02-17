@@ -78,7 +78,7 @@ parse_video <- function(json_string, video_id) {
         jsonlite::toJSON()
       out$is_slides <- TRUE
     }
-    return(out)
+
   } else {
     out <- tibble::tibble(
       video_id              = video_id,
@@ -108,7 +108,7 @@ parse_video <- function(json_string, video_id) {
     )
     cli::cli_warn("No video data found")
   }
-
+  return(out)
 }
 
 
