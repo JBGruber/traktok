@@ -77,35 +77,37 @@ tt_videos_hidden <- function(video_urls,
                            verbose = verbose)
 
     regex_url <- extract_regex(video_dat$video_url, "(?<=@).+?(?=\\?|$)")
-    if (save_video) {
-      if (!isTRUE(video_dat$is_slides)) {
-        video_fn <- file.path(dir, paste0(gsub("/", "_", regex_url), ".mp4"))
+    if (isTRUE(video_dat$video_status_code == 0L)) {
+      if (save_video) {
+        if (!isTRUE(video_dat$is_slides)) {
+          video_fn <- file.path(dir, paste0(gsub("/", "_", regex_url), ".mp4"))
 
-        f_name <- save_video(video_url = video_dat$download_url,
-                             video_fn = video_fn,
-                             overwrite = overwrite,
-                             max_tries = max_tries,
-                             cookies = cookies)
-        f_size <- file.size(f_name)
-        if (isTRUE(f_size > 1000)) {
-          done_msg <- glue::glue("File size: {utils:::format.object_size(f_size, 'auto')}.")
-        } else {
-          cli::cli_warn("Video {video_id} has a very small file size (less than 1kB) and is likely corrupt.")
-        }
-        video_dat$video_fn <- video_fn
-      } else { # for slides
-        download_urls <- jsonlite::fromJSON(video_dat$download_url)
-        video_fns <- file.path(dir, paste0(gsub("/", "_", regex_url),
-                                           "_",
-                                           seq_along(download_urls),
-                                           ".jpeg"))
-        purrr::walk2(download_urls, video_fns, function(u, f) {
-          f_name <- save_video(video_url = u,
-                               video_fn = f,
+          f_name <- save_video(video_url = video_dat$download_url,
+                               video_fn = video_fn,
                                overwrite = overwrite,
                                max_tries = max_tries,
                                cookies = cookies)
-        })
+          f_size <- file.size(f_name)
+          if (isTRUE(f_size > 1000)) {
+            done_msg <- glue::glue("File size: {utils:::format.object_size(f_size, 'auto')}.")
+          } else {
+            cli::cli_warn("Video {video_id} has a very small file size (less than 1kB) and is likely corrupt.")
+          }
+          video_dat$video_fn <- video_fn
+        } else { # for slides
+          download_urls <- jsonlite::fromJSON(video_dat$download_url)
+          video_fns <- file.path(dir, paste0(gsub("/", "_", regex_url),
+                                             "_",
+                                             seq_along(download_urls),
+                                             ".jpeg"))
+          purrr::walk2(download_urls, video_fns, function(u, f) {
+            f_name <- save_video(video_url = u,
+                                 video_fn = f,
+                                 overwrite = overwrite,
+                                 max_tries = max_tries,
+                                 cookies = cookies)
+          })
+        }
       }
     }
 
