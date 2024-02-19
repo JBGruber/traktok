@@ -448,7 +448,11 @@ extra pieces of information in the attributes:</p>
 <p>When you want to continue this search, whether because of rate limit
 or because you decided you want more results, you can do so by providing
 <code>search_id</code> and <code>cursor</code> to
-<code>tt_search_api</code>:</p>
+<code>tt_search_api</code>. If your search was cut short by the rate
+limit or another issue, you can retrieve the results already received
+with <code>search_df &lt;- last_query()</code>. <code>search_df</code>
+will in both cases contain the relevant <code>search_id</code> and
+<code>cursor</code> in the attributes:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>search_df2 <span class="ot">&lt;-</span> <span class="fu">query</span>() <span class="sc">|&gt;</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">query_and</span>(<span class="at">field_name =</span> <span class="st">"region_code"</span>,</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">operation =</span> <span class="st">"IN"</span>,</span>
