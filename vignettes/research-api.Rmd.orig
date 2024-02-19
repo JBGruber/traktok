@@ -182,7 +182,9 @@ attr(search_df, "search_id")
 attr(search_df, "cursor")
 ```
 
-When you want to continue this search, whether because of rate limit or because you decided you want more results, you can do so by providing `search_id` and `cursor` to `tt_search_api`:
+When you want to continue this search, whether because of rate limit or because you decided you want more results, you can do so by providing `search_id` and `cursor` to `tt_search_api`.
+If your search was cut short by the rate limit or another issue, you can retrieve the results already received with `search_df <- last_query()`.
+`search_df` will in both cases contain the relevant `search_id` and `cursor` in the attributes:
 
 ```{r}
 search_df2 <- query() |>
