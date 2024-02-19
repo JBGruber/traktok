@@ -68,6 +68,7 @@ tt_videos_hidden <- function(video_urls,
       msg_done = "Got video {video_id} ({i}/{n_urls}). {done_msg}"
     )
 
+    the$retries <- 5L
     video_dat <- get_video(url = u,
                            video_id = video_id,
                            overwrite = overwrite,
@@ -82,11 +83,12 @@ tt_videos_hidden <- function(video_urls,
         if (!isTRUE(video_dat$is_slides)) {
           video_fn <- file.path(dir, paste0(gsub("/", "_", regex_url), ".mp4"))
 
-          f_name <- save_video(video_url = video_dat$download_url,
+          f_name <- save_video(video_dat = video_dat,
                                video_fn = video_fn,
                                overwrite = overwrite,
                                max_tries = max_tries,
                                cookies = cookies)
+
           f_size <- file.size(f_name)
           if (isTRUE(f_size > 1000)) {
             done_msg <- glue::glue("File size: {utils:::format.object_size(f_size, 'auto')}.")
@@ -114,7 +116,7 @@ tt_videos_hidden <- function(video_urls,
     if (i != n_urls && !isTRUE(the$skipped)) {
       wait(sleep_pool, verbose)
     }
-    the$skipped <- FALSE
+    the$skipped <- FALSE # reset skipped
 
     return(video_dat)
   }))
@@ -143,24 +145,38 @@ get_video <- function(url,
     # TODO: not ideal as not consistent with request
     attr(tt_json,"url_full") <- url
     attr(tt_json,"html_status") <- 200L
+    the$skipped <- TRUE
   }
-
-  parse_video(tt_json, video_id)
+  # make sure json can be parsed, otherwise retry
+  out <- try(parse_video(tt_json, video_id), silent = TRUE)
+  if (methods::is(out, "try-error") && the$retries > 0) {
+    the$retries <- the$retries - 1
+    out <- get_video(url,
+                     video_id,
+                     overwrite = TRUE, # most common reason for failure here is a malformed cached json
+                     cache_dir,
+                     max_tries,
+                     cookies,
+                     verbose)
+  }
+  return(out)
 }
 
 
 #' @noRd
-save_video <- function(video_url,
+save_video <- function(video_dat,
                        video_fn,
                        overwrite,
                        max_tries,
                        cookies) {
 
+  video_url <- video_dat$download_url
   f <- structure("", class = "try-error")
   if (!is.null(video_url)) {
 
     if (overwrite || !file.exists(video_fn)) {
       while (methods::is(f, "try-error") && max_tries > 0) {
+        the$skipped <- FALSE
         h <- curl::handle_setopt(
           curl::new_handle(),
           cookie = cookies,
@@ -174,6 +190,15 @@ save_video <- function(video_url,
           cli::cli_alert_warning(
             "Download failed, retrying after 10 seconds. {max_tries} left."
           )
+          # if this fails, the download link has likely expired, so better get a
+          # new one
+          video_url <- get_video(url = video_dat$video_url,
+                                 video_id = video_dat$video_id,
+                                 overwrite = TRUE,
+                                 cache_dir = NULL,
+                                 max_tries = 1,
+                                 cookies = NULL,
+                                 verbose = FALSE)$download_url
           Sys.sleep(10)
         }
 
