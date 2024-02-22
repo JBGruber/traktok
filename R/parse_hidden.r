@@ -75,7 +75,7 @@ parse_video <- function(json_string, video_id) {
     if (identical(out$download_url, "")) {
       out$download_url <- purrr::pluck(video_data, "imagePost", "images", "imageURL", "urlList") |>
         purrr::map_chr(1L) |>
-        jsonlite::toJSON()
+        toString()
       out$is_slides <- TRUE
     }
 
