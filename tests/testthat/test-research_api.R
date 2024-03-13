@@ -86,7 +86,7 @@ test_that("parsing", {
       purrr::pluck("data", "videos") |>
       parse_api_search()
     c(out$video_id, nrow(out), ncol(out))
-  }, c("702874395068494965", "702874395068494965", "2", "11"))
+  }, c("702874395068494965", "702874395068494965", "2", "13"))
   # apparently, sometimes the video_id is just called id
   expect_equal({
     out <- list(list(id = "1"), list(video_id = "2")) |>
