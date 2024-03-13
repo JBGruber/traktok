@@ -141,36 +141,36 @@ whenever necessary.</p>
 <code>tt_search_hidden</code>, which do the same, as long as you do not
 have a token for the Research API. To get the first two pages of search
 results (one page has 12 videos), you can use this command:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>rstats_df <span class="ot">&lt;-</span> <span class="fu">tt_search_hidden</span>(<span class="st">"#rstats"</span>, <span class="at">max_pages =</span> <span class="dv">2</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>ℹ Getting page <span class="dv">1</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>⏲ waiting <span class="fl">0.5</span> seconds</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>ℹ Getting page <span class="dv">1</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>✔ Got page <span class="fl">1.</span> Found <span class="dv">12</span> videos. [<span class="fl">1.9</span>s]</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>ℹ Getting page <span class="dv">2</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>✔ Got page <span class="fl">2.</span> Found <span class="dv">12</span> videos. [690ms]</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>rstats_df</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 24 × 20</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    video_id  video_timestamp     video_url video_length video_title</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;     &lt;dttm&gt;              &lt;glue&gt;           &lt;int&gt; &lt;chr&gt;      </span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 71151144… 2022-06-30 19:17:53 https://…          135 "R for Beg…</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 72522261… 2023-07-05 07:01:45 https://…           36 "Wow!!! TH…</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 72420686… 2023-06-07 22:05:16 https://…           34 "R GRAPHIC…</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 72134135… 2023-03-22 16:49:12 https://…            6 "R and me …</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 72576898… 2023-07-20 00:23:40 https://…           56 "Pie chart…</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 72999870… 2023-11-10 23:58:21 https://…           51 "Quick R Q…</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 72783048… 2023-09-13 13:40:21 https://…           36 "Quick R Q…</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 73029706… 2023-11-19 00:56:09 https://…          163 "What is c…</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 71670108… 2022-11-17 15:42:56 https://…           58 "Here’s an…</span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 72933174… 2023-10-24 00:36:48 https://…            9 "#CapCut #…</span></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 14 more rows</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 15 more variables: video_diggcount &lt;int&gt;,</span></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   video_sharecount &lt;int&gt;, video_commentcount &lt;int&gt;,</span></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   video_playcount &lt;int&gt;, video_is_ad &lt;lgl&gt;, author_name &lt;chr&gt;,</span></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   author_nickname &lt;chr&gt;, author_followercount &lt;int&gt;,</span></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   author_followingcount &lt;int&gt;, author_heartcount &lt;int&gt;,</span></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   author_videocount &lt;int&gt;, author_diggcount &lt;int&gt;, …</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>rstats_df <span class="ot">&lt;-</span> <span class="fu">tt_search_hidden</span>(<span class="st">"#rstats"</span>, <span class="at">max_pages =</span> <span class="dv">2</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>ℹ Getting page <span class="dv">1</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>⏲ waiting <span class="fl">0.5</span> seconds</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>ℹ Getting page <span class="dv">1</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>✔ Got page <span class="fl">1.</span> Found <span class="dv">12</span> videos. [<span class="fl">1.9</span>s]</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>ℹ Getting page <span class="dv">2</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>✔ Got page <span class="fl">2.</span> Found <span class="dv">12</span> videos. [<span class="dv">690</span>ms]</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>rstats_df</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; # A tibble: 24 × 20</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt;    video_id  video_timestamp     video_url video_length video_title</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;     &lt;dttm&gt;              &lt;glue&gt;           &lt;int&gt; &lt;chr&gt;      </span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt;  1 71151144… 2022-06-30 19:17:53 https://…          135 "R for Beg…</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt;  2 72522261… 2023-07-05 07:01:45 https://…           36 "Wow!!! TH…</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt;  3 72420686… 2023-06-07 22:05:16 https://…           34 "R GRAPHIC…</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt;  4 72134135… 2023-03-22 16:49:12 https://…            6 "R and me …</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt;  5 72576898… 2023-07-20 00:23:40 https://…           56 "Pie chart…</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt;  6 72999870… 2023-11-10 23:58:21 https://…           51 "Quick R Q…</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt;  7 72783048… 2023-09-13 13:40:21 https://…           36 "Quick R Q…</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt;  8 73029706… 2023-11-19 00:56:09 https://…          163 "What is c…</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt;  9 71670108… 2022-11-17 15:42:56 https://…           58 "Here’s an…</span></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt; 10 72933174… 2023-10-24 00:36:48 https://…            9 "#CapCut #…</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt; # ℹ 14 more rows</span></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt; # ℹ 15 more variables: video_diggcount &lt;int&gt;,</span></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt; #   video_sharecount &lt;int&gt;, video_commentcount &lt;int&gt;,</span></span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="co">#&gt; #   video_playcount &lt;int&gt;, video_is_ad &lt;lgl&gt;, author_name &lt;chr&gt;,</span></span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="co">#&gt; #   author_nickname &lt;chr&gt;, author_followercount &lt;int&gt;,</span></span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a><span class="co">#&gt; #   author_followingcount &lt;int&gt;, author_heartcount &lt;int&gt;,</span></span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a><span class="co">#&gt; #   author_videocount &lt;int&gt;, author_diggcount &lt;int&gt;, …</span></span></code></pre></div>
 <p>This already gives you pretty much all information you could want
 about the videos that were found.</p>
 </div>
@@ -179,70 +179,70 @@ about the videos that were found.</p>
 </h3>
 <p>However, you can obtain some more information, and importantly the
 video file, using <code>tt_videos</code>:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>rstats_df2 <span class="ot">&lt;-</span> <span class="fu">tt_videos</span>(rstats_df<span class="sc">$</span>video_url[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="at">save_video =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>ℹ Getting video <span class="dv">7115114419314560298</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>⏲ waiting <span class="fl">0.2</span> seconds              </span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>ℹ Getting video <span class="dv">7115114419314560298</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>✔ Got video <span class="dv">7115114419314560298</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>). File size<span class="sc">:</span> <span class="fl">2.5</span> Mb. [<span class="fl">2.5</span>s]</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>ℹ Getting video <span class="dv">7252226153828584731</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>✔ Got video <span class="dv">7252226153828584731</span> (<span class="dv">2</span><span class="sc">/</span><span class="dv">2</span>). File size<span class="sc">:</span> <span class="fl">1.7</span> Mb. [999ms]</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>rstats_df2</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 19</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   video_id   video_url video_timestamp     video_length video_title</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;glue&gt;     &lt;chr&gt;     &lt;dttm&gt;                     &lt;int&gt; &lt;chr&gt;      </span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 711511441… https://… 2022-06-30 19:17:53          135 R for Begi…</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 725222615… https://… 2023-07-05 07:01:45           36 Wow!!! THI…</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 14 more variables: video_locationcreated &lt;chr&gt;,</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   video_diggcount &lt;int&gt;, video_sharecount &lt;int&gt;,</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   video_commentcount &lt;int&gt;, video_playcount &lt;int&gt;,</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   author_username &lt;chr&gt;, author_nickname &lt;chr&gt;,</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   author_bio &lt;chr&gt;, download_url &lt;chr&gt;, html_status &lt;int&gt;,</span></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   music &lt;list&gt;, challenges &lt;list&gt;, is_classified &lt;lgl&gt;,</span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   video_fn &lt;chr&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>rstats_df2 <span class="ot">&lt;-</span> <span class="fu">tt_videos</span>(rstats_df<span class="sc">$</span>video_url[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="at">save_video =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>ℹ Getting video <span class="dv">7115114419314560298</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>⏲ waiting <span class="fl">0.2</span> seconds              </span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>ℹ Getting video <span class="dv">7115114419314560298</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>✔ Got video <span class="dv">7115114419314560298</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>). File size<span class="sc">:</span> <span class="fl">2.5</span> Mb. [<span class="fl">2.5</span>s]</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>ℹ Getting video <span class="dv">7252226153828584731</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>✔ Got video <span class="dv">7252226153828584731</span> (<span class="dv">2</span><span class="sc">/</span><span class="dv">2</span>). File size<span class="sc">:</span> <span class="fl">1.7</span> Mb. [<span class="dv">999</span>ms]</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>rstats_df2</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 19</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt;   video_id   video_url video_timestamp     video_length video_title</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt;   &lt;glue&gt;     &lt;chr&gt;     &lt;dttm&gt;                     &lt;int&gt; &lt;chr&gt;      </span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt; 1 711511441… https://… 2022-06-30 19:17:53          135 R for Begi…</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; 2 725222615… https://… 2023-07-05 07:01:45           36 Wow!!! THI…</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; # ℹ 14 more variables: video_locationcreated &lt;chr&gt;,</span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt; #   video_diggcount &lt;int&gt;, video_sharecount &lt;int&gt;,</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt; #   video_commentcount &lt;int&gt;, video_playcount &lt;int&gt;,</span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co">#&gt; #   author_username &lt;chr&gt;, author_nickname &lt;chr&gt;,</span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt; #   author_bio &lt;chr&gt;, download_url &lt;chr&gt;, html_status &lt;int&gt;,</span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co">#&gt; #   music &lt;list&gt;, challenges &lt;list&gt;, is_classified &lt;lgl&gt;,</span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="co">#&gt; #   video_fn &lt;chr&gt;</span></span></code></pre></div>
 <p>Per default, the function waits between one and ten seconds (chosen
 at random) between making two calls, to not make it too obvious that
 data is scraped from TikTok. You can speed up the process (at your own
 risk), by changing the <code>sleep_pool</code> argument, which controls
 the minimum and maximum number of seconds to wait:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>rstats_df3 <span class="ot">&lt;-</span> <span class="fu">tt_videos</span>(rstats_df<span class="sc">$</span>video_url[<span class="dv">3</span><span class="sc">:</span><span class="dv">4</span>], <span class="at">save_video =</span> <span class="cn">TRUE</span>, <span class="at">sleep_pool =</span> <span class="fl">0.1</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>ℹ Getting video <span class="dv">7242068680484408581</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>⏲ waiting <span class="fl">0.1</span> seconds              </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>ℹ Getting video <span class="dv">7242068680484408581</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>✔ Got video <span class="dv">7242068680484408581</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>). File size<span class="sc">:</span> <span class="fl">1.8</span> Mb. [<span class="fl">2.6</span>s]</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>ℹ Getting video <span class="dv">7213413598998056234</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>✔ Got video <span class="dv">7213413598998056234</span> (<span class="dv">2</span><span class="sc">/</span><span class="dv">2</span>). File size<span class="sc">:</span> <span class="fl">598.1</span> Kb. [<span class="fl">1.7</span>s]</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>rstats_df3</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 19</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   video_id   video_url video_timestamp     video_length video_title</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;glue&gt;     &lt;chr&gt;     &lt;dttm&gt;                     &lt;int&gt; &lt;chr&gt;      </span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 724206868… https://… 2023-06-07 22:05:16           34 "R GRAPHIC…</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 721341359… https://… 2023-03-22 16:49:12            6 "R and me …</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 14 more variables: video_locationcreated &lt;chr&gt;,</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   video_diggcount &lt;int&gt;, video_sharecount &lt;int&gt;,</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   video_commentcount &lt;int&gt;, video_playcount &lt;int&gt;,</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   author_username &lt;chr&gt;, author_nickname &lt;chr&gt;,</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   author_bio &lt;chr&gt;, download_url &lt;chr&gt;, html_status &lt;int&gt;,</span></span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   music &lt;list&gt;, challenges &lt;list&gt;, is_classified &lt;lgl&gt;,</span></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   video_fn &lt;chr&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>rstats_df3 <span class="ot">&lt;-</span> <span class="fu">tt_videos</span>(rstats_df<span class="sc">$</span>video_url[<span class="dv">3</span><span class="sc">:</span><span class="dv">4</span>], <span class="at">save_video =</span> <span class="cn">TRUE</span>, <span class="at">sleep_pool =</span> <span class="fl">0.1</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>ℹ Getting video <span class="dv">7242068680484408581</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>⏲ waiting <span class="fl">0.1</span> seconds              </span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>ℹ Getting video <span class="dv">7242068680484408581</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>✔ Got video <span class="dv">7242068680484408581</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>). File size<span class="sc">:</span> <span class="fl">1.8</span> Mb. [<span class="fl">2.6</span>s]</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>ℹ Getting video <span class="dv">7213413598998056234</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>✔ Got video <span class="dv">7213413598998056234</span> (<span class="dv">2</span><span class="sc">/</span><span class="dv">2</span>). File size<span class="sc">:</span> <span class="fl">598.1</span> Kb. [<span class="fl">1.7</span>s]</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>rstats_df3</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 19</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt;   video_id   video_url video_timestamp     video_length video_title</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt;   &lt;glue&gt;     &lt;chr&gt;     &lt;dttm&gt;                     &lt;int&gt; &lt;chr&gt;      </span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt; 1 724206868… https://… 2023-06-07 22:05:16           34 "R GRAPHIC…</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt; 2 721341359… https://… 2023-03-22 16:49:12            6 "R and me …</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co">#&gt; # ℹ 14 more variables: video_locationcreated &lt;chr&gt;,</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="co">#&gt; #   video_diggcount &lt;int&gt;, video_sharecount &lt;int&gt;,</span></span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="co">#&gt; #   video_commentcount &lt;int&gt;, video_playcount &lt;int&gt;,</span></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="co">#&gt; #   author_username &lt;chr&gt;, author_nickname &lt;chr&gt;,</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="co">#&gt; #   author_bio &lt;chr&gt;, download_url &lt;chr&gt;, html_status &lt;int&gt;,</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="co">#&gt; #   music &lt;list&gt;, challenges &lt;list&gt;, is_classified &lt;lgl&gt;,</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="co">#&gt; #   video_fn &lt;chr&gt;</span></span></code></pre></div>
 <p>When you are scraping a lot of URLs, the function might fail
 eventually, due to a poor connection or because TikTok is blocking your
 requests. It therefore usually makes sense to save your progress in a
 cache directory:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rstats_df3 <span class="ot">&lt;-</span> <span class="fu">tt_videos</span>(rstats_df<span class="sc">$</span>video_url[<span class="dv">5</span><span class="sc">:</span><span class="dv">6</span>], <span class="at">cache_dir =</span> <span class="st">"rstats"</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>ℹ Getting video <span class="dv">7257689890245201153</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>⏲ waiting <span class="fl">1.7</span> seconds</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>ℹ Getting video <span class="dv">7257689890245201153</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>✔ Got video <span class="dv">7257689890245201153</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>). File size<span class="sc">:</span> <span class="fl">1.7</span> Mb. [<span class="fl">2.6</span>s]</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>ℹ Getting video <span class="dv">7299987059417042209</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>✔ Got video <span class="dv">7299987059417042209</span> (<span class="dv">2</span><span class="sc">/</span><span class="dv">2</span>). File size<span class="sc">:</span> <span class="fl">1.2</span> Mb. [<span class="fl">1.8</span>s]</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>(<span class="st">"rstats"</span>)</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "7257689890245201153.json" "7299987059417042209.json"</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>rstats_df3 <span class="ot">&lt;-</span> <span class="fu">tt_videos</span>(rstats_df<span class="sc">$</span>video_url[<span class="dv">5</span><span class="sc">:</span><span class="dv">6</span>], <span class="at">cache_dir =</span> <span class="st">"rstats"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>ℹ Getting video <span class="dv">7257689890245201153</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>⏲ waiting <span class="fl">1.7</span> seconds</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>ℹ Getting video <span class="dv">7257689890245201153</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>✔ Got video <span class="dv">7257689890245201153</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>). File size<span class="sc">:</span> <span class="fl">1.7</span> Mb. [<span class="fl">2.6</span>s]</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>ℹ Getting video <span class="dv">7299987059417042209</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>✔ Got video <span class="dv">7299987059417042209</span> (<span class="dv">2</span><span class="sc">/</span><span class="dv">2</span>). File size<span class="sc">:</span> <span class="fl">1.2</span> Mb. [<span class="fl">1.8</span>s]</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="fu">list.files</span>(<span class="st">"rstats"</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt; [1] "7257689890245201153.json" "7299987059417042209.json"</span></span></code></pre></div>
 <p>Note that the video files are downloaded into the <code>dir</code>
 directory (your working directory by default), independently from your
 cache directory.</p>
