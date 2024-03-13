@@ -14,6 +14,7 @@ tt_search_api(
   search_id = NULL,
   is_random = FALSE,
   max_pages = 1,
+  parse = TRUE,
   cache = TRUE,
   verbose = TRUE,
   token = NULL
@@ -28,6 +29,7 @@ tt_query_videos(
   search_id = NULL,
   is_random = FALSE,
   max_pages = 1,
+  parse = TRUE,
   cache = TRUE,
   verbose = TRUE,
   token = NULL
@@ -51,6 +53,9 @@ picking up an old search)}
 \item{max_pages}{results are returned in batches/pages with 100 videos. How
 many should be requested before the function stops?}
 
+\item{parse}{Should the results be parsed? Otherwise, the original JSON
+object is returned as a nested list.}
+
 \item{cache}{should progress be saved in the current session? It can then be
 retrieved with \code{last_query()} if an error occurs. But the function
 will use extra memory.}
@@ -61,7 +66,7 @@ will use extra memory.}
 running auth_research once)}
 }
 \value{
-A data.frame of parsed TikTok videos
+A data.frame of parsed TikTok videos (or a nested list).
 }
 \description{
 \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:

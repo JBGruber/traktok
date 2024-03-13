@@ -16,13 +16,15 @@
 #' @param is_random Whether the query is random (defaults to FALSE)
 #' @param max_pages results are returned in batches/pages with 100 videos. How
 #'   many should be requested before the function stops?
+#' @param parse Should the results be parsed? Otherwise, the original JSON
+#'   object is returned as a nested list.
 #' @param cache should progress be saved in the current session? It can then be
 #'   retrieved with \code{last_query()} if an error occurs. But the function
 #'   will use extra memory.
 #' @param verbose should the function print status updates to the screen?
 #' @param token The authentication token (usually supplied automatically after
 #'   running auth_research once)
-#' @return A data.frame of parsed TikTok videos
+#' @return A data.frame of parsed TikTok videos (or a nested list).
 #' @export
 #' @examples
 #' \dontrun{
@@ -72,6 +74,7 @@ tt_search_api <- function(query,
                           search_id = NULL,
                           is_random = FALSE,
                           max_pages = 1,
+                          parse = TRUE,
                           cache = TRUE,
                           verbose = TRUE,
                           token = NULL) {
@@ -156,14 +159,19 @@ tt_search_api <- function(query,
     if (verbose) cli::cli_progress_done()
   }
 
-  if (verbose) {
-    cli::cli_progress_done()
-    cli::cli_progress_step("Parsing data")
+  if (parse) {
+    if (verbose) {
+      cli::cli_progress_done()
+      cli::cli_progress_step("Parsing data")
+    }
+    videos <- parse_api_search(videos)
+    if (verbose) cli::cli_progress_done()
+  } else {
+    attr(videos, "search_id") <- the$search_id
+    attr(videos, "cursor") <- the$cursor
   }
-  out <- parse_api_search(videos)
 
-  if (verbose) cli::cli_progress_done()
-  return(out)
+  return(videos)
 }
 
 

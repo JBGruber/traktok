@@ -6,6 +6,8 @@ parse_api_search <- function(x) {
     author_name       = vpluck(x, "username", val = "character"),
     view_count        = vpluck(x, "view_count", val = "integer"),
     comment_count     = vpluck(x, "comment_count", val = "integer"),
+    share_count       = vpluck(x, "share_count", val = "integer"),
+    like_count        = vpluck(x, "like_count", val = "integer"),
     region_code       = vpluck(x, "region_code", val = "character"),
     create_time       = as.POSIXct(vpluck(x, "create_time", val = "integer"),
                                    tz = "UTC", origin = "1970-01-01"),
