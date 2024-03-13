@@ -97,7 +97,8 @@ tt_videos_hidden <- function(video_urls,
           }
           video_dat$video_fn <- video_fn
         } else { # for slides
-          download_urls <- jsonlite::fromJSON(video_dat$download_url)
+          download_urls <- strsplit(video_dat$download_url, ", ", fixed = TRUE) |>
+            unlist()
           video_fns <- file.path(dir, paste0(gsub("/", "_", regex_url),
                                              "_",
                                              seq_along(download_urls),
