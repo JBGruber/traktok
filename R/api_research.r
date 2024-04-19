@@ -213,24 +213,36 @@ tt_user_info_api <- function(username,
         "(?<=.com/@)(.+?)(?=\\?|$|/)"
       )
     }
-
+    if (verbose) cli::cli_progress_step(msg = "Getting user {u}",
+                                        msg_done = "Got user {u}")
+    the$result <- TRUE
     if (is.null(token)) token <- get_token()
 
     if (fields == "all")
       fields <- "display_name,bio_description,avatar_url,is_verified,follower_count,following_count,likes_count,video_count"
 
     # /tests/testthat/example_resp_q_user.json
-    httr2::request("https://open.tiktokapis.com/v2/research/user/info/") |>
+    out <- httr2::request("https://open.tiktokapis.com/v2/research/user/info/") |>
       httr2::req_method("POST") |>
       httr2::req_url_query(fields = fields) |>
       httr2::req_headers("Content-Type" = "application/json") |>
       httr2::req_auth_bearer_token(token$access_token) |>
       httr2::req_body_json(data = list(username = u)) |>
-      httr2::req_error(body = function(resp) {
+      httr2::req_error(is_error = function(resp) {
+        if (httr2::resp_status(resp) < 400L) return(FALSE)
+        if (grepl("cannot find the user",
+                   httr2::resp_body_json(resp)$error$message)) {
+          cli::cli_alert_warning(httr2::resp_body_json(resp)$error$message)
+          the$result <- FALSE
+          return(FALSE)
+        }
+        return(TRUE)
+      }, body = function(resp) {
+        resp_data <- httr2::resp_body_json(resp)
         c(
-          paste("status:", httr2::resp_body_json(resp)$error$code),
-          paste("message:", httr2::resp_body_json(resp)$error$message),
-          paste("log_id:", httr2::resp_body_json(resp)$error$log_id)
+          paste("status:",  resp_data$error$code),
+          paste("message:", resp_data$error$message),
+          paste("log_id:",  resp_data$error$log_id)
         )
       }) |>
       httr2::req_retry(max_tries = 5) |>
@@ -238,9 +250,11 @@ tt_user_info_api <- function(username,
       httr2::resp_body_json(bigint_as_char = TRUE) |>
       purrr::pluck("data") |>
       tibble::as_tibble()
+    if (verbose & !the$result) cli::cli_progress_done(result = "failed")
+    return(out)
   }) |>
     dplyr::bind_rows()
-
+  if (verbose) cli::cli_progress_done()
 }
 
 
