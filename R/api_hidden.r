@@ -48,7 +48,9 @@ tt_videos_hidden <- function(video_urls,
                              verbose = TRUE,
                              ...) {
 
+  video_urls <- unique(video_urls)
   n_urls <- length(video_urls)
+  if (verbose) cli::cli_alert_info("Getting {n_urls} unique link{?s}")
   if (!is.null(cookiefile)) cookiemonster::add_cookies(cookiefile)
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
   f_name <- ""
