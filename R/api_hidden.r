@@ -114,7 +114,7 @@ tt_videos_hidden <- function(video_urls,
       }
     }
 
-    if (all(i != n_urls && !isTRUE(the$skipped))) {
+    if (all(i != n_urls, !isTRUE(the$skipped))) {
       wait(sleep_pool, verbose)
     }
     the$skipped <- FALSE # reset skipped
