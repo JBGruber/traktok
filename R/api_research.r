@@ -205,7 +205,7 @@ tt_user_info_api <- function(username,
                              verbose = TRUE,
                              token = NULL) {
 
-  purrr::map(username, function(u) {
+  out <- purrr::map(username, function(u) {
     # if username is given as URL
     if (grepl("/", u)) {
       u <- extract_regex(
@@ -255,6 +255,7 @@ tt_user_info_api <- function(username,
   }) |>
     dplyr::bind_rows()
   if (verbose) cli::cli_progress_done()
+  return(out)
 }
 
 
