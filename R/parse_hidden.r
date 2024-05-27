@@ -114,6 +114,9 @@ parse_video <- function(json_string, video_id) {
 
 #' @noRd
 parse_search <- function(res) {
+  if (length(purrr::pluck(res, "body")) == 0L)
+    cli::cli_abort("Unfortunalty, the search endpoint has changed and returns empty results. See {.url https://github.com/JBGruber/traktok/issues/14}.")
+
   tt_data <- res |>
     httr2::resp_body_json()
 
