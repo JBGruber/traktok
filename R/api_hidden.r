@@ -612,7 +612,11 @@ tt_user_videos_hidden <- function(username,
 
 solve_captcha <- function(sess) {
   captcha <- rvest::html_element(sess, "#captcha-verify-image")
-  if (length(captcha) == 0L) return(TRUE)
-  sess$view()
+  if (length(captcha) == 0L) {
+    the$view <- NULL
+    return(TRUE)
+  }
+  if (is.null(the$view))
+    the$view <- sess$view()
   solve_captcha(sess)
 }
