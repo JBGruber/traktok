@@ -65,6 +65,7 @@ a data.frame of followers
 }
 \examples{
 \dontrun{
-tt_get_follower_hidden("MS4wLjABAAAAun-1Cl5bjjlMXYCkKo58aPekMkPkkFkWB0y0-lSIJ-EMQ_1RLj1slviOVj0Vpuv9")
+df <- tt_user_info_hidden("https://www.tiktok.com/@fpoe_at")
+tt_get_follower_hidden(df$secUid)
 }
 }

@@ -374,66 +374,53 @@ tt_search_hidden <- function(query,
 }
 
 
-### does not work because of code challenge happening in the browser
-# #' Get infos about a user from the hidden API
-# #'
-# #' @param username A URL to a video. Currently does not work with the user's
-# #'   page.
-# #' @param parse Whether to parse the data into a data.frame (set to FALSE to get
-# #'   the full list).
-# #'
-# #' @return A data.frame or list, depending on the parse setting.
-# #' @export
-# #' @inheritParams tt_search_hidden
-# tt_user_info_hidden <- function(username,
-#                                 parse = TRUE,
-#                                 sleep_pool = 1:10,
-#                                 max_tries = 5L,
-#                                 cookiefile = NULL,
-#                                 verbose = TRUE) {
-#
-#   if (!is.null(cookiefile)) cookiemonster::add_cookies(cookiefile)
-#
-#   purrr::map(username, function(u) {
-#     u <- sub("^@", "", urltools::domain(u))
-#     if (verbose) cli::cli_progress_step("Getting user {u}")
-#     html <- httr2::request(glue::glue("https://www.tiktok.com/@{u}")) |>
-#       httr2::req_headers(
-#         "User-Agent" = "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/117.0",
-#         "Accept" = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-#         "Accept-Language" = "en-US,en;q=0.5",
-#         "Accept-Encoding" = "gzip, deflate, br",
-#         "Upgrade-Insecure-Requests" = "1",
-#         "Sec-Fetch-Dest" = "document",
-#         "Sec-Fetch-Mode" = "navigate",
-#         "Sec-Fetch-Site" = "cross-site",
-#         "Connection" = "keep-alive"
-#       ) |>
-#       httr2::req_options(cookie = cookies) |>
-#       httr2::req_perform() |>
-#       httr2::resp_body_html()
-#
-#     json <- html |>
-#       rvest::html_element("#__UNIVERSAL_DATA_FOR_REHYDRATION__") |>
-#       rvest::html_text()
-#
-#     if (!is.na(json)) {
-#       user_data <- json |>
-#         jsonlite::fromJSON()
-#     } else {
-#       cli::cli_alert_warning("Could not retrieve data for user {u}")
-#       user_data <- list()
-#     }
-#
-#     wait(sleep_pool)
-#     if (parse) {
-#       return(parse_user(user_data))
-#     } else {
-#       return(user_data)
-#     }
-#   }) |>
-#     dplyr::bind_rows()
-# }
+#' Get infos about a user from the hidden API
+#'
+#' @param username A URL to a video or username.
+#' @param parse Whether to parse the data into a data.frame (set to FALSE to get
+#'   the full list).
+#'
+#' @return A data.frame of user info.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' df <- tt_user_info_hidden("https://www.tiktok.com/@fpoe_at")
+#' }
+tt_user_info_hidden <- function(username,
+                                parse = TRUE) {
+
+  if (packageVersion("rvest") < "1.0.4") {
+    cli::cli_abort(paste("This function requires an updated version of rvest.",
+                         "Use {.code install.packages(\"rvest\")} to update."))
+  }
+
+  if (!grepl("^http[s]*://", username)) {
+    username <- paste0("https://www.tiktok.com/@", username)
+  }
+
+  #TODO: check if username is a valid tiktok link now
+  sess <- rvest::read_html_live(username)
+
+  json <- sess |>
+    rvest::html_element("#__UNIVERSAL_DATA_FOR_REHYDRATION__") |>
+    rvest::html_text()
+
+  if (!is.na(json)) {
+    user_data <- json |>
+      jsonlite::fromJSON()
+  } else {
+    cli::cli_alert_warning("Could not retrieve data for user")
+    user_data <- list()
+  }
+
+  if (parse) {
+    return(parse_user(user_data))
+  } else {
+    return(user_data)
+  }
+
+}
 
 
 #' @title Get followers and following of a user from the hidden API
@@ -452,7 +439,8 @@ tt_search_hidden <- function(query,
 #'
 #' @examples
 #' \dontrun{
-#' tt_get_follower_hidden("MS4wLjABAAAAun-1Cl5bjjlMXYCkKo58aPekMkPkkFkWB0y0-lSIJ-EMQ_1RLj1slviOVj0Vpuv9")
+#' df <- tt_user_info_hidden("https://www.tiktok.com/@fpoe_at")
+#' tt_get_follower_hidden(df$secUid)
 #' }
 tt_get_following_hidden <- function(secuid,
                                     sleep_pool = 1:10,
@@ -563,4 +551,68 @@ tt_get_follower_hidden <- function(secuid,
   )
   return(parse_followers(follower_data))
 
+}
+
+
+#' Get videos from a TikTok user's profile
+#'
+#' This function uses rvest to scrape a TikTok user's profile and retrieve any hidden videos.
+#' @description \ifelse{html}{\figure{api-unofficial}{options: alt='[Works on:
+#'   Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
+#'
+#'   Get all videos posted by a TikTok user.
+#'
+#' @param username The username of the TikTok user whose hidden videos you want to retrieve.
+#' @param solve_captchas open browser to solve appearing captchas manually.
+#' @param return_urls return video URLs instead of downloading the vidoes.
+#' @param timeout time (in seconds) to wait between scrolling and solving captchas.
+#' @param ... Additional arguments to be passed to the \code{\link{tt_videos_hidden}} function.
+#'
+#' @return A list of video data or URLs, depending on the value of \code{return_urls}.
+#'
+#' @examples
+#' \dontrun{
+#' # Get hidden videos from the user "fpoe_at"
+#' tt_user_videos_hidden("fpoe_at")
+#' }
+#' @export
+tt_user_videos_hidden <- function(username,
+                                  solve_captchas = FALSE,
+                                  return_urls = FALSE,
+                                  timeout = 5L,
+                                  ...) {
+
+  if (packageVersion("rvest") < "1.0.4") {
+    cli::cli_abort(paste("This function requires an updated version of rvest.",
+                         "Use {.code install.packages(\"rvest\")} to update."))
+  }
+
+  if (!grepl("^http[s]*://", username)) {
+    username <- paste0("https://www.tiktok.com/@", username)
+  }
+
+  #TODO: check if username is a valid tiktok link now
+  sess <- rvest::read_html_live(username)
+  last_y <- -1
+  #scroll as far as possible
+  while (sess$get_scroll_position()$y > last_y) {
+    last_y <- sess$get_scroll_position()$y
+    sess$scroll_to(top = 10 ^ 5)
+    solve_captcha(sess)
+    Sys.sleep(timeout * runif(1, 1, 3))
+  }
+
+  urls <- sess |>
+    rvest::html_elements("a") |>
+    rvest::html_attr("href")
+  urls <- grep(username, x = urls, value = TRUE)
+  if (return_urls) return(urls)
+  tt_videos_hidden(urls, ...)
+}
+
+solve_captcha <- function(sess) {
+  captcha <- rvest::html_element(sess, "#captcha-verify-image")
+  if (length(captcha) == 0L) return(TRUE)
+  sess$view()
+  solve_captcha(sess)
 }
