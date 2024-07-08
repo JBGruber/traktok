@@ -53,3 +53,27 @@ You can install the development version of traktok from
 # install.packages("remotes")
 remotes::install_github("JBGruber/traktok")
 ```
+
+## In Research
+
+The research papers and projects below have used traktok to gather their
+data:
+
+1.  Hohner, J., Kakavand, A., & Rothut, S. (2024). Analyzing Radical
+    Visuals at Scale: How Far-Right Groups Mobilize on TikTok. Journal
+    of Digital Social Research, 6(1), 10–30.
+    <https://doi.org/10.33621/jdsr.v6i1.200>
+2.  Bach, P., Gitomer, A., Devries, M., Walker, C., Deyoe, D.,
+    Atienza-Bathelemy, J., Foucault Welles, B., Freelon, D., & Zulli, D.
+    (2023, October). Stitching Politics and Identity on TikTok. Panel
+    presented at AoIR2023: The 24th Annual Conference of the Association
+    of Internet Researchers. Philadelphia, PA, USA: AoIR. Retrieved from
+    <http://spir.aoir.org>
+3.  Wirz, D. S., Zai, F., Vogler, D., Urman, A., & Eisenegger, M.
+    (2023). Die Qualität von Schweizer Medien auf Instagram und TikTok.
+    <https://doi.org/10.5167/UZH-238605>
+4.  Giglietto, F. (2024). Dashboard: TikTok Coordinated Sharing Network.
+    <https://fabiogiglietto.github.io/tiktok_csbn/tt_viz.html>
+
+If you have used traktok in your research paper or project, please
+extend this list through a Pull Request or create an issue
