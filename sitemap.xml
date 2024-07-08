@@ -1,78 +1,28 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://jbgruber.github.io/traktok/404.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/articles/research-api.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/articles/unofficial-api.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/index.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/reference/auth_hidden.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/reference/auth_research.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/reference/last_query.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/reference/print.traktok_query.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/reference/print.tt_results.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/reference/query.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/reference/tt_comments_api.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/reference/tt_get_following_hidden.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/reference/tt_json.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/reference/tt_request_hidden.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/reference/tt_search.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/reference/tt_search_api.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/reference/tt_search_hidden.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/reference/tt_user_info_api.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/reference/tt_user_info_hidden.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/reference/tt_user_videos_hidden.html</loc>
-  </url>
-  <url>
-    <loc>https://jbgruber.github.io/traktok/reference/tt_videos_hidden.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://jbgruber.github.io/traktok/404.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/articles/index.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/articles/research-api.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/articles/unofficial-api.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/authors.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/index.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/news/index.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/reference/auth_hidden.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/reference/auth_research.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/reference/index.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/reference/last_query.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/reference/print.traktok_query.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/reference/print.tt_results.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/reference/query.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/reference/tt_comments_api.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/reference/tt_get_following_hidden.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/reference/tt_json.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/reference/tt_request_hidden.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/reference/tt_search.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/reference/tt_search_api.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/reference/tt_search_hidden.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/reference/tt_user_info_api.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/reference/tt_user_info_hidden.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/reference/tt_user_videos_hidden.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/reference/tt_videos_hidden.html</loc></url>
 </urlset>
+
