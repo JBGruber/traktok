@@ -580,6 +580,7 @@ tt_user_videos_hidden <- function(username,
                                   solve_captchas = FALSE,
                                   return_urls = FALSE,
                                   timeout = 5L,
+                                  verbose = TRUE,
                                   ...) {
 
   if (packageVersion("rvest") < "1.0.4") {
@@ -592,31 +593,49 @@ tt_user_videos_hidden <- function(username,
   }
 
   #TODO: check if username is a valid tiktok link now
+  if (verbose) cli::cli_progress_step("Opening {username}")
+  # reset captcha warning
+  the$captcha <- NULL
   sess <- rvest::read_html_live(username)
   last_y <- -1
   #scroll as far as possible
+  if (verbose) cli::cli_progress_bar(format = "{cli::pb_spin} Scrolling down (y={last_y})")
   while (sess$get_scroll_position()$y > last_y) {
+    solve_captcha(sess, solve = solve_captchas)
     last_y <- sess$get_scroll_position()$y
     sess$scroll_to(top = 10 ^ 5)
-    solve_captcha(sess)
+    if (verbose) cli::cli_progress_update()
     Sys.sleep(timeout * runif(1, 1, 3))
   }
-
+  if (verbose) cli::cli_progress_step("Collecting discovered URLs")
   urls <- sess |>
     rvest::html_elements("a") |>
     rvest::html_attr("href")
-  urls <- grep(username, x = urls, value = TRUE)
+  urls <- grep(username, x = urls, value = TRUE) |>
+    unique()
+  if (verbose) {
+    cli::cli_progress_done()
+    cli::cli_alert_success("{length(urls)} URLs discovered")
+  }
   if (return_urls) return(urls)
   tt_videos_hidden(urls, ...)
 }
 
-solve_captcha <- function(sess) {
-  captcha <- rvest::html_element(sess, "#captcha-verify-image")
+solve_captcha <- function(sess, solve) {
+  captcha <- rvest::html_element(sess, "#captcha-verify-image,.captcha-verify-container")
   if (length(captcha) == 0L) {
     the$view <- NULL
+    the$captcha <- NULL
     return(TRUE)
   }
-  if (is.null(the$view))
-    the$view <- sess$view()
-  solve_captcha(sess)
+  # display status once
+  if (is.null(the$captcha)) {
+    cli::cli_alert_info("Captcha discovered")
+    the$captcha <- TRUE
+  }
+  if (solve) {
+    if (is.null(the$view))
+      the$view <- sess$view()
+    solve_captcha(sess, solve = solve)
+  }
 }
