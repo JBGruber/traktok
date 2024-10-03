@@ -166,11 +166,10 @@ tt_search_api <- function(query,
     }
     videos <- parse_api_search(videos)
     if (verbose) cli::cli_progress_done()
-  } else {
-    attr(videos, "search_id") <- the$search_id
-    attr(videos, "cursor") <- the$cursor
   }
-
+  class(videos) <- c("tt_results", class(videos))
+  attr(videos, "search_id") <- the$search_id
+  attr(videos, "cursor") <- the$cursor
   return(videos)
 }
 
@@ -180,7 +179,55 @@ tt_search_api <- function(query,
 tt_query_videos <- tt_search_api
 
 
-#' Lookup TikTok information about a user using the research API
+# used to iterate over search requests
+tt_query_request <- function(endpoint,
+                             query = NULL,
+                             video_id = NULL,
+                             start_date = NULL,
+                             end_date = NULL,
+                             fields = NULL,
+                             cursor = NULL,
+                             search_id = NULL,
+                             is_random = NULL,
+                             token) {
+
+  if (is.null(token)) token <- get_token()
+
+  if (!is.null(query) && !is_query(query))
+    cli::cli_abort("query needs to be a query object (see {.code ?query})")
+
+  body <- list(query = unclass(query),
+               video_id = video_id,
+               start_date = start_date,
+               end_date = end_date,
+               max_count = 100L,
+               cursor = cursor,
+               search_id = search_id,
+               is_random = is_random)
+
+  httr2::request("https://open.tiktokapis.com/v2/research/video/") |>
+    httr2::req_url_path_append(endpoint) |>
+    httr2::req_method("POST") |>
+    httr2::req_url_query(fields = fields) |>
+    httr2::req_headers("Content-Type" = "application/json") |>
+    httr2::req_auth_bearer_token(token$access_token) |>
+    httr2::req_body_json(data = purrr::discard(body, is.null)) |>
+    httr2::req_error(body = api_error_handler) |>
+    httr2::req_retry(
+      max_tries = 5L,
+      # don't retry when daily quota is reached
+      is_transient = function(resp)
+        httr2::resp_status(resp) %in% c(301:399, 401:428, 430:599),
+      # increase backoff after each try
+      backoff = function(t) t ^ 3
+    ) |>
+    httr2::req_perform() |>
+    httr2::resp_body_json(bigint_as_char = TRUE)
+
+}
+
+
+#' Lookup which videos were liked by a user using the research API
 #'
 #' @description \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:
 #'   Research API]'}}{\strong{[Works on: Research API]}}
@@ -188,6 +235,123 @@ tt_query_videos <- tt_search_api
 #' @param username name(s) of the user(s) to be queried
 #' @param fields The fields to be returned (defaults to all)
 #' @inheritParams tt_search_api
+#'
+#' @return A data.frame of parsed TikTok videos the user has posted
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' tt_user_liked_videos_api("jbgruber")
+#' # OR
+#' tt_user_liked_videos_api("https://www.tiktok.com/@tiktok")
+#' # OR
+#' tt_user_liked_videos_api("https://www.tiktok.com/@tiktok")
+#'
+#' # note: none of these work because nobody has this enabled!
+#' }
+tt_user_liked_videos_api <- function(username,
+                                     fields = "all",
+                                     max_pages = 1,
+                                     cache = TRUE,
+                                     verbose = TRUE,
+                                     token = NULL) {
+
+  out <- purrr::map(username, function(u) {
+    # if username is given as URL
+    if (grepl("/", u)) {
+      u <- extract_regex(
+        u,
+        "(?<=.com/@)(.+?)(?=\\?|$|/)"
+      )
+    }
+    if (verbose) cli::cli_progress_step(msg = "Getting user {u}",
+                                        msg_done = "Got user {u}")
+    the$result <- TRUE
+    if (is.null(token)) token <- get_token()
+
+    if (fields == "all") {
+      fields <- c(
+        "id",
+        "create_time",
+        "username",
+        "region_code",
+        "video_description",
+        "music_id",
+        "like_count",
+        "comment_count",
+        "share_count",
+        "view_count",
+        "hashtag_names",
+        " is_stem_verified",
+        # " favourites_count",
+        " video_duration"
+      ) |>
+        paste0(collapse = ",")
+    }
+
+    res <- list(data = list(has_more = TRUE, cursor = NULL))
+    the$page <-  0L
+    videos <- list()
+    # iterate over pages
+    while (purrr::pluck(res, "data", "has_more", .default = FALSE) && the$page < max_pages) {
+      the$cursor <- purrr::pluck(res, "data", "cursor")
+
+      res <- tt_user_request(endpoint = "liked_videos/",
+                             username = u,
+                             fields = fields,
+                             cursor = the$cursor,
+                             token = token)
+
+      videos <- c(videos, purrr::pluck(res, "data", "user_liked_videos"))
+      if (cache) {
+        the$videos <- videos
+      }
+    }
+
+    videos <- dplyr::bind_rows(videos)
+    videos$liked_by_user <- u
+    if (verbose) cli::cli_progress_done(
+      result	= ifelse(length(videos) > 1, "done", "failed")
+    )
+
+    return(videos)
+  }) |>
+    dplyr::bind_rows()
+  return(out)
+}
+
+
+# used to iterate over search requests
+tt_user_request <- function(endpoint,
+                            username,
+                            fields,
+                            cursor,
+                            token) {
+
+  httr2::request("https://open.tiktokapis.com/v2/research/user/") |>
+    httr2::req_url_path_append(endpoint) |>
+    httr2::req_method("POST") |>
+    httr2::req_url_query(fields = fields) |>
+    httr2::req_headers("Content-Type" = "application/json") |>
+    httr2::req_auth_bearer_token(token$access_token) |>
+    httr2::req_body_json(data = list(username = username,
+                                     max_count = 100L,
+                                     cursor = cursor)) |>
+    httr2::req_error(is_error = api_user_error_checker,
+                     body = api_error_handler) |>
+    httr2::req_retry(max_tries = 5) |>
+    httr2::req_perform() |>
+    httr2::resp_body_json(bigint_as_char = TRUE)
+
+}
+
+
+#' Lookup TikTok information about a user using the research API
+#'
+#' @description \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:
+#'   Research API]'}}{\strong{[Works on: Research API]}}
+#'
+#' @inheritParams tt_user_liked_videos_api
 #'
 #' @return A data.frame of parsed TikTok videos the user has posted
 #' @export
@@ -218,8 +382,19 @@ tt_user_info_api <- function(username,
     the$result <- TRUE
     if (is.null(token)) token <- get_token()
 
-    if (fields == "all")
-      fields <- "display_name,bio_description,avatar_url,is_verified,follower_count,following_count,likes_count,video_count"
+    if (fields == "all") {
+      fields <- c(
+        "display_name",
+        "bio_description",
+        "avatar_url",
+        "is_verified",
+        "follower_count",
+        "following_count",
+        "likes_count",
+        "video_count"
+      ) |>
+        paste0(collapse = ",")
+    }
 
     # /tests/testthat/example_resp_q_user.json
     out <- httr2::request("https://open.tiktokapis.com/v2/research/user/info/") |>
@@ -228,16 +403,8 @@ tt_user_info_api <- function(username,
       httr2::req_headers("Content-Type" = "application/json") |>
       httr2::req_auth_bearer_token(token$access_token) |>
       httr2::req_body_json(data = list(username = u)) |>
-      httr2::req_error(is_error = function(resp) {
-        if (httr2::resp_status(resp) < 400L) return(FALSE)
-        if (grepl("cannot find the user",
-                   httr2::resp_body_json(resp)$error$message)) {
-          cli::cli_alert_warning(httr2::resp_body_json(resp)$error$message)
-          the$result <- FALSE
-          return(FALSE)
-        }
-        return(TRUE)
-      }, body = api_error_handler) |>
+      httr2::req_error(is_error = api_user_error_checker,
+                       body = api_error_handler) |>
       httr2::req_retry(max_tries = 5) |>
       httr2::req_perform() |>
       httr2::resp_body_json(bigint_as_char = TRUE) |>
@@ -334,53 +501,6 @@ tt_comments_api <- function(video_id,
 }
 
 
-tt_query_request <- function(endpoint,
-                             query = NULL,
-                             video_id = NULL,
-                             start_date = NULL,
-                             end_date = NULL,
-                             fields = NULL,
-                             cursor = NULL,
-                             search_id = NULL,
-                             is_random = NULL,
-                             token) {
-
-  if (is.null(token)) token <- get_token()
-
-  if (!is.null(query) && !is_query(query))
-    cli::cli_abort("query needs to be a query object (see {.code ?query})")
-
-  body <- list(query = unclass(query),
-               video_id = video_id,
-               start_date = start_date,
-               end_date = end_date,
-               max_count = 100L,
-               cursor = cursor,
-               search_id = search_id,
-               is_random = is_random)
-
-  httr2::request("https://open.tiktokapis.com/v2/research/video/") |>
-    httr2::req_url_path_append(endpoint) |>
-    httr2::req_method("POST") |>
-    httr2::req_url_query(fields = fields) |>
-    httr2::req_headers("Content-Type" = "application/json") |>
-    httr2::req_auth_bearer_token(token$access_token) |>
-    httr2::req_body_json(data = purrr::discard(body, is.null)) |>
-    httr2::req_error(body = api_error_handler) |>
-    httr2::req_retry(
-      max_tries = 5L,
-      # don't retry when daily quota is reached
-      is_transient = function(resp)
-        httr2::resp_status(resp) %in% c(301:399, 401:428, 430:599),
-      # increase backoff after each try
-      backoff = function(t) t ^ 3
-    ) |>
-    httr2::req_perform() |>
-    httr2::resp_body_json(bigint_as_char = TRUE)
-
-}
-
-
 api_error_handler <- function(resp) {
 
   # failsafe save already collected videos to disk
@@ -411,3 +531,25 @@ api_error_handler <- function(resp) {
   }
 }
 
+
+api_user_error_checker <- function(resp) {
+  if (httr2::resp_status(resp) < 400L) return(FALSE)
+  if (httr2::resp_status(resp) == 404L) return(TRUE)
+  # if likes can't be accessed, which is true for many users, this should
+  # not throw an error
+  if (grepl("information.cannot.be.returned",
+            httr2::resp_body_json(resp)$error$message)) {
+    cli::cli_alert_warning(httr2::resp_body_json(resp)$error$message)
+    the$result <- FALSE
+    return(FALSE)
+  }
+  # if the user can't be found, this should not throw an error, which
+  # would break the loop
+  if (grepl("cannot find the user",
+            httr2::resp_body_json(resp)$error$message)) {
+    cli::cli_alert_warning(httr2::resp_body_json(resp)$error$message)
+    the$result <- FALSE
+    return(FALSE)
+  }
+  return(TRUE)
+}

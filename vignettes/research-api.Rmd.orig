@@ -20,6 +20,7 @@ TikTok's [Research API](https://developers.tiktok.com/products/research-api/), w
 1. You can [search videos](https://developers.tiktok.com/doc/research-api-specs-query-videos) with `tt_search_api` or `tt_search`
 2. You can [get basic user information](https://developers.tiktok.com/doc/research-api-specs-query-user-info) with `tt_user_info_api` or `tt_user_info`
 3. You can [obtain all comments of a video](https://developers.tiktok.com/doc/research-api-specs-query-video-comments) with `tt_comments_api` or `tt_comments`
+4. You can [get the videos a user has liked](https://developers.tiktok.com/doc/research-api-specs-query-user-liked-videos) with `tt_user_liked_videos_api` or `tt_get_liked`
 
 
 # Authentication
@@ -30,7 +31,7 @@ To get access to the Research API, you need to:
 2. [create a developer account](https://developers.tiktok.com/signup);
 3. and then apply for access to the research API: <https://developers.tiktok.com/application/research-api>
 
-Once are approved and have your client key and client secret, you can authenticate with:
+Once you have been approved and have your client key and client secret, you can authenticate with:
 
 ```{r eval=FALSE}
 library(traktok)
@@ -50,13 +51,13 @@ Just run it again in case your credentials change.
 ## Search Videos
 
 TikTok uses a fine-grained, yet complicated [query syntax](https://developers.tiktok.com/doc/research-api-specs-query-videos#query).
-For convenience, I wrapped this in internally, so you can search with a key phrase directly:
+For convenience, a query is constructed internally when you search with a key phrase directly:
 
 ```{r}
 tt_query_videos("#rstats", max_pages = 2L)
 ```
 
-This will match your keyword or phrase against keywords and hashtags and return up to 200 results (each pages has 100 results and 2 pages are requested) from today and yesterday.
+This will match your keyword or phrase against keywords and hashtags and return up to 200 results (each page has 100 results and 2 pages are requested by default) from today and yesterday.
 Every whitespace is treated as an AND operator.
 To extend the data range, you can set a start and end (which can be a maximum of 30 days apart, but there is no limit how far you can go back):
 
@@ -81,7 +82,7 @@ For example, to get to the same query that matches #rstats against keywords and 
 ```{r}
 query() |>                                # start by using query()
   query_or(field_name = "hashtag_name",   # add an OR condition on the hashtag field
-           operation = "IN",              # the value should IN the list of hashtags
+           operation = "IN",              # the value should be IN the list of hashtags
            field_values = "rstats") |>    # the hashtag field does not accept the #-symbol
   query_or(field_name = "keyword",        # add another OR condition
            operation = "IN",
@@ -126,13 +127,32 @@ This will return videos posted in the US or Japan, that have rstats as the only 
 See <https://developers.tiktok.com/doc/research-api-specs-query-videos#condition_fields> for possible values of each field.
 ]
 
-## Get Basic User Information
+## Get User Information
 
 There is not really much to getting basic user info, but this is how you can do it:
 
 ```{r}
 tt_user_info_api(username = c("tiktok", "https://www.tiktok.com/@statisticsglobe"))
 ```
+
+If you wish to return the videos of a user, your can use the search again:
+
+```{r}
+query() |>
+  query_and(field_name = "username",
+            operation = "EQ",
+            field_values = "statisticsglobe") |> 
+  tt_search_api(start_date = as.Date("2023-11-01"),
+                end_date = as.Date("2023-11-29"))
+```
+
+To find out what a user has liked, you can use:
+
+```{r}
+tt_get_liked("jbgruber")
+```
+
+Note, that making likes public is an op-in feature of TikTok and almost nobody has this enabled, so it will give you a lot of warning...
 
 ## Obtain all Comments of a Video
 

@@ -1,7 +1,7 @@
 Package: traktok
 Type: Package
 Title: Collecting TikTok Data
-Version: 0.0.5.9000
+Version: 0.0.6.9000
 Authors@R:
     person(given = "Johannes B.",
            family = "Gruber",
@@ -40,7 +40,7 @@ Suggests:
 URL: https://github.com/JBGruber/traktok, https://jbgruber.github.io/traktok/
 BugReports: https://github.com/JBGruber/traktok/issues
 Encoding: UTF-8
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Language: en-GB
 Config/testthat/edition: 3
 Config/testthat/parallel: false

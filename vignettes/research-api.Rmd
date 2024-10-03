@@ -7,13 +7,20 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = TRUE
+)
+```
 
 TikTok's [Research API](https://developers.tiktok.com/products/research-api/), which was made available to researchers in the US and Europe in 2023, offers three endpoints, which are wrapped in three `traktok` functions:
 
 1. You can [search videos](https://developers.tiktok.com/doc/research-api-specs-query-videos) with `tt_search_api` or `tt_search`
 2. You can [get basic user information](https://developers.tiktok.com/doc/research-api-specs-query-user-info) with `tt_user_info_api` or `tt_user_info`
 3. You can [obtain all comments of a video](https://developers.tiktok.com/doc/research-api-specs-query-video-comments) with `tt_comments_api` or `tt_comments`
+4. You can [get the videos a user has liked](https://developers.tiktok.com/doc/research-api-specs-query-user-liked-videos) with `tt_user_liked_videos_api` or `tt_get_liked`
 
 
 # Authentication
@@ -24,15 +31,16 @@ To get access to the Research API, you need to:
 2. [create a developer account](https://developers.tiktok.com/signup);
 3. and then apply for access to the research API: <https://developers.tiktok.com/application/research-api>
 
-Once are approved and have your client key and client secret, you can authenticate with:
+Once you have been approved and have your client key and client secret (look [here](https://developers.tiktok.com/research) and click on your project), you can authenticate with:
 
-
-```r
+```{r eval=FALSE}
 library(traktok)
 auth_research()
 ```
 
-
+```{r echo=FALSE}
+library(traktok)
+```
 
 It is recommended that you run this function only once without arguments, so that your key and secret can be entered through the pop up mask and do not remain unencrypted in your R history or a script.
 The function then runs through authentication for you and saves the resulting token encrypted on your hard drive.
@@ -43,74 +51,21 @@ Just run it again in case your credentials change.
 ## Search Videos
 
 TikTok uses a fine-grained, yet complicated [query syntax](https://developers.tiktok.com/doc/research-api-specs-query-videos#query).
-For convenience, I wrapped this in internally, so you can search with a key phrase directly:
+For convenience, a query is constructed internally when you search with a key phrase directly:
 
-
-```r
+```{r}
 tt_query_videos("#rstats", max_pages = 2L)
-#> 
-ℹ Making initial request
-
-✔ Making initial request [734ms]
-#> 
-ℹ Parsing data
-
-✔ Parsing data [21ms]
-#> ── search id: NA ───────────────────────────────────────────
-#> # A tibble: 0 × 11
-#> # ℹ 11 variables: video_id <lgl>, author_name <chr>,
-#> #   view_count <int>, comment_count <int>,
-#> #   region_code <chr>, create_time <dttm>,
-#> #   effect_ids <list>, music_id <chr>,
-#> #   video_description <chr>, hashtag_names <list>,
-#> #   voice_to_text <chr>
 ```
 
-This will match your keyword or phrase against keywords and hashtags and return up to 200 results (each pages has 100 results and 2 pages are requested) from today and yesterday.
+This will match your keyword or phrase against keywords and hashtags and return up to 200 results (each page has 100 results and 2 pages are requested by default) from today and yesterday.
 Every whitespace is treated as an AND operator.
 To extend the data range, you can set a start and end (which can be a maximum of 30 days apart, but there is no limit how far you can go back):
 
-
-```r
+```{r}
 tt_query_videos("#rstats",
                 max_pages = 2L,
                 start_date = as.Date("2023-11-01"),
                 end_date = as.Date("2023-11-29"))
-#> 
-ℹ Making initial request
-
-✔ Making initial request [1.1s]
-#> 
-ℹ Parsing data
-
-✔ Parsing data [30ms]
-#> ── search id: 7336340473469998126 ──────────────────────────
-#> # A tibble: 19 × 11
-#>    video_id author_name view_count comment_count region_code
-#>    <chr>    <chr>            <int>         <int> <chr>      
-#>  1 7306893… statistics…         21             4 DE         
-#>  2 7306307… learningca…        129            12 US         
-#>  3 7305014… picanumeros         57             1 ES         
-#>  4 7302970… smooth.lea…       5568             7 AU         
-#>  5 7302470… statistics…         45             1 DE         
-#>  6 7300977… statistics…       1403             0 DE         
-#>  7 7300931… rigochando        1541             5 MX         
-#>  8 7300922… elartedeld…         87             0 ES         
-#>  9 7299987… statistics…         81             1 DE         
-#> 10 7299657… rigochando         795             5 MX         
-#> 11 7299342… rigochando         375             1 MX         
-#> 12 7298966… rigochando        1183             2 MX         
-#> 13 7296911… biofreelan…       2537             5 MX         
-#> 14 7296911… biofreelan…       1363             0 MX         
-#> 15 7296911… biofreelan…        680             1 MX         
-#> 16 7296688… mrpecners           60             2 US         
-#> 17 7296518… l_a_kelly           10             5 GB         
-#> 18 7296498… mrpecners           19             0 US         
-#> 19 7296288… casaresfel…        266             0 AR         
-#> # ℹ 6 more variables: create_time <dttm>,
-#> #   effect_ids <list>, music_id <chr>,
-#> #   video_description <chr>, hashtag_names <list>,
-#> #   voice_to_text <chr>
 ```
 
 As said, the query syntax that TikTok uses is a little complicated, as you can use AND, OR and NOT boolean operators on a number of fields (`"create_date"`, `"username"`, `"region_code"`, `"video_id"`, `"hashtag_name"`, `"keyword"`, `"music_id"`, `"effect_id"`, and `"video_length"`):
@@ -124,27 +79,14 @@ As said, the query syntax that TikTok uses is a little complicated, as you can u
 To make this easier to use, `traktok` uses a tidyverse style approach to building queries.
 For example, to get to the same query that matches #rstats against keywords and hashtags, you need to build the query like this:
 
-
-```r
+```{r}
 query() |>                                # start by using query()
   query_or(field_name = "hashtag_name",   # add an OR condition on the hashtag field
-           operation = "IN",              # the value should IN the list of hashtags
+           operation = "IN",              # the value should be IN the list of hashtags
            field_values = "rstats") |>    # the hashtag field does not accept the #-symbol
   query_or(field_name = "keyword",        # add another OR condition
            operation = "IN",
            field_values = "#rstats")
-#> S3<traktok_query>
-#> └─or: <list>
-#>   ├─<list>
-#>   │ ├─field_name: "hashtag_name"
-#>   │ ├─operation: "IN"
-#>   │ └─field_values: <list>
-#>   │   └─"rstats"
-#>   └─<list>
-#>     ├─field_name: "keyword"
-#>     ├─operation: "IN"
-#>     └─field_values: <list>
-#>       └─"#rstats"
 ```
 
 If #rstats is found in either the hashtag or keywords of a video, that video is then returned.
@@ -162,8 +104,7 @@ Besides checking for `EQ`ual, you can also use one of the other operations:
 
 This makes building queries relatively complex, but allows for fine-grained searches in the TikTok data:
 
-
-```r
+```{r}
 search_df <- query() |>
   query_and(field_name = "region_code",
             operation = "IN",
@@ -179,122 +120,59 @@ search_df <- query() |>
             field_values = "SHORT") |>
   tt_search_api(start_date = as.Date("2023-11-01"),
                 end_date = as.Date("2023-11-29"))
-#> 
-ℹ Making initial request
-
-✔ Making initial request [734ms]
-#> 
-ℹ Parsing data
-
-✔ Parsing data [17ms]
 search_df
-#> ── search id: 7336340473470030894 ──────────────────────────
-#> # A tibble: 2 × 11
-#>   video_id  author_name view_count comment_count region_code
-#>   <chr>     <chr>            <int>         <int> <chr>      
-#> 1 72966888… mrpecners           60             2 US         
-#> 2 72964986… mrpecners           19             0 US         
-#> # ℹ 6 more variables: create_time <dttm>,
-#> #   effect_ids <list>, music_id <chr>,
-#> #   video_description <chr>, hashtag_names <list>,
-#> #   voice_to_text <chr>
 ```
 
 This will return videos posted in the US or Japan, that have rstats as the only hashtag or as one of the keywords and have a length of `"MID"`, `"LONG"`, or `"EXTRA_LONG"`.^[
 See <https://developers.tiktok.com/doc/research-api-specs-query-videos#condition_fields> for possible values of each field.
 ]
 
-## Get Basic User Information
+## Get User Information
 
 There is not really much to getting basic user info, but this is how you can do it:
 
-
-```r
+```{r}
 tt_user_info_api(username = c("tiktok", "https://www.tiktok.com/@statisticsglobe"))
-#> # A tibble: 2 × 8
-#>   display_name    follower_count following_count is_verified
-#>   <chr>                    <int>           <int> <lgl>      
-#> 1 TikTok                78785286              30 TRUE       
-#> 2 Statistics Glo…            289               1 FALSE      
-#> # ℹ 4 more variables: likes_count <int>, video_count <int>,
-#> #   avatar_url <chr>, bio_description <chr>
 ```
+
+If you wish to return the videos of a user, your can use the search again:
+
+```{r}
+query() |>
+  query_and(field_name = "username",
+            operation = "EQ",
+            field_values = "statisticsglobe") |> 
+  tt_search_api(start_date = as.Date("2023-11-01"),
+                end_date = as.Date("2023-11-29"))
+```
+
+To find out what a user has liked, you can use:
+
+```{r}
+df <- tt_get_liked(username = c("jbgruber", "statisticsglobe"))
+```
+
+Note, that making likes public is an op-in feature of TikTok and almost nobody has this enabled, so it will give you a lot of warning...
 
 ## Obtain all Comments of a Video
 
 There is again, not much to talk about when it comes to the comments API.
 You need to supply a video ID, which you either have already:
 
-
-```r
+```{r}
 tt_comments_api(video_id = "7302470379501604128")
-#> 
-ℹ Making initial request
-
-✔ Making initial request [7.2s]
-#> 
-ℹ Parsing data
-
-✔ Parsing data [18ms]
-#> ── search id:  ─────────────────────────────────────────────
-#> # A tibble: 1 × 7
-#>   text                 video_id create_time id    like_count
-#>   <chr>                <chr>          <int> <chr>      <int>
-#> 1 and why would we do… 7302470…  1700243424 7302…          0
-#> # ℹ 2 more variables: parent_comment_id <chr>,
-#> #   reply_count <int>
 ```
 
 Or you got it from a search:
 
-
-```r
+```{r}
 tt_comments_api(video_id = search_df$video_id[1])
-#> 
-✔ Making initial request [55.7s]
-#> 
-ℹ Parsing data
-
-✔ Parsing data [18ms]
-#> ── search id:  ─────────────────────────────────────────────
-#> # A tibble: 2 × 7
-#>   like_count parent_comment_id   reply_count text   video_id
-#>        <int> <chr>                     <int> <chr>  <chr>   
-#> 1          1 7296688856609475882           1 So co… 7296688…
-#> 2          0 7296690681388204831           0 Thank… 7296688…
-#> # ℹ 2 more variables: create_time <int>, id <chr>
 ```
 
 Or you let the function extract if from a URL to a video:
 
-
-```r
+```{r}
 tt_comments_api(video_id = "https://www.tiktok.com/@nicksinghtech/video/7195762648716152107?q=%23rstats")
-#> 
-ℹ Making initial request
-
-✔ Making initial request [2m 16.7s]
-#> 
-ℹ Parsing data
-
-✔ Parsing data [19ms]
-#> ── search id:  ─────────────────────────────────────────────
-#> # A tibble: 96 × 7
-#>    create_time id               like_count parent_comment_id
-#>          <int> <chr>                 <int> <chr>            
-#>  1  1675394834 719576596990925…        314 7195762648716152…
-#>  2  1675457114 719603344301613…        232 7195762648716152…
-#>  3  1675458796 719604066348022…        177 7195762648716152…
-#>  4  1675395061 719576692726561…        166 7195765969909252…
-#>  5  1675624739 719675339339355…         71 7195762648716152…
-#>  6  1675465779 719607064381200…         71 7195762648716152…
-#>  7  1675494738 719619490971140…         27 7195762648716152…
-#>  8  1675691471 719703995331384…         17 7196040663480222…
-#>  9  1675656122 719688817955866…         16 7195762648716152…
-#> 10  1675440749 719596313215706…         16 7195762648716152…
-#> # ℹ 86 more rows
-#> # ℹ 3 more variables: reply_count <int>, text <chr>,
-#> #   video_id <chr>
 ```
 
 And that is essentially it.
@@ -311,59 +189,38 @@ Depending on what you would like to do, this might not be enough for you.
 In this case, you can actually save a search and pick it back up after the reset.
 To facilitate this, search result objects contain two extra pieces of information in the attributes:
 
-
-```r
+```{r}
 search_df <- query() |>
   query_and(field_name = "region_code",
             operation = "IN",
             field_values = c("JP", "US")) |>
   tt_search_api(start_date = as.Date("2023-11-01"),
-                end_date = as.Date("2023-11-29"), 
+                end_date = as.Date("2023-11-29"),
                 max_pages = 1)
-#> 
-ℹ Making initial request
-
-✔ Making initial request [1.9s]
-#> 
-ℹ Parsing data
-
-✔ Parsing data [20ms]
 
 attr(search_df, "search_id")
-#> [1] "7336340473470063662"
 attr(search_df, "cursor")
-#> [1] 100
 ```
 
 When you want to continue this search, whether because of rate limit or because you decided you want more results, you can do so by providing `search_id` and `cursor` to `tt_search_api`.
 If your search was cut short by the rate limit or another issue, you can retrieve the results already received with `search_df <- last_query()`.
 `search_df` will in both cases contain the relevant `search_id` and `cursor` in the attributes:
 
-```r
+```{r}
 search_df2 <- query() |>
   query_and(field_name = "region_code",
             operation = "IN",
             field_values = c("JP", "US")) |>
   tt_search_api(start_date = as.Date("2023-11-01"),
-                end_date = as.Date("2023-11-29"), 
-                
+                end_date = as.Date("2023-11-29"),
+
                 # this part is new
-                start_cursor = attr(search_df, "cursor"), 
+                start_cursor = attr(search_df, "cursor"),
                 search_id = attr(search_df, "search_id"),
                 ####
                 max_pages = 1)
-#> 
-ℹ Making initial request
-
-✔ Making initial request [5.1s]
-#> 
-ℹ Parsing data
-
-✔ Parsing data [21ms]
 attr(search_df2, "search_id")
-#> [1] "7336340473470063662"
 attr(search_df2, "cursor")
-#> [1] 200
 ```
 
 Note that the cursor is not equal to how many videos you got before, as the API also counts videos that are "deleted/marked as private by users etc." [See `max_count` in [Query Videos](https://developers.tiktok.com/doc/research-api-specs-query-videos)].

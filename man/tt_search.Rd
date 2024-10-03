@@ -7,7 +7,9 @@
 tt_search(...)
 }
 \arguments{
-\item{...}{arguments passed to \link{tt_search_api} or \link{tt_search_hidden}}
+\item{...}{arguments passed to \link{tt_search_api} or
+\link{tt_search_hidden}. To use the research API, include \code{token}
+(e.g., \code{token = NULL}).}
 }
 \value{
 a data.frame

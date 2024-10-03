@@ -8,7 +8,9 @@
 #'   API. See \link{tt_search_api} or \link{tt_search_hidden} respectively for
 #'   information about these functions.
 #'
-#' @param ... arguments passed to \link{tt_search_api} or \link{tt_search_hidden}
+#' @param ... arguments passed to \link{tt_search_api} or
+#'   \link{tt_search_hidden}. To use the research API, include \code{token}
+#'   (e.g., \code{token = NULL}).
 #'
 #' @return a data.frame
 #' @export
@@ -27,6 +29,25 @@ tt_search <- function(...) {
 }
 
 
+#' @rdname tt_user_info_api
+#' @export
+tt_user_videos <- function(username, ...) {
+  params <- list(...)
+  token <- params$token
+  params$token <- NULL
+  if (is.null(token)) token <- get_token(auth = FALSE)
+  if (isFALSE(token)) {
+    tt_search_hidden(username, ...)
+  } else {
+    query() |>
+      query_or(field_name = "username",
+               operation = "IN",
+               field_values = username) |>
+      tt_search_api(token)
+  }
+}
+
+
 #' @rdname tt_videos_hidden
 #' @export
 tt_videos <- function(...) {
@@ -37,7 +58,12 @@ tt_videos <- function(...) {
 
 #' @rdname tt_user_info_api
 #' @export
-tt_user_videos <- tt_user_info_api
+tt_user_info <- tt_user_info_api
+
+
+#' @rdname tt_user_liked_videos_api
+#' @export
+tt_get_liked <- tt_user_liked_videos_api
 
 
 #' @rdname tt_comments_api

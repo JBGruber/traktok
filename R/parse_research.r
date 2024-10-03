@@ -22,11 +22,9 @@ parse_api_search <- function(x) {
   out$video_id <- ifelse(is.na(out$video_id),
                          vpluck(x, "id", val = "character"),
                          out$video_id)
-
-  class(out) <- c("tt_results", class(out))
-  attr(out, "search_id") <- the$search_id
-  attr(out, "cursor") <- the$cursor
-
+  if (nrow(out) == 1L && is.na(out$video_id)) {
+    out <- out[-1, ]
+  }
   return(out)
 }
 

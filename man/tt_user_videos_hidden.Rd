@@ -9,6 +9,7 @@ tt_user_videos_hidden(
   solve_captchas = FALSE,
   return_urls = FALSE,
   timeout = 5L,
+  verbose = TRUE,
   ...
 )
 }
