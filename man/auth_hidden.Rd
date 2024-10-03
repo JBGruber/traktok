@@ -4,12 +4,14 @@
 \alias{auth_hidden}
 \title{Authenticate for the hidden/unofficial API}
 \usage{
-auth_hidden(cookiefile)
+auth_hidden(cookiefile, live = interactive())
 }
 \arguments{
 \item{cookiefile}{optional path to your cookiefile. See
 \code{vignette("unofficial-api", package = "traktok")} for more information
 on authentication.}
+
+\item{live}{opens Chromium browser to guide you through the auth process.}
 }
 \value{
 nothing. Called to set up authentication
