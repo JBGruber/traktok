@@ -237,14 +237,7 @@ tt_user_info_api <- function(username,
           return(FALSE)
         }
         return(TRUE)
-      }, body = function(resp) {
-        resp_data <- httr2::resp_body_json(resp)
-        c(
-          paste("status:",  resp_data$error$code),
-          paste("message:", resp_data$error$message),
-          paste("log_id:",  resp_data$error$log_id)
-        )
-      }) |>
+      }, body = api_error_handler) |>
       httr2::req_retry(max_tries = 5) |>
       httr2::req_perform() |>
       httr2::resp_body_json(bigint_as_char = TRUE) |>
@@ -373,17 +366,7 @@ tt_query_request <- function(endpoint,
     httr2::req_headers("Content-Type" = "application/json") |>
     httr2::req_auth_bearer_token(token$access_token) |>
     httr2::req_body_json(data = purrr::discard(body, is.null)) |>
-    httr2::req_error(body = function(resp) {
-      # failsafe save already collected videos to disk
-      q <- the$videos
-      attr(q, "search_id") <- the$search_id
-      saveRDS(q, tempfile(fileext = ".rds"))
-      c(
-        paste("status:", httr2::resp_body_json(resp)$error$code),
-        paste("message:", httr2::resp_body_json(resp)$error$message),
-        paste("log_id:", httr2::resp_body_json(resp)$error$log_id)
-      )
-    }) |>
+    httr2::req_error(body = api_error_handler) |>
     httr2::req_retry(
       max_tries = 5L,
       # don't retry when daily quota is reached
@@ -396,3 +379,35 @@ tt_query_request <- function(endpoint,
     httr2::resp_body_json(bigint_as_char = TRUE)
 
 }
+
+
+api_error_handler <- function(resp) {
+
+  # failsafe save already collected videos to disk
+  if (purrr::pluck_exists(the, "videos")) {
+    q <- the$videos
+    attr(q, "search_id") <- the$search_id
+    saveRDS(q, tempfile(fileext = ".rds"))
+  }
+
+  if (httr2::resp_content_type(resp) == "application/json") {
+    return(
+      c(
+        paste("status:", httr2::resp_body_json(resp)$error$code),
+        paste("message:", httr2::resp_body_json(resp)$error$message),
+        paste("log_id:", httr2::resp_body_json(resp)$error$log_id)
+      )
+    )
+  }
+
+  if (httr2::resp_content_type(resp) == "text/html") {
+    res <- httr2::resp_body_html(resp)
+    return(
+      c(
+        paste("status:", rvest::html_text2(rvest::html_element(res, "title"))),
+        paste("message:", rvest::html_text2(rvest::html_element(res, "body")))
+      )
+    )
+  }
+}
+
