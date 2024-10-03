@@ -256,7 +256,7 @@ tt_user_liked_videos_api <- function(username,
                                      verbose = TRUE,
                                      token = NULL) {
 
-  out <- purrr::map(username, function(u) {
+  purrr::map(username, function(u) {
     # if username is given as URL
     if (grepl("/", u)) {
       u <- extract_regex(
@@ -294,6 +294,7 @@ tt_user_liked_videos_api <- function(username,
     videos <- list()
     # iterate over pages
     while (purrr::pluck(res, "data", "has_more", .default = FALSE) && the$page < max_pages) {
+      the$page <- the$page + 1
       the$cursor <- purrr::pluck(res, "data", "cursor")
 
       res <- tt_user_request(endpoint = "liked_videos/",
@@ -309,7 +310,7 @@ tt_user_liked_videos_api <- function(username,
     }
 
     videos <- dplyr::bind_rows(videos)
-    videos$liked_by_user <- u
+    videos <- tibble::add_column(videos, liked_by_user = u)
     if (verbose) cli::cli_progress_done(
       result	= ifelse(length(videos) > 1, "done", "failed")
     )
@@ -317,9 +318,116 @@ tt_user_liked_videos_api <- function(username,
     return(videos)
   }) |>
     dplyr::bind_rows()
-  return(out)
 }
 
+
+#' @title Get followers and following of users from the research API
+#'
+#' @description \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:
+#'   Research API]'}}{\strong{[Works on: Research API]}}
+#'
+#' @param username name(s) of the user(s) to be queried
+#' @param fields The fields to be returned (defaults to all)
+#' @inheritParams tt_search_api
+#'
+#' @return A data.frame
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' tt_user_follower_api("jbgruber")
+#' # OR
+#' tt_user_following_api("https://www.tiktok.com/@tiktok")
+#' # OR
+#' tt_get_follower("https://www.tiktok.com/@tiktok")
+#' }
+tt_user_follower_api <- function(username,
+                                 max_pages = 1,
+                                 cache = TRUE,
+                                 verbose = TRUE,
+                                 token = NULL) {
+
+  tt_user_follow(endpoint = "followers/",
+                 username = username,
+                 max_pages = max_pages,
+                 cache = cache,
+                 verbose = verbose,
+                 token = token)
+}
+
+
+#' @rdname tt_user_follower_api
+#' @export
+tt_user_following_api <- function(username,
+                                  max_pages = 1,
+                                  cache = TRUE,
+                                  verbose = TRUE,
+                                  token = NULL) {
+
+  tt_user_follow(endpoint = "following/",
+                 username = username,
+                 max_pages = max_pages,
+                 cache = cache,
+                 verbose = verbose,
+                 token = token)
+}
+
+
+tt_user_follow <- function(endpoint,
+                           username,
+                           max_pages = 1,
+                           cache = TRUE,
+                           verbose = TRUE,
+                           token = NULL) {
+
+  purrr::map(username, function(u) {
+    # if username is given as URL
+    if (grepl("/", u)) {
+      u <- extract_regex(
+        u,
+        "(?<=.com/@)(.+?)(?=\\?|$|/)"
+      )
+    }
+    if (verbose) cli::cli_progress_step(msg = "Getting user {u}",
+                                        msg_done = "Got user {u}")
+    the$result <- TRUE
+    if (is.null(token)) token <- get_token()
+
+    res <- list(data = list(has_more = TRUE, cursor = NULL))
+    the$page <-  0L
+    followers <- list()
+    # iterate over pages
+    while (purrr::pluck(res, "data", "has_more", .default = FALSE) && the$page < max_pages) {
+      the$page <- the$page + 1
+      the$cursor <- purrr::pluck(res, "data", "cursor")
+
+      res <- tt_user_request(endpoint = endpoint,
+                             username = u,
+                             fields = fields,
+                             cursor = the$cursor,
+                             token = token)
+
+      followers <- c(followers, purrr::pluck(
+        res,
+        "data", ifelse(endpoint == "followers/",
+                       "user_followers",
+                       "user_following"))
+      )
+      if (cache) {
+        the$videos <- followers
+      }
+    }
+
+    followers <- dplyr::bind_rows(followers)
+    followers <- tibble::add_column(followers, following_user = u)
+    if (verbose) cli::cli_progress_done(
+      result	= ifelse(length(followers) > 1, "done", "failed")
+    )
+
+    return(followers)
+  }) |>
+    dplyr::bind_rows()
+}
 
 # used to iterate over search requests
 tt_user_request <- function(endpoint,
