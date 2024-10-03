@@ -35,8 +35,6 @@ will use extra memory.}
 
 \item{token}{The authentication token (usually supplied automatically after
 running auth_research once)}
-
-\item{fields}{The fields to be returned (defaults to all)}
 }
 \value{
 A data.frame

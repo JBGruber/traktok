@@ -43,7 +43,7 @@ drawn.}
 \code{vignette("unofficial-api", package = "traktok")} for more information
 on authentication.}
 
-\item{verbose}{logical. Print status messages.}
+\item{verbose}{should the function print status updates to the screen?}
 
 \item{...}{handed to \code{tt_videos_hidden} (for tt_videos) and (further) to
 \link{tt_request_hidden}.}

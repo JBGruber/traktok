@@ -21,6 +21,8 @@ tt_user_info(username, fields = "all", verbose = TRUE, token = NULL)
 
 \item{token}{The authentication token (usually supplied automatically after
 running auth_research once)}
+
+\item{...}{additional arguments handed to \link{tt_search_api}.}
 }
 \value{
 A data.frame of parsed TikTok videos the user has posted

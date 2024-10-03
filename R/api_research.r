@@ -299,7 +299,6 @@ tt_user_liked_videos_api <- function(username,
 
       res <- tt_user_request(endpoint = "liked_videos/",
                              username = u,
-                             fields = fields,
                              cursor = the$cursor,
                              token = token)
 
@@ -312,9 +311,18 @@ tt_user_liked_videos_api <- function(username,
     videos <- videos |>
       purrr::map(as_tibble_onerow) |>
       dplyr::bind_rows() |>
-      dplyr::relocate(id, username, create_time, video_description, region_code,
-                      video_duration, view_count, like_count, comment_count,
-                      share_count, music_id)
+      # somehow, the order changes between, calls. So I fix it here
+      dplyr::relocate("id",
+                      "username",
+                      "create_time",
+                      "video_description",
+                      "region_code",
+                      "video_duration",
+                      "view_count",
+                      "like_count",
+                      "comment_count",
+                      "share_count",
+                      "music_id")
 
     videos <- tibble::add_column(videos, liked_by_user = u)
     if (verbose) cli::cli_progress_done(
@@ -333,7 +341,6 @@ tt_user_liked_videos_api <- function(username,
 #'   Research API]'}}{\strong{[Works on: Research API]}}
 #'
 #' @param username name(s) of the user(s) to be queried
-#' @param fields The fields to be returned (defaults to all)
 #' @inheritParams tt_search_api
 #'
 #' @return A data.frame
@@ -409,7 +416,6 @@ tt_user_follow <- function(endpoint,
 
       res <- tt_user_request(endpoint = endpoint,
                              username = u,
-                             fields = fields,
                              cursor = the$cursor,
                              token = token)
 
@@ -438,14 +444,12 @@ tt_user_follow <- function(endpoint,
 # used to iterate over search requests
 tt_user_request <- function(endpoint,
                             username,
-                            fields,
                             cursor,
                             token) {
 
   httr2::request("https://open.tiktokapis.com/v2/research/user/") |>
     httr2::req_url_path_append(endpoint) |>
     httr2::req_method("POST") |>
-    httr2::req_url_query(fields = fields) |>
     httr2::req_headers("Content-Type" = "application/json") |>
     httr2::req_auth_bearer_token(token$access_token) |>
     httr2::req_body_json(data = list(username = username,
@@ -465,6 +469,7 @@ tt_user_request <- function(endpoint,
 #' @description \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:
 #'   Research API]'}}{\strong{[Works on: Research API]}}
 #'
+#' @param ... additional arguments handed to \link{tt_search_api}.
 #' @inheritParams tt_user_liked_videos_api
 #'
 #' @return A data.frame of parsed TikTok videos the user has posted

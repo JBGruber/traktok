@@ -22,6 +22,8 @@ tt_user_videos_hidden(
 
 \item{timeout}{time (in seconds) to wait between scrolling and solving captchas.}
 
+\item{verbose}{should the function print status updates to the screen?}
+
 \item{...}{Additional arguments to be passed to the \code{\link{tt_videos_hidden}} function.}
 }
 \value{

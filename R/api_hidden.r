@@ -17,7 +17,7 @@
 #' @param cookiefile path to your cookiefile. See
 #'   \code{vignette("unofficial-api", package = "traktok")} for more information
 #'   on authentication.
-#' @param verbose logical. Print status messages.
+#' @param verbose should the function print status updates to the screen?
 #' @param ... handed to \code{tt_videos_hidden} (for tt_videos) and (further) to
 #'   \link{tt_request_hidden}.
 #'
@@ -390,10 +390,8 @@ tt_search_hidden <- function(query,
 tt_user_info_hidden <- function(username,
                                 parse = TRUE) {
 
-  if (packageVersion("rvest") < "1.0.4") {
-    cli::cli_abort(paste("This function requires an updated version of rvest.",
-                         "Use {.code install.packages(\"rvest\")} to update."))
-  }
+  rlang::check_installed("rvest", reason = "to use this function", version = "1.0.4")
+
 
   if (!grepl("^http[s]*://", username)) {
     username <- paste0("https://www.tiktok.com/@", username)
@@ -566,6 +564,7 @@ tt_get_follower_hidden <- function(secuid,
 #' @param solve_captchas open browser to solve appearing captchas manually.
 #' @param return_urls return video URLs instead of downloading the vidoes.
 #' @param timeout time (in seconds) to wait between scrolling and solving captchas.
+#' @param verbose should the function print status updates to the screen?
 #' @param ... Additional arguments to be passed to the \code{\link{tt_videos_hidden}} function.
 #'
 #' @return A list of video data or URLs, depending on the value of \code{return_urls}.
@@ -583,10 +582,7 @@ tt_user_videos_hidden <- function(username,
                                   verbose = TRUE,
                                   ...) {
 
-  if (packageVersion("rvest") < "1.0.4") {
-    cli::cli_abort(paste("This function requires an updated version of rvest.",
-                         "Use {.code install.packages(\"rvest\")} to update."))
-  }
+  rlang::check_installed("rvest", reason = "to use this function", version = "1.0.4")
 
   if (!grepl("^http[s]*://", username)) {
     username <- paste0("https://www.tiktok.com/@", username)
@@ -605,7 +601,7 @@ tt_user_videos_hidden <- function(username,
     last_y <- sess$get_scroll_position()$y
     sess$scroll_to(top = 10 ^ 5)
     if (verbose) cli::cli_progress_update()
-    Sys.sleep(timeout * runif(1, 1, 3))
+    Sys.sleep(timeout * stats::runif(1, 1, 3))
   }
   if (verbose) cli::cli_progress_step("Collecting discovered URLs")
   urls <- sess |>

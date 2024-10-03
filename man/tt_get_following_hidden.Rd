@@ -52,7 +52,7 @@ drawn.}
 \code{vignette("unofficial-api", package = "traktok")} for more information
 on authentication.}
 
-\item{verbose}{logical. Print status messages.}
+\item{verbose}{should the function print status updates to the screen?}
 }
 \value{
 a data.frame of followers
