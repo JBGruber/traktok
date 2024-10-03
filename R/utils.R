@@ -74,6 +74,18 @@ spluck <- function(.x, ...) {
   purrr::pluck(.x, ..., .default = NA)
 }
 
+
+# makes sure list can be turned into tibble
+as_tibble_onerow <- function(l) {
+  l <- purrr::map(l, function(c) {
+    if (length(c) != 1) {
+      return(list(c))
+    }
+    return(c)
+  })
+  tibble::as_tibble(l)
+}
+
 is_datetime <- function(x) {
   methods::is(x, "POSIXct") +
     methods::is(x, "POSIXlt") +
