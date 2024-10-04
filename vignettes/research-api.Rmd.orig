@@ -141,7 +141,7 @@ If you wish to return the videos of a user, your can use the search again:
 query() |>
   query_and(field_name = "username",
             operation = "EQ",
-            field_values = "statisticsglobe") |> 
+            field_values = "statisticsglobe") |>
   tt_search_api(start_date = as.Date("2023-11-01"),
                 end_date = as.Date("2023-11-29"))
 ```
@@ -153,6 +153,19 @@ tt_get_liked("jbgruber")
 ```
 
 Note, that making likes public is an op-in feature of TikTok and almost nobody has this enabled, so it will give you a lot of warning...
+
+What we can usually get is the information who a user follows:
+
+```{r}
+tt_user_following_api(username = "jbgruber")
+```
+
+And who they are followed by:
+
+```{r}
+tt_user_follower_api("https://www.tiktok.com/@tiktok")
+```
+
 
 ## Obtain all Comments of a Video
 

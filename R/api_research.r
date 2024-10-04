@@ -189,7 +189,7 @@ tt_query_request <- function(endpoint,
                              cursor = NULL,
                              search_id = NULL,
                              is_random = NULL,
-                             token) {
+                             token = NULL) {
 
   if (is.null(token)) token <- get_token()
 
@@ -299,6 +299,7 @@ tt_user_liked_videos_api <- function(username,
 
       res <- tt_user_request(endpoint = "liked_videos/",
                              username = u,
+                             fields = fields,
                              cursor = the$cursor,
                              token = token)
 
@@ -444,10 +445,11 @@ tt_user_follow <- function(endpoint,
 # used to iterate over search requests
 tt_user_request <- function(endpoint,
                             username,
+                            fields,
                             cursor,
                             token) {
 
-  httr2::request("https://open.tiktokapis.com/v2/research/user/") |>
+  req <- httr2::request("https://open.tiktokapis.com/v2/research/user/") |>
     httr2::req_url_path_append(endpoint) |>
     httr2::req_method("POST") |>
     httr2::req_headers("Content-Type" = "application/json") |>
@@ -457,7 +459,14 @@ tt_user_request <- function(endpoint,
                                      cursor = cursor)) |>
     httr2::req_error(is_error = api_user_error_checker,
                      body = api_error_handler) |>
-    httr2::req_retry(max_tries = 5) |>
+    httr2::req_retry(max_tries = 5)
+
+  if (!missing(fields)) {
+    req <- req |>
+      httr2::req_url_query(fields = fields)
+  }
+
+  req |>
     httr2::req_perform() |>
     httr2::resp_body_json(bigint_as_char = TRUE)
 
