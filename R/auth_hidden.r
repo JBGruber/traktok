@@ -28,7 +28,8 @@ auth_hidden <- function(cookiefile, live = interactive()) {
     "Supply either a cookiefile (see {.url https://jbgruber.github.io/traktok/",
     "articles/unofficial-api.html#authentication})"
   )
-  if (live) {
+  if (live && isTRUE(utils::askYesNo("Do you want to try live authentication using Chrome? (experimental)"))) {
+
     rlang::check_installed("rvest", reason = "to use this function", version = "1.0.4")
 
     sess <- rvest::read_html_live("https://www.tiktok.com/")

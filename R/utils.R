@@ -86,9 +86,9 @@ as_tibble_onerow <- function(l) {
   tibble::as_tibble(l)
 }
 
+
 is_datetime <- function(x) {
   methods::is(x, "POSIXct") +
     methods::is(x, "POSIXlt") +
     methods::is(x, "Date") > 0
 }
-
