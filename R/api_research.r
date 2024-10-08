@@ -629,6 +629,52 @@ tt_comments_api <- function(video_id,
 }
 
 
+#' Lookup TikTok playlist using the research API
+#'
+#' @description \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:
+#'   Research API]'}}{\strong{[Works on: Research API]}}
+#'
+#' @param playlist_id playlist ID or URL to a playlist.
+#' @inheritParams tt_user_info_api
+#'
+#' @return A data.frame
+#' @export
+tt_playlist_api <- function(playlist_id,
+                            verbose = TRUE,
+                            token = NULL) {
+
+  # the docs mention a cursor, but it's not implemented as far as I can tell
+  cursor <- NULL
+
+  if (grepl("/", playlist_id)) {
+    playlist_id <- extract_regex(
+      playlist_id,
+      "(?<=-)([0-9]+?)(?=\\?|$|/)"
+    )
+  }
+
+  if (is.null(token)) token <- get_token()
+
+  out <- httr2::request("https://open.tiktokapis.com/v2/research/playlist/info/") |>
+    httr2::req_method("POST") |>
+    httr2::req_headers("Content-Type" = "application/json") |>
+    httr2::req_auth_bearer_token(token$access_token) |>
+    httr2::req_body_json(data = list(playlist_id = playlist_id,
+                                     cursor = cursor)) |>
+    httr2::req_error(is_error = function(resp)
+      # API always seems to send 500, even when successful
+      !httr2::resp_status(resp) %in% c(100:399, 500),
+                     body = api_error_handler) |>
+    httr2::req_retry(max_tries = 5) |>
+    httr2::req_perform() |>
+    httr2::resp_body_json(bigint_as_char = TRUE) |>
+    purrr::pluck("data") |>
+    tibble::as_tibble()
+
+  return(out)
+}
+
+
 api_error_handler <- function(resp) {
 
   # failsafe save already collected videos to disk
