@@ -146,13 +146,20 @@ query() |>
                 end_date = as.Date("2023-11-29"))
 ```
 
+You can also find the videos a user has pinned to the top of their page:
+
+```{r}
+tt_user_pinned_videos_api(c("tiktok", "https://www.tiktok.com/@smooth.learning.c"))
+```
+
+
 To find out what a user has liked, you can use:
 
 ```{r}
 tt_get_liked("jbgruber")
 ```
 
-Note, that making likes public is an op-in feature of TikTok and almost nobody has this enabled, so it will give you a lot of warning...
+Note, that making likes public is an opt-in feature of TikTok and almost nobody has this enabled, so it will give you a lot of warning...
 
 What we can usually get is the information who a user follows:
 

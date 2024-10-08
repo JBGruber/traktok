@@ -336,6 +336,89 @@ tt_user_liked_videos_api <- function(username,
 }
 
 
+#' Lookup which videos were pinned by a user using the research API
+#'
+#' @description \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:
+#'   Research API]'}}{\strong{[Works on: Research API]}}
+#'
+#' @inheritParams tt_search_api
+#'
+#' @return A data.frame of parsed TikTok videos the user has posted
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' tt_user_pinned_videos_api("jbgruber")
+#' # OR
+#' tt_user_pinned_videos_api("https://www.tiktok.com/@tiktok")
+#' # OR
+#' tt_user_pinned_videos_api("https://www.tiktok.com/@tiktok")
+#' }
+tt_user_pinned_videos_api <- function(username,
+                                      fields = "all",
+                                      cache = TRUE,
+                                      verbose = TRUE,
+                                      token = NULL) {
+
+  purrr::map(username, function(u) {
+    # if username is given as URL
+    if (grepl("/", u)) {
+      u <- extract_regex(
+        u,
+        "(?<=.com/@)(.+?)(?=\\?|$|/)"
+      )
+    }
+    if (verbose) cli::cli_progress_step(msg = "Getting user {u}",
+                                        msg_done = "Got user {u}")
+    the$result <- TRUE
+    if (is.null(token)) token <- get_token()
+
+    if (fields == "all") {
+      fields <- c(
+        "id",
+        "create_time",
+        "username",
+        "region_code",
+        "video_description",
+        "music_id",
+        "like_count",
+        "comment_count",
+        "share_count",
+        "view_count",
+        "hashtag_names",
+        "is_stem_verified",
+        # mentioned in docs, but does not work
+        # "favourites_count",
+        "video_duration"
+      ) |>
+        paste0(collapse = ",")
+    }
+
+    res <- tt_user_request(endpoint = "pinned_videos/",
+                           username = u,
+                           fields = fields,
+                           cursor = NULL,
+                           token = token)
+
+    videos <- purrr::pluck(res, "data", "pinned_videos_list") |>
+      purrr::map(as_tibble_onerow) |>
+      dplyr::bind_rows() |>
+      tibble::add_column(pinned_by_user = u)
+
+    if (cache) {
+      the$videos <- videos
+    }
+
+    if (verbose) cli::cli_progress_done(
+      result	= ifelse(length(videos) > 1, "done", "failed")
+    )
+
+    return(videos)
+  }) |>
+    dplyr::bind_rows()
+}
+
+
 #' @title Get followers and following of users from the research API
 #'
 #' @description \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:
