@@ -901,6 +901,12 @@ api_error_handler <- function(resp) {
 api_user_error_checker <- function(resp) {
   if (httr2::resp_status(resp) < 400L) return(FALSE)
   if (httr2::resp_status(resp) == 404L) return(TRUE)
+  # it looks like the API sometimes returns 500 falsely, but in these cases, no
+  # error message is present
+  if (httr2::resp_status(resp) == 500L &&
+      !purrr::pluck_exists(httr2::resp_body_json(resp), "error", "message")) {
+    return(FALSE)
+  }
   # if likes can't be accessed, which is true for many users, this should
   # not throw an error
   if (grepl("information.cannot.be.returned",

@@ -33,9 +33,9 @@ knitr::opts_chunk$set(
 | get comments under a video  | tt_comments      | tt_comments_api           | \-                      |
 | get who follows a user      | tt_get_follower  | tt_user_follower_api      | tt_get_follower_hidden  |
 | get who a user is following | tt_get_following | tt_user_following_api     | tt_get_following_hidden |
-| get videos a user liked     | tt_get_liked     | tt_user_liked_videos_api  | \-
-| ???                         |                  | tt_user_pinned_videos_api | \-
-| ???                         |                  | tt_playlist_info_api      | \-
+| get videos a user liked     | tt_get_liked     | tt_user_liked_videos_api  | \-                      |
+| get pinned videos of users  | tt_get_pinned    | tt_user_pinned_videos_api | \-                      |
+| get videos in a playlist    | tt_playlist      | tt_playlist_api           | \-                      |
 | get raw video data          | \-               | \-                        | tt_request_hidden       |
 | authenticate a session      | \-               | auth_research             | auth_hidden             |
 

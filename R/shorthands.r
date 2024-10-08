@@ -61,6 +61,11 @@ tt_videos <- function(...) {
 tt_user_info <- tt_user_info_api
 
 
+#' @rdname tt_playlist_api
+#' @export
+tt_playlist <- tt_playlist_api
+
+
 #' @rdname tt_user_liked_videos_api
 #' @export
 tt_get_liked <- tt_user_liked_videos_api

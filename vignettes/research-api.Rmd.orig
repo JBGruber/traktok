@@ -21,6 +21,9 @@ TikTok's [Research API](https://developers.tiktok.com/products/research-api/), w
 2. You can [get basic user information](https://developers.tiktok.com/doc/research-api-specs-query-user-info) with `tt_user_info_api` or `tt_user_info`
 3. You can [obtain all comments of a video](https://developers.tiktok.com/doc/research-api-specs-query-video-comments) with `tt_comments_api` or `tt_comments`
 4. You can [get the videos a user has liked](https://developers.tiktok.com/doc/research-api-specs-query-user-liked-videos) with `tt_user_liked_videos_api` or `tt_get_liked`
+5. You can [get the videos a user has reposted](https://developers.tiktok.com/doc/research-api-specs-query-user-reposted-videos) with `tt_user_reposted_api` or `tt_get_reposted`
+6. You can [get the videos a user has pinned](https://developers.tiktok.com/doc/research-api-specs-query-user-pinned-videos) with `tt_user_pinned_videos_api` or `tt_get_pinned`
+7. You can [get who a user is following](https://developers.tiktok.com/doc/research-api-specs-query-user-following) or [follows a user](https://developers.tiktok.com/doc/research-api-specs-query-user-following) with `tt_get_following`/`tt_get_follower` or `tt_user_following_api`/`tt_user_follower_api`
 
 
 # Authentication
