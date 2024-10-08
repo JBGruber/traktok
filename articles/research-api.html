@@ -82,6 +82,25 @@ basic user information</a> with <code>tt_user_info_api</code> or
 all comments of a video</a> with <code>tt_comments_api</code> or
 <code>tt_comments</code>
 </li>
+<li>You can <a href="https://developers.tiktok.com/doc/research-api-specs-query-user-liked-videos" class="external-link">get
+the videos a user has liked</a> with
+<code>tt_user_liked_videos_api</code> or <code>tt_get_liked</code>
+</li>
+<li>You can <a href="https://developers.tiktok.com/doc/research-api-specs-query-user-reposted-videos" class="external-link">get
+the videos a user has reposted</a> with
+<code>tt_user_reposted_api</code> or <code>tt_get_reposted</code>
+</li>
+<li>You can <a href="https://developers.tiktok.com/doc/research-api-specs-query-user-pinned-videos" class="external-link">get
+the videos a user has pinned</a> with
+<code>tt_user_pinned_videos_api</code> or
+<code>tt_get_pinned</code>
+</li>
+<li>You can <a href="https://developers.tiktok.com/doc/research-api-specs-query-user-following" class="external-link">get
+who a user is following</a> or <a href="https://developers.tiktok.com/doc/research-api-specs-query-user-following" class="external-link">follows
+a user</a> with
+<code>tt_get_following</code>/<code>tt_get_follower</code> or
+<code>tt_user_following_api</code>/<code>tt_user_follower_api</code>
+</li>
 </ol>
 <div class="section level2">
 <h2 id="authentication">Authentication<a class="anchor" aria-label="anchor" href="#authentication"></a>
@@ -97,8 +116,8 @@ account</a>;</li>
 <li>and then apply for access to the research API: <a href="https://developers.tiktok.com/application/research-api" class="external-link uri">https://developers.tiktok.com/application/research-api</a>
 </li>
 </ol>
-<p>Once are approved and have your client key and client secret, you can
-authenticate with:</p>
+<p>Once you have been approved and have your client key and client
+secret, you can authenticate with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JBGruber/traktok" class="external-link">traktok</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/auth_research.html">auth_research</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -116,31 +135,32 @@ your credentials change.</p>
 <h3 id="search-videos">Search Videos<a class="anchor" aria-label="anchor" href="#search-videos"></a>
 </h3>
 <p>TikTok uses a fine-grained, yet complicated <a href="https://developers.tiktok.com/doc/research-api-specs-query-videos#query" class="external-link">query
-syntax</a>. For convenience, I wrapped this in internally, so you can
+syntax</a>. For convenience, a query is constructed internally when you
 search with a key phrase directly:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">tt_query_videos</span>(<span class="st">"#rstats"</span>, <span class="at">max_pages =</span> <span class="dv">2</span><span class="dt">L</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>ℹ Making initial request</span>
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>✔ Making initial request [<span class="dv">734</span>ms]</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>✔ Making initial request [<span class="dv">774</span>ms]</span>
 <span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>ℹ Parsing data</span>
 <span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>✔ Parsing data [<span class="dv">21</span>ms]</span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt; ── search id: NA ───────────────────────────────────────────</span></span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt; # A tibble: 0 × 11</span></span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt; # ℹ 11 variables: video_id &lt;lgl&gt;, author_name &lt;chr&gt;,</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>✔ Parsing data [<span class="dv">177</span>ms]</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt; ── search id: NA ───────────────────────────────────────</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt; # A tibble: 0 × 13</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt; # ℹ 13 variables: video_id &lt;lgl&gt;, author_name &lt;chr&gt;,</span></span>
 <span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt; #   view_count &lt;int&gt;, comment_count &lt;int&gt;,</span></span>
-<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co">#&gt; #   region_code &lt;chr&gt;, create_time &lt;dttm&gt;,</span></span>
-<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co">#&gt; #   effect_ids &lt;list&gt;, music_id &lt;chr&gt;,</span></span>
-<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co">#&gt; #   video_description &lt;chr&gt;, hashtag_names &lt;list&gt;,</span></span>
-<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt; #   voice_to_text &lt;chr&gt;</span></span></code></pre></div>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co">#&gt; #   share_count &lt;int&gt;, like_count &lt;int&gt;,</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co">#&gt; #   region_code &lt;chr&gt;, create_time &lt;dttm&gt;,</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co">#&gt; #   effect_ids &lt;list&gt;, music_id &lt;chr&gt;,</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt; #   video_description &lt;chr&gt;, hashtag_names &lt;list&gt;,</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co">#&gt; #   voice_to_text &lt;chr&gt;</span></span></code></pre></div>
 <p>This will match your keyword or phrase against keywords and hashtags
-and return up to 200 results (each pages has 100 results and 2 pages are
-requested) from today and yesterday. Every whitespace is treated as an
-AND operator. To extend the data range, you can set a start and end
-(which can be a maximum of 30 days apart, but there is no limit how far
-you can go back):</p>
+and return up to 200 results (each page has 100 results and 2 pages are
+requested by default) from today and yesterday. Every whitespace is
+treated as an AND operator. To extend the data range, you can set a
+start and end (which can be a maximum of 30 days apart, but there is no
+limit how far you can go back):</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">tt_query_videos</span>(<span class="st">"#rstats"</span>,</span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>                <span class="at">max_pages =</span> <span class="dv">2</span><span class="dt">L</span>,</span>
 <span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>                <span class="at">start_date =</span> <span class="fu">as.Date</span>(<span class="st">"2023-11-01"</span>),</span>
@@ -148,38 +168,39 @@ you can go back):</p>
 <span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>ℹ Making initial request</span>
 <span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>✔ Making initial request [<span class="fl">1.1</span>s]</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>✔ Making initial request [<span class="dv">2</span>s]</span>
 <span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>ℹ Parsing data</span>
 <span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a></span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>✔ Parsing data [<span class="dv">30</span>ms]</span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; ── search id: 7336340473469998126 ──────────────────────────</span></span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt; # A tibble: 19 × 11</span></span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt;    video_id author_name view_count comment_count region_code</span></span>
-<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;    &lt;chr&gt;            &lt;int&gt;         &lt;int&gt; &lt;chr&gt;      </span></span>
-<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt;  1 7306893… statistics…         21             4 DE         </span></span>
-<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt;  2 7306307… learningca…        129            12 US         </span></span>
-<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt;  3 7305014… picanumeros         57             1 ES         </span></span>
-<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt;  4 7302970… smooth.lea…       5568             7 AU         </span></span>
-<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt;  5 7302470… statistics…         45             1 DE         </span></span>
-<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt;  6 7300977… statistics…       1403             0 DE         </span></span>
-<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt;  7 7300931… rigochando        1541             5 MX         </span></span>
-<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt;  8 7300922… elartedeld…         87             0 ES         </span></span>
-<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt;  9 7299987… statistics…         81             1 DE         </span></span>
-<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt; 10 7299657… rigochando         795             5 MX         </span></span>
-<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="co">#&gt; 11 7299342… rigochando         375             1 MX         </span></span>
-<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="co">#&gt; 12 7298966… rigochando        1183             2 MX         </span></span>
-<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a><span class="co">#&gt; 13 7296911… biofreelan…       2537             5 MX         </span></span>
-<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a><span class="co">#&gt; 14 7296911… biofreelan…       1363             0 MX         </span></span>
-<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a><span class="co">#&gt; 15 7296911… biofreelan…        680             1 MX         </span></span>
-<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a><span class="co">#&gt; 16 7296688… mrpecners           60             2 US         </span></span>
-<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a><span class="co">#&gt; 17 7296518… l_a_kelly           10             5 GB         </span></span>
-<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a><span class="co">#&gt; 18 7296498… mrpecners           19             0 US         </span></span>
-<span id="cb3-35"><a href="#cb3-35" tabindex="-1"></a><span class="co">#&gt; 19 7296288… casaresfel…        266             0 AR         </span></span>
-<span id="cb3-36"><a href="#cb3-36" tabindex="-1"></a><span class="co">#&gt; # ℹ 6 more variables: create_time &lt;dttm&gt;,</span></span>
-<span id="cb3-37"><a href="#cb3-37" tabindex="-1"></a><span class="co">#&gt; #   effect_ids &lt;list&gt;, music_id &lt;chr&gt;,</span></span>
-<span id="cb3-38"><a href="#cb3-38" tabindex="-1"></a><span class="co">#&gt; #   video_description &lt;chr&gt;, hashtag_names &lt;list&gt;,</span></span>
-<span id="cb3-39"><a href="#cb3-39" tabindex="-1"></a><span class="co">#&gt; #   voice_to_text &lt;chr&gt;</span></span></code></pre></div>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>✔ Parsing data [<span class="dv">63</span>ms]</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; ── search id: 7423432753447932974 ──────────────────────</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt; # A tibble: 19 × 13</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt;    video_id         author_name view_count comment_count</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;            &lt;chr&gt;            &lt;int&gt;         &lt;int&gt;</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt;  1 730689385329705… statistics…        909             4</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt;  2 730630774458222… learningca…       1104            11</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt;  3 730501447636800… picanumeros       4645             8</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt;  4 730297066790799… smooth.lea…      98717            17</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt;  5 730247037950160… statistics…        508             0</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt;  6 730097749816510… statistics…      27387             1</span></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt;  7 730093147605973… rigochando        2603             4</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt;  8 730092229522312… elartedeld…        765             0</span></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt;  9 729998705941704… statistics…       1110             1</span></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt; 10 729965751681473… rigochando         905             4</span></span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="co">#&gt; 11 729934294487885… rigochando         555             0</span></span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="co">#&gt; 12 729896668413454… rigochando        1312             1</span></span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a><span class="co">#&gt; 13 729691148659145… biofreelan…      19758             7</span></span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a><span class="co">#&gt; 14 729691148625178… biofreelan…       5763             1</span></span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a><span class="co">#&gt; 15 729691147878174… biofreelan…       1019             3</span></span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a><span class="co">#&gt; 16 729668885660947… mrpecners          657             2</span></span>
+<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a><span class="co">#&gt; 17 729651863537426… l_a_kelly          514             5</span></span>
+<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a><span class="co">#&gt; 18 729649864535081… mrpecners          373             0</span></span>
+<span id="cb3-35"><a href="#cb3-35" tabindex="-1"></a><span class="co">#&gt; 19 729628884337898… casaresfel…        274             0</span></span>
+<span id="cb3-36"><a href="#cb3-36" tabindex="-1"></a><span class="co">#&gt; # ℹ 9 more variables: share_count &lt;int&gt;,</span></span>
+<span id="cb3-37"><a href="#cb3-37" tabindex="-1"></a><span class="co">#&gt; #   like_count &lt;int&gt;, region_code &lt;chr&gt;,</span></span>
+<span id="cb3-38"><a href="#cb3-38" tabindex="-1"></a><span class="co">#&gt; #   create_time &lt;dttm&gt;, effect_ids &lt;list&gt;,</span></span>
+<span id="cb3-39"><a href="#cb3-39" tabindex="-1"></a><span class="co">#&gt; #   music_id &lt;chr&gt;, video_description &lt;chr&gt;,</span></span>
+<span id="cb3-40"><a href="#cb3-40" tabindex="-1"></a><span class="co">#&gt; #   hashtag_names &lt;list&gt;, voice_to_text &lt;chr&gt;</span></span></code></pre></div>
 <p>As said, the query syntax that TikTok uses is a little complicated,
 as you can use AND, OR and NOT boolean operators on a number of fields
 (<code>"create_date"</code>, <code>"username"</code>,
@@ -214,7 +235,7 @@ build the query like this:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/query.html">query</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span>                                <span class="co"># start by using query()</span></span>
 <span>  <span class="fu"><a href="../reference/query.html">query_or</a></span><span class="op">(</span>field_name <span class="op">=</span> <span class="st">"hashtag_name"</span>,   <span class="co"># add an OR condition on the hashtag field</span></span>
-<span>           operation <span class="op">=</span> <span class="st">"IN"</span>,              <span class="co"># the value should IN the list of hashtags</span></span>
+<span>           operation <span class="op">=</span> <span class="st">"IN"</span>,              <span class="co"># the value should be IN the list of hashtags</span></span>
 <span>           field_values <span class="op">=</span> <span class="st">"rstats"</span><span class="op">)</span> <span class="op">|&gt;</span>    <span class="co"># the hashtag field does not accept the #-symbol</span></span>
 <span>  <span class="fu"><a href="../reference/query.html">query_or</a></span><span class="op">(</span>field_name <span class="op">=</span> <span class="st">"keyword"</span>,        <span class="co"># add another OR condition</span></span>
 <span>           operation <span class="op">=</span> <span class="st">"IN"</span>,</span>
@@ -286,105 +307,244 @@ fine-grained searches in the TikTok data:</p>
 <span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>ℹ Making initial request</span>
 <span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a></span>
-<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>✔ Making initial request [<span class="dv">734</span>ms]</span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>✔ Making initial request [<span class="fl">1.1</span>s]</span>
 <span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>ℹ Parsing data</span>
 <span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a></span>
-<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>✔ Parsing data [<span class="dv">17</span>ms]</span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>✔ Parsing data [<span class="dv">59</span>ms]</span>
 <span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>search_df</span>
-<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a><span class="co">#&gt; ── search id: 7336340473470030894 ──────────────────────────</span></span>
-<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 11</span></span>
-<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a><span class="co">#&gt;   video_id  author_name view_count comment_count region_code</span></span>
-<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;            &lt;int&gt;         &lt;int&gt; &lt;chr&gt;      </span></span>
-<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a><span class="co">#&gt; 1 72966888… mrpecners           60             2 US         </span></span>
-<span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a><span class="co">#&gt; 2 72964986… mrpecners           19             0 US         </span></span>
-<span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a><span class="co">#&gt; # ℹ 6 more variables: create_time &lt;dttm&gt;,</span></span>
-<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a><span class="co">#&gt; #   effect_ids &lt;list&gt;, music_id &lt;chr&gt;,</span></span>
-<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a><span class="co">#&gt; #   video_description &lt;chr&gt;, hashtag_names &lt;list&gt;,</span></span>
-<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a><span class="co">#&gt; #   voice_to_text &lt;chr&gt;</span></span></code></pre></div>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a><span class="co">#&gt; ── search id: 7423432753447965742 ──────────────────────</span></span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 13</span></span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a><span class="co">#&gt;   video_id          author_name view_count comment_count</span></span>
+<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;             &lt;chr&gt;            &lt;int&gt;         &lt;int&gt;</span></span>
+<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a><span class="co">#&gt; 1 7296688856609475… mrpecners          657             2</span></span>
+<span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a><span class="co">#&gt; 2 7296498645350812… mrpecners          373             0</span></span>
+<span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a><span class="co">#&gt; # ℹ 9 more variables: share_count &lt;int&gt;,</span></span>
+<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a><span class="co">#&gt; #   like_count &lt;int&gt;, region_code &lt;chr&gt;,</span></span>
+<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a><span class="co">#&gt; #   create_time &lt;dttm&gt;, effect_ids &lt;list&gt;,</span></span>
+<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a><span class="co">#&gt; #   music_id &lt;chr&gt;, video_description &lt;chr&gt;,</span></span>
+<span id="cb5-35"><a href="#cb5-35" tabindex="-1"></a><span class="co">#&gt; #   hashtag_names &lt;list&gt;, voice_to_text &lt;chr&gt;</span></span></code></pre></div>
 <p>This will return videos posted in the US or Japan, that have rstats
 as the only hashtag or as one of the keywords and have a length of
 <code>"MID"</code>, <code>"LONG"</code>, or <code>"EXTRA_LONG"</code>.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt; See &lt;a href="https://developers.tiktok.com/doc/research-api-specs-query-videos#condition_fields" class="external-link uri"&gt;https://developers.tiktok.com/doc/research-api-specs-query-videos#condition_fields&lt;/a&gt;
 for possible values of each field.&lt;/p&gt;'><sup>1</sup></a></p>
 </div>
 <div class="section level3">
-<h3 id="get-basic-user-information">Get Basic User Information<a class="anchor" aria-label="anchor" href="#get-basic-user-information"></a>
+<h3 id="get-user-information">Get User Information<a class="anchor" aria-label="anchor" href="#get-user-information"></a>
 </h3>
 <p>There is not really much to getting basic user info, but this is how
 you can do it:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/tt_user_info_api.html">tt_user_info_api</a></span><span class="op">(</span>username <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tiktok"</span>, <span class="st">"https://www.tiktok.com/@statisticsglobe"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 2 × 8</span></span>
-<span><span class="co">#&gt;   display_name    follower_count following_count is_verified</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;                    &lt;int&gt;           &lt;int&gt; &lt;lgl&gt;      </span></span>
-<span><span class="co">#&gt; 1 TikTok                78785286              30 TRUE       </span></span>
-<span><span class="co">#&gt; 2 Statistics Glo…            289               1 FALSE      </span></span>
-<span><span class="co">#&gt; # ℹ 4 more variables: likes_count &lt;int&gt;, video_count &lt;int&gt;,</span></span>
-<span><span class="co">#&gt; #   avatar_url &lt;chr&gt;, bio_description &lt;chr&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">tt_user_info_api</span>(<span class="at">username =</span> <span class="fu">c</span>(<span class="st">"tiktok"</span>, <span class="st">"https://www.tiktok.com/@statisticsglobe"</span>))</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>ℹ Getting user tiktok</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>✔ Got user tiktok [<span class="dv">508</span>ms]</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>ℹ Getting user statisticsglobe</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>✔ Got user statisticsglobe [<span class="dv">518</span>ms]</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 8</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt;   is_verified likes_count video_count avatar_url        </span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt;   &lt;lgl&gt;             &lt;int&gt;       &lt;int&gt; &lt;chr&gt;             </span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co">#&gt; 1 TRUE          330919903        1073 https://p16-pu-si…</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt; 2 FALSE              1660          92 https://p16-sign-…</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt; # ℹ 4 more variables: bio_description &lt;chr&gt;,</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt; #   display_name &lt;chr&gt;, follower_count &lt;int&gt;,</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt; #   following_count &lt;int&gt;</span></span></code></pre></div>
+<p>If you wish to return the videos of a user, your can use the search
+again:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">query</span>() <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="fu">query_and</span>(<span class="at">field_name =</span> <span class="st">"username"</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>            <span class="at">operation =</span> <span class="st">"EQ"</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>            <span class="at">field_values =</span> <span class="st">"statisticsglobe"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="fu">tt_search_api</span>(<span class="at">start_date =</span> <span class="fu">as.Date</span>(<span class="st">"2023-11-01"</span>),</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>                <span class="at">end_date =</span> <span class="fu">as.Date</span>(<span class="st">"2023-11-29"</span>))</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>ℹ Making initial request</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>✔ Making initial request [<span class="dv">872</span>ms]</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>ℹ Parsing data</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>✔ Parsing data [<span class="dv">65</span>ms]</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt; ── search id: 7423432753448064046 ──────────────────────</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 13</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a><span class="co">#&gt;   video_id          author_name view_count comment_count</span></span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;             &lt;chr&gt;            &lt;int&gt;         &lt;int&gt;</span></span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a><span class="co">#&gt; 1 7306893853297052… statistics…        909             4</span></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a><span class="co">#&gt; 2 7302470379501604… statistics…        508             0</span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a><span class="co">#&gt; 3 7300977498165103… statistics…      27387             1</span></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a><span class="co">#&gt; 4 7299987059417042… statistics…       1110             1</span></span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a><span class="co">#&gt; 5 7297389484524506… statistics…        538             2</span></span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a><span class="co">#&gt; # ℹ 9 more variables: share_count &lt;int&gt;,</span></span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a><span class="co">#&gt; #   like_count &lt;int&gt;, region_code &lt;chr&gt;,</span></span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a><span class="co">#&gt; #   create_time &lt;dttm&gt;, effect_ids &lt;list&gt;,</span></span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a><span class="co">#&gt; #   music_id &lt;chr&gt;, video_description &lt;chr&gt;,</span></span>
+<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a><span class="co">#&gt; #   hashtag_names &lt;list&gt;, voice_to_text &lt;chr&gt;</span></span></code></pre></div>
+<p>You can also find the videos a user has pinned to the top of their
+page:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">tt_user_pinned_videos_api</span>(<span class="fu">c</span>(<span class="st">"tiktok"</span>, <span class="st">"https://www.tiktok.com/@smooth.learning.c"</span>))</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>ℹ Getting user tiktok</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>✖ Getting user tiktok [<span class="dv">367</span>ms]</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>ℹ Getting user smooth.learning.c</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>✔ Got user smooth.learning.c [<span class="dv">571</span>ms]</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 14</span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt;   pinned_by_user    create_time id      is_stem_verified</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                   &lt;int&gt; &lt;chr&gt;   &lt;lgl&gt;           </span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt; 1 smooth.learning.c  1690255097 725959… FALSE           </span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt; # ℹ 10 more variables: region_code &lt;chr&gt;,</span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt; #   video_duration &lt;int&gt;, view_count &lt;int&gt;,</span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co">#&gt; #   video_description &lt;chr&gt;, comment_count &lt;int&gt;,</span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co">#&gt; #   hashtag_names &lt;list&gt;, like_count &lt;int&gt;,</span></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a><span class="co">#&gt; #   music_id &lt;chr&gt;, share_count &lt;int&gt;, username &lt;chr&gt;</span></span></code></pre></div>
+<p>To find out what a user has liked, you can use:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">tt_get_liked</span>(<span class="st">"jbgruber"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>ℹ Getting user jbgruber</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>✔ Got user jbgruber [<span class="fl">1.5</span>s]</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">#&gt; # A tibble: 98 × 14</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt;    id             username create_time video_description</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;          &lt;chr&gt;          &lt;int&gt; &lt;chr&gt;            </span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="co">#&gt;  1 7355902326877… america…  1712679503 "Stitch with @Mr…</span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="co">#&gt;  2 7268078476102… carterp…  1692231398 "Are you going t…</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co">#&gt;  3 7419692903460… okbrune…  1727531892 "Die ganze Wahrh…</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co">#&gt;  4 7405633113835… funny_s…  1724258332 "#fyp #fypシ #fu…</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="co">#&gt;  5 7398532172048… lib0160…  1722605019 "Me and ChatGPT …</span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="co">#&gt;  6 7364763547038… vquasch…  1714742648 "Einige Medien u…</span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co">#&gt;  7 7346577913858… ct_3003   1710508473 "Diese Platine f…</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="co">#&gt;  8 7379856141972… lizthed…  1718256663 "Replying to @Ar…</span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co">#&gt;  9 7415189182865… felixba…  1726483284 "Es geht wieder …</span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="co">#&gt; 10 7422673042553… grueneb…  1728225752 "Was Söder uns e…</span></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="co">#&gt; # ℹ 88 more rows</span></span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="co">#&gt; # ℹ 10 more variables: region_code &lt;chr&gt;,</span></span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a><span class="co">#&gt; #   video_duration &lt;int&gt;, view_count &lt;int&gt;,</span></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a><span class="co">#&gt; #   like_count &lt;int&gt;, comment_count &lt;int&gt;,</span></span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="co">#&gt; #   share_count &lt;int&gt;, music_id &lt;chr&gt;,</span></span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a><span class="co">#&gt; #   hashtag_names &lt;list&gt;, is_stem_verified &lt;lgl&gt;,</span></span>
+<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a><span class="co">#&gt; #   liked_by_user &lt;chr&gt;</span></span></code></pre></div>
+<p>Note, that making likes public is an opt-in feature of TikTok and
+almost nobody has this enabled, so it will give you a lot of
+warning…</p>
+<p>What we can usually get is the information who a user follows:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">tt_user_following_api</span>(<span class="at">username =</span> <span class="st">"jbgruber"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>ℹ Getting user jbgruber</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>✔ Got user jbgruber [<span class="dv">296</span>ms]</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt; # A tibble: 19 × 3</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt;    display_name          username         following_user</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;                 &lt;chr&gt;            &lt;chr&gt;         </span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co">#&gt;  1 SohoBrody             rudeboybrody     jbgruber      </span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="co">#&gt;  2 Last Week Tonight     lastweektonight… jbgruber      </span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="co">#&gt;  3 schlantologie         schlantologie    jbgruber      </span></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a><span class="co">#&gt;  4 Alex Falcone          alex_falcone     jbgruber      </span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="co">#&gt;  5 dadNRG                dadnrg           jbgruber      </span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a><span class="co">#&gt;  6 Einfach Genial Tictok user22690086508… jbgruber      </span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="co">#&gt;  7 noir_concrete_studio  noir_concrete_s… jbgruber      </span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="co">#&gt;  8 fatDumbledore         fatdumbledore13… jbgruber      </span></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="co">#&gt;  9 fragdenstaat.de       fragdenstaat.de  jbgruber      </span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="co">#&gt; 10 Erikadbka             erikadbka        jbgruber      </span></span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a><span class="co">#&gt; 11 BÜNDNIS 90/DIE GRÜNEN diegruenen       jbgruber      </span></span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a><span class="co">#&gt; 12 lagedernationclips    lagedernationcl… jbgruber      </span></span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a><span class="co">#&gt; 13 Alexandra Ils         kitty.fantastico jbgruber      </span></span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a><span class="co">#&gt; 14 future infinitive ☸️   lizthedeveloper  jbgruber      </span></span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a><span class="co">#&gt; 15 Tim Achtermeyer       achtermeyer      jbgruber      </span></span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a><span class="co">#&gt; 16 Jay Foreman           jayforeman       jbgruber      </span></span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a><span class="co">#&gt; 17 Cosmo                 whereiswanda     jbgruber      </span></span>
+<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a><span class="co">#&gt; 18 Tim Walz              timwalz          jbgruber      </span></span>
+<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a><span class="co">#&gt; 19 Shahak Shapira        shahakshapira    jbgruber</span></span></code></pre></div>
+<p>And who they are followed by:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">tt_user_follower_api</span>(<span class="st">"https://www.tiktok.com/@tiktok"</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>ℹ Getting user tiktok</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>✔ Got user tiktok [<span class="dv">442</span>ms]</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co">#&gt; # A tibble: 90 × 3</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="co">#&gt;    username           display_name     following_user</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;              &lt;chr&gt;            &lt;chr&gt;         </span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="co">#&gt;  1 galbruwt           reeyyp           tiktok        </span></span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a><span class="co">#&gt;  2 user5235623178011  👑কিং রানা 🥀    tiktok        </span></span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a><span class="co">#&gt;  3 rokyevay07         👑Rokye Vay👑    tiktok        </span></span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a><span class="co">#&gt;  4 babyylious08       babyylious08     tiktok        </span></span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a><span class="co">#&gt;  5 user8283823357     hd❤️‍🩹jaan❤️‍🩹hi❤️‍🩹❤️  tiktok        </span></span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a><span class="co">#&gt;  6 user45628309141722 سامي             tiktok        </span></span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a><span class="co">#&gt;  7 nu.th085           Nâu Thị          tiktok        </span></span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a><span class="co">#&gt;  8 halimeysll         halimeysll       tiktok        </span></span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a><span class="co">#&gt;  9 taru.tristiyanto   Taru Tristiyanto tiktok        </span></span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a><span class="co">#&gt; 10 vng.lan.hng09      Vương Lan Hường  tiktok        </span></span>
+<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a><span class="co">#&gt; # ℹ 80 more rows</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="obtain-all-comments-of-a-video">Obtain all Comments of a Video<a class="anchor" aria-label="anchor" href="#obtain-all-comments-of-a-video"></a>
 </h3>
 <p>There is again, not much to talk about when it comes to the comments
 API. You need to supply a video ID, which you either have already:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">tt_comments_api</span>(<span class="at">video_id =</span> <span class="st">"7302470379501604128"</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>ℹ Making initial request</span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>✔ Making initial request [<span class="fl">7.2</span>s]</span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>ℹ Parsing data</span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>✔ Parsing data [<span class="dv">18</span>ms]</span>
-<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt; ── search id:  ─────────────────────────────────────────────</span></span>
-<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 7</span></span>
-<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt;   text                 video_id create_time id    like_count</span></span>
-<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                &lt;chr&gt;          &lt;int&gt; &lt;chr&gt;      &lt;int&gt;</span></span>
-<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt; 1 and why would we do… 7302470…  1700243424 7302…          0</span></span>
-<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt; # ℹ 2 more variables: parent_comment_id &lt;chr&gt;,</span></span>
-<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co">#&gt; #   reply_count &lt;int&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">tt_comments_api</span>(<span class="at">video_id =</span> <span class="st">"7302470379501604128"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>ℹ Making initial request</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>✔ Making initial request [<span class="fl">4.9</span>s]</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>ℹ Parsing data</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>✔ Parsing data [<span class="dv">68</span>ms]</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="co">#&gt; ── search id:  ─────────────────────────────────────────</span></span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 7</span></span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a><span class="co">#&gt;   create_time id            like_count parent_comment_id</span></span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a><span class="co">#&gt;         &lt;int&gt; &lt;chr&gt;              &lt;int&gt; &lt;chr&gt;            </span></span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a><span class="co">#&gt; 1  1700243424 730248974199…          0 7302470379501604…</span></span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a><span class="co">#&gt; # ℹ 3 more variables: reply_count &lt;int&gt;, text &lt;chr&gt;,</span></span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a><span class="co">#&gt; #   video_id &lt;chr&gt;</span></span></code></pre></div>
 <p>Or you got it from a search:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">tt_comments_api</span>(<span class="at">video_id =</span> search_df<span class="sc">$</span>video_id[<span class="dv">1</span>])</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>✔ Making initial request [<span class="fl">55.7</span>s]</span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>ℹ Parsing data</span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>✔ Parsing data [<span class="dv">18</span>ms]</span>
-<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt; ── search id:  ─────────────────────────────────────────────</span></span>
-<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 7</span></span>
-<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt;   like_count parent_comment_id   reply_count text   video_id</span></span>
-<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt;        &lt;int&gt; &lt;chr&gt;                     &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;   </span></span>
-<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt; 1          1 7296688856609475882           1 So co… 7296688…</span></span>
-<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt; 2          0 7296690681388204831           0 Thank… 7296688…</span></span>
-<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt; # ℹ 2 more variables: create_time &lt;int&gt;, id &lt;chr&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">tt_comments_api</span>(<span class="at">video_id =</span> search_df<span class="sc">$</span>video_id[<span class="dv">1</span>])</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>ℹ Making initial request</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>✔ Making initial request [<span class="fl">4.8</span>s]</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>ℹ Parsing data</span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>✔ Parsing data [<span class="dv">61</span>ms]</span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co">#&gt; ── search id:  ─────────────────────────────────────────</span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 7</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="co">#&gt;   create_time id            like_count parent_comment_id</span></span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="co">#&gt;         &lt;int&gt; &lt;chr&gt;              &lt;int&gt; &lt;chr&gt;            </span></span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a><span class="co">#&gt; 1  1698893206 729669068138…          1 7296688856609475…</span></span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="co">#&gt; 2  1698893251 729669083429…          0 7296690681388204…</span></span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a><span class="co">#&gt; # ℹ 3 more variables: reply_count &lt;int&gt;, text &lt;chr&gt;,</span></span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a><span class="co">#&gt; #   video_id &lt;chr&gt;</span></span></code></pre></div>
 <p>Or you let the function extract if from a URL to a video:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">tt_comments_api</span>(<span class="at">video_id =</span> <span class="st">"https://www.tiktok.com/@nicksinghtech/video/7195762648716152107?q=%23rstats"</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>ℹ Making initial request</span>
-<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>✔ Making initial request [<span class="dv">2</span>m <span class="fl">16.7</span>s]</span>
-<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>ℹ Parsing data</span>
-<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a></span>
-<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>✔ Parsing data [<span class="dv">19</span>ms]</span>
-<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="co">#&gt; ── search id:  ─────────────────────────────────────────────</span></span>
-<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co">#&gt; # A tibble: 96 × 7</span></span>
-<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co">#&gt;    create_time id               like_count parent_comment_id</span></span>
-<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="co">#&gt;          &lt;int&gt; &lt;chr&gt;                 &lt;int&gt; &lt;chr&gt;            </span></span>
-<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="co">#&gt;  1  1675394834 719576596990925…        314 7195762648716152…</span></span>
-<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co">#&gt;  2  1675457114 719603344301613…        232 7195762648716152…</span></span>
-<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="co">#&gt;  3  1675458796 719604066348022…        177 7195762648716152…</span></span>
-<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co">#&gt;  4  1675395061 719576692726561…        166 7195765969909252…</span></span>
-<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="co">#&gt;  5  1675624739 719675339339355…         71 7195762648716152…</span></span>
-<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="co">#&gt;  6  1675465779 719607064381200…         71 7195762648716152…</span></span>
-<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="co">#&gt;  7  1675494738 719619490971140…         27 7195762648716152…</span></span>
-<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a><span class="co">#&gt;  8  1675691471 719703995331384…         17 7196040663480222…</span></span>
-<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a><span class="co">#&gt;  9  1675656122 719688817955866…         16 7195762648716152…</span></span>
-<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="co">#&gt; 10  1675440749 719596313215706…         16 7195762648716152…</span></span>
-<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a><span class="co">#&gt; # ℹ 86 more rows</span></span>
-<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a><span class="co">#&gt; # ℹ 3 more variables: reply_count &lt;int&gt;, text &lt;chr&gt;,</span></span>
-<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a><span class="co">#&gt; #   video_id &lt;chr&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">tt_comments_api</span>(<span class="at">video_id =</span> <span class="st">"https://www.tiktok.com/@nicksinghtech/video/7195762648716152107?q=%23rstats"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>ℹ Making initial request</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>✔ Making initial request [<span class="fl">5.9</span>s]</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>ℹ Parsing data</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>✔ Parsing data [<span class="dv">58</span>ms]</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="co">#&gt; ── search id:  ─────────────────────────────────────────</span></span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="co">#&gt; # A tibble: 96 × 7</span></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="co">#&gt;    text            video_id create_time id    like_count</span></span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;           &lt;chr&gt;          &lt;int&gt; &lt;chr&gt;      &lt;int&gt;</span></span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a><span class="co">#&gt;  1 You gotta know… 7195762…  1675394834 7195…        314</span></span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a><span class="co">#&gt;  2 R is the goat … 7195762…  1675457114 7196…        232</span></span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a><span class="co">#&gt;  3 Ppl who like E… 7195762…  1675458796 7196…        177</span></span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="co">#&gt;  4 Fair but doesn… 7195762…  1675395061 7195…        166</span></span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a><span class="co">#&gt;  5 babe RStudio i… 7195762…  1675624739 7196…         71</span></span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a><span class="co">#&gt;  6 Excel is the b… 7195762…  1675465779 7196…         71</span></span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="co">#&gt;  7 NOT THE SAS SL… 7195762…  1675494738 7196…         27</span></span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a><span class="co">#&gt;  8 I won't take t… 7195762…  1675691471 7197…         17</span></span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a><span class="co">#&gt;  9 No love for ST… 7195762…  1675656122 7196…         16</span></span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a><span class="co">#&gt; 10 I use SAS 🫡    7195762…  1675440749 7195…         16</span></span>
+<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a><span class="co">#&gt; # ℹ 86 more rows</span></span>
+<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a><span class="co">#&gt; # ℹ 2 more variables: parent_comment_id &lt;chr&gt;,</span></span>
+<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a><span class="co">#&gt; #   reply_count &lt;int&gt;</span></span></code></pre></div>
 <p>And that is essentially it. Note, that if you find the functionality
 of the Research API lacking, there is nothing that keeps you from using
 the unofficial API functions.</p>
@@ -405,26 +565,26 @@ reset at 12 AM UTC. [<a href="https://developers.tiktok.com/doc/research-api-faq
 you. In this case, you can actually save a search and pick it back up
 after the reset. To facilitate this, search result objects contain two
 extra pieces of information in the attributes:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>search_df <span class="ot">&lt;-</span> <span class="fu">query</span>() <span class="sc">|&gt;</span></span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="fu">query_and</span>(<span class="at">field_name =</span> <span class="st">"region_code"</span>,</span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>            <span class="at">operation =</span> <span class="st">"IN"</span>,</span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>            <span class="at">field_values =</span> <span class="fu">c</span>(<span class="st">"JP"</span>, <span class="st">"US"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  <span class="fu">tt_search_api</span>(<span class="at">start_date =</span> <span class="fu">as.Date</span>(<span class="st">"2023-11-01"</span>),</span>
-<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>                <span class="at">end_date =</span> <span class="fu">as.Date</span>(<span class="st">"2023-11-29"</span>), </span>
-<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>                <span class="at">max_pages =</span> <span class="dv">1</span>)</span>
-<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>ℹ Making initial request</span>
-<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a></span>
-<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>✔ Making initial request [<span class="fl">1.9</span>s]</span>
-<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>ℹ Parsing data</span>
-<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a></span>
-<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>✔ Parsing data [<span class="dv">20</span>ms]</span>
-<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a></span>
-<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="fu">attr</span>(search_df, <span class="st">"search_id"</span>)</span>
-<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="co">#&gt; [1] "7336340473470063662"</span></span>
-<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a><span class="fu">attr</span>(search_df, <span class="st">"cursor"</span>)</span>
-<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a><span class="co">#&gt; [1] 100</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>search_df <span class="ot">&lt;-</span> <span class="fu">query</span>() <span class="sc">|&gt;</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  <span class="fu">query_and</span>(<span class="at">field_name =</span> <span class="st">"region_code"</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>            <span class="at">operation =</span> <span class="st">"IN"</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>            <span class="at">field_values =</span> <span class="fu">c</span>(<span class="st">"JP"</span>, <span class="st">"US"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>  <span class="fu">tt_search_api</span>(<span class="at">start_date =</span> <span class="fu">as.Date</span>(<span class="st">"2023-11-01"</span>),</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>                <span class="at">end_date =</span> <span class="fu">as.Date</span>(<span class="st">"2023-11-29"</span>),</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>                <span class="at">max_pages =</span> <span class="dv">1</span>)</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>ℹ Making initial request</span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a>✔ Making initial request [<span class="fl">2.4</span>s]</span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a>ℹ Parsing data</span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a>✔ Parsing data [<span class="dv">71</span>ms]</span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a></span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a><span class="fu">attr</span>(search_df, <span class="st">"search_id"</span>)</span>
+<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a><span class="co">#&gt; [1] "7423432753448096814"</span></span>
+<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a><span class="fu">attr</span>(search_df, <span class="st">"cursor"</span>)</span>
+<span id="cb15-20"><a href="#cb15-20" tabindex="-1"></a><span class="co">#&gt; [1] 100</span></span></code></pre></div>
 <p>When you want to continue this search, whether because of rate limit
 or because you decided you want more results, you can do so by providing
 <code>search_id</code> and <code>cursor</code> to
@@ -433,30 +593,30 @@ limit or another issue, you can retrieve the results already received
 with <code>search_df &lt;- last_query()</code>. <code>search_df</code>
 will in both cases contain the relevant <code>search_id</code> and
 <code>cursor</code> in the attributes:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>search_df2 <span class="ot">&lt;-</span> <span class="fu">query</span>() <span class="sc">|&gt;</span></span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="fu">query_and</span>(<span class="at">field_name =</span> <span class="st">"region_code"</span>,</span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>            <span class="at">operation =</span> <span class="st">"IN"</span>,</span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>            <span class="at">field_values =</span> <span class="fu">c</span>(<span class="st">"JP"</span>, <span class="st">"US"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  <span class="fu">tt_search_api</span>(<span class="at">start_date =</span> <span class="fu">as.Date</span>(<span class="st">"2023-11-01"</span>),</span>
-<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>                <span class="at">end_date =</span> <span class="fu">as.Date</span>(<span class="st">"2023-11-29"</span>), </span>
-<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>                </span>
-<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>                <span class="co"># this part is new</span></span>
-<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>                <span class="at">start_cursor =</span> <span class="fu">attr</span>(search_df, <span class="st">"cursor"</span>), </span>
-<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>                <span class="at">search_id =</span> <span class="fu">attr</span>(search_df, <span class="st">"search_id"</span>),</span>
-<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>                <span class="do">####</span></span>
-<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>                <span class="at">max_pages =</span> <span class="dv">1</span>)</span>
-<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>ℹ Making initial request</span>
-<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a></span>
-<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>✔ Making initial request [<span class="fl">5.1</span>s]</span>
-<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a>ℹ Parsing data</span>
-<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a></span>
-<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a>✔ Parsing data [<span class="dv">21</span>ms]</span>
-<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a><span class="fu">attr</span>(search_df2, <span class="st">"search_id"</span>)</span>
-<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a><span class="co">#&gt; [1] "7336340473470063662"</span></span>
-<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a><span class="fu">attr</span>(search_df2, <span class="st">"cursor"</span>)</span>
-<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a><span class="co">#&gt; [1] 200</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>search_df2 <span class="ot">&lt;-</span> <span class="fu">query</span>() <span class="sc">|&gt;</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="fu">query_and</span>(<span class="at">field_name =</span> <span class="st">"region_code"</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>            <span class="at">operation =</span> <span class="st">"IN"</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>            <span class="at">field_values =</span> <span class="fu">c</span>(<span class="st">"JP"</span>, <span class="st">"US"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>  <span class="fu">tt_search_api</span>(<span class="at">start_date =</span> <span class="fu">as.Date</span>(<span class="st">"2023-11-01"</span>),</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>                <span class="at">end_date =</span> <span class="fu">as.Date</span>(<span class="st">"2023-11-29"</span>),</span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>                <span class="co"># this part is new</span></span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>                <span class="at">start_cursor =</span> <span class="fu">attr</span>(search_df, <span class="st">"cursor"</span>),</span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>                <span class="at">search_id =</span> <span class="fu">attr</span>(search_df, <span class="st">"search_id"</span>),</span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>                <span class="do">####</span></span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a>                <span class="at">max_pages =</span> <span class="dv">1</span>)</span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a>ℹ Making initial request</span>
+<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a></span>
+<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a>✔ Making initial request [<span class="fl">5.1</span>s]</span>
+<span id="cb16-17"><a href="#cb16-17" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-18"><a href="#cb16-18" tabindex="-1"></a>ℹ Parsing data</span>
+<span id="cb16-19"><a href="#cb16-19" tabindex="-1"></a></span>
+<span id="cb16-20"><a href="#cb16-20" tabindex="-1"></a>✔ Parsing data [<span class="dv">21</span>ms]</span>
+<span id="cb16-21"><a href="#cb16-21" tabindex="-1"></a><span class="fu">attr</span>(search_df2, <span class="st">"search_id"</span>)</span>
+<span id="cb16-22"><a href="#cb16-22" tabindex="-1"></a><span class="co">#&gt; [1] "7336340473470063662"</span></span>
+<span id="cb16-23"><a href="#cb16-23" tabindex="-1"></a><span class="fu">attr</span>(search_df2, <span class="st">"cursor"</span>)</span>
+<span id="cb16-24"><a href="#cb16-24" tabindex="-1"></a><span class="co">#&gt; [1] 200</span></span></code></pre></div>
 <p>Note that the cursor is not equal to how many videos you got before,
 as the API also counts videos that are “deleted/marked as private by
 users etc.” [See <code>max_count</code> in <a href="https://developers.tiktok.com/doc/research-api-specs-query-videos" class="external-link">Query

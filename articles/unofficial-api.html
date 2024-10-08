@@ -252,7 +252,7 @@ value:</p>
 <p>Once you have this <code>authorSecId</code> you can look up a maximum
 of 5,000 followers per account:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/tt_get_following_hidden.html">tt_get_follower</a></span><span class="op">(</span>secuid <span class="op">=</span> <span class="st">"MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi"</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/tt_get_follower.html">tt_get_follower</a></span><span class="op">(</span>secuid <span class="op">=</span> <span class="st">"MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi"</span>,</span>
 <span>                verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; # A tibble: 1,116 × 27</span></span>
@@ -277,7 +277,7 @@ of 5,000 followers per account:</p>
 <span><span class="co">#&gt; #   verified &lt;lgl&gt;, diggCount &lt;int&gt;, followerCount &lt;int&gt;, …</span></span></code></pre></div>
 <p>Likewise, you can also check who this account follows:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/tt_get_following_hidden.html">tt_get_following</a></span><span class="op">(</span>secuid <span class="op">=</span> <span class="st">"MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi"</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/tt_get_follower.html">tt_get_following</a></span><span class="op">(</span>secuid <span class="op">=</span> <span class="st">"MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi"</span>,</span>
 <span>                 verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; # A tibble: 489 × 28</span></span>

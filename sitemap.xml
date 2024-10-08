@@ -15,6 +15,7 @@
 <url><loc>https://jbgruber.github.io/traktok/reference/print.tt_results.html</loc></url>
 <url><loc>https://jbgruber.github.io/traktok/reference/query.html</loc></url>
 <url><loc>https://jbgruber.github.io/traktok/reference/tt_comments_api.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/reference/tt_get_follower.html</loc></url>
 <url><loc>https://jbgruber.github.io/traktok/reference/tt_get_following_hidden.html</loc></url>
 <url><loc>https://jbgruber.github.io/traktok/reference/tt_json.html</loc></url>
 <url><loc>https://jbgruber.github.io/traktok/reference/tt_playlist_api.html</loc></url>
@@ -26,6 +27,8 @@
 <url><loc>https://jbgruber.github.io/traktok/reference/tt_user_info_api.html</loc></url>
 <url><loc>https://jbgruber.github.io/traktok/reference/tt_user_info_hidden.html</loc></url>
 <url><loc>https://jbgruber.github.io/traktok/reference/tt_user_liked_videos_api.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/reference/tt_user_pinned_videos_api.html</loc></url>
+<url><loc>https://jbgruber.github.io/traktok/reference/tt_user_reposted_api.html</loc></url>
 <url><loc>https://jbgruber.github.io/traktok/reference/tt_user_videos_hidden.html</loc></url>
 <url><loc>https://jbgruber.github.io/traktok/reference/tt_videos_hidden.html</loc></url>
 </urlset>
