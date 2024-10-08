@@ -241,7 +241,7 @@ tt_query_request <- function(endpoint,
 #'
 #' @examples
 #' \dontrun{
-#' tt_user_liked_videos_api("jbgruber")
+#' tt_get_liked("jbgruber")
 #' # OR
 #' tt_user_liked_videos_api("https://www.tiktok.com/@tiktok")
 #' # OR
@@ -336,6 +336,115 @@ tt_user_liked_videos_api <- function(username,
 }
 
 
+#' Lookup which videos were liked by a user using the research API
+#'
+#' @description \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:
+#'   Research API]'}}{\strong{[Works on: Research API]}}
+#'
+#' @param username name(s) of the user(s) to be queried
+#' @param fields The fields to be returned (defaults to all)
+#' @inheritParams tt_search_api
+#'
+#' @return A data.frame of parsed TikTok videos the user has posted
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' tt_get_reposted("jbgruber")
+#' # OR
+#' tt_user_reposted_api("https://www.tiktok.com/@tiktok")
+#' # OR
+#' tt_user_reposted_api("https://www.tiktok.com/@tiktok")
+#'
+#' # note: none of these work because nobody has this enabled!
+#' }
+tt_user_reposted_api <- function(username,
+                                     fields = "all",
+                                     max_pages = 1,
+                                     cache = TRUE,
+                                     verbose = TRUE,
+                                     token = NULL) {
+
+  purrr::map(username, function(u) {
+    # if username is given as URL
+    if (grepl("/", u)) {
+      u <- extract_regex(
+        u,
+        "(?<=.com/@)(.+?)(?=\\?|$|/)"
+      )
+    }
+    if (verbose) cli::cli_progress_step(msg = "Getting user {u}",
+                                        msg_done = "Got user {u}")
+    the$result <- TRUE
+    if (is.null(token)) token <- get_token()
+
+    if (fields == "all") {
+      fields <- c(
+        "id",
+        "create_time",
+        "username",
+        "region_code",
+        "video_description",
+        "music_id",
+        "like_count",
+        "comment_count",
+        "share_count",
+        "view_count",
+        "hashtag_names",
+        "is_stem_verified",
+        "favourites_count",
+        "video_duration"
+      ) |>
+        paste0(collapse = ",")
+    }
+
+    res <- list(data = list(has_more = TRUE, cursor = NULL))
+    the$page <-  0L
+    videos <- list()
+    # iterate over pages
+    while (purrr::pluck(res, "data", "has_more", .default = FALSE) && the$page < max_pages) {
+      the$page <- the$page + 1
+      the$cursor <- purrr::pluck(res, "data", "cursor")
+
+      res <- tt_user_request(endpoint = "reposted_videos/",
+                             username = u,
+                             fields = fields,
+                             cursor = the$cursor,
+                             token = token)
+
+      videos <- c(videos, purrr::pluck(res, "data", "reposted_videos"))
+      if (cache) {
+        the$videos <- videos
+      }
+    }
+
+    videos2 <- videos |>
+      purrr::map(as_tibble_onerow) |>
+      dplyr::bind_rows() |>
+      # somehow, the order changes between, calls. So I fix it here
+      dplyr::relocate("id",
+                      "username",
+                      "create_time",
+                      "video_description",
+                      "region_code",
+                      "video_duration",
+                      "view_count",
+                      "like_count",
+                      "comment_count",
+                      "share_count",
+                      "music_id")
+
+    videos <- tibble::add_column(videos, reposted_by_user = u)
+    if (verbose) cli::cli_progress_done(
+      result	= ifelse(length(videos) > 1, "done", "failed")
+    )
+
+    return(videos)
+  }) |>
+    dplyr::bind_rows()
+}
+
+
 #' Lookup which videos were pinned by a user using the research API
 #'
 #' @description \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:
@@ -348,7 +457,7 @@ tt_user_liked_videos_api <- function(username,
 #'
 #' @examples
 #' \dontrun{
-#' tt_user_pinned_videos_api("jbgruber")
+#' tt_get_pinned("jbgruber")
 #' # OR
 #' tt_user_pinned_videos_api("https://www.tiktok.com/@tiktok")
 #' # OR

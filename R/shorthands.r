@@ -66,19 +66,65 @@ tt_user_info <- tt_user_info_api
 tt_get_liked <- tt_user_liked_videos_api
 
 
+#' @rdname tt_user_reposted_api
+#' @export
+tt_get_reposted <- tt_user_reposted_api
+
+
+#' @rdname tt_user_pinned_videos_api
+#' @export
+tt_get_pinned <- tt_user_pinned_videos_api
+
+
 #' @rdname tt_comments_api
 #' @export
 tt_comments <- tt_comments_api
 
 
-#' @rdname tt_get_following_hidden
+#' Get followers and following of users
+#'
+#' @description \ifelse{html}{\figure{api-both.svg}{options:
+#'   alt='[Both]'}}{\strong{[Both]}}
+#'
+#'   Get usernames of users who follows a user (tt_get_follower) or get who a
+#'   user is following (tt_get_following).
+#'
+#' @param ... arguments passed to \link{tt_user_follower_api} or
+#'   \link{tt_get_follower_hidden}. To use the research API, include \code{token}
+#'   (e.g., \code{token = NULL}).
+#'
+#' @return a data.frame
 #' @export
-tt_get_follower <- tt_get_follower_hidden
+tt_get_follower <- function(...) {
+
+  params <- list(...)
+  token <- params$token
+  params$token <- NULL
+  if (is.null(token)) token <- get_token(auth = FALSE)
+  if (isFALSE(token)) {
+    tt_get_follower_hidden(...)
+  } else {
+    tt_user_follower_api(..., token)
+  }
+
+}
 
 
-#' @rdname tt_get_following_hidden
+#' @rdname tt_get_follower
 #' @export
-tt_get_following <- tt_get_following_hidden
+tt_get_following <- function(...) {
+
+  params <- list(...)
+  token <- params$token
+  params$token <- NULL
+  if (is.null(token)) token <- get_token(auth = FALSE)
+  if (isFALSE(token)) {
+    tt_get_following_hidden(...)
+  } else {
+    tt_user_following_api(..., token)
+  }
+
+}
 
 
 #' Get json file from a TikTok URL
