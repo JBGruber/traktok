@@ -29,7 +29,26 @@ tt_search <- function(...) {
 }
 
 
-#' @rdname tt_user_info_api
+#' Get videos from a TikTok user's profile
+#'
+#' @description \ifelse{html}{\figure{api-both.svg}{options:
+#'   alt='[Both]'}}{\strong{[Both]}}
+#'
+#'   Get all videos posted by a user (or multiple user's for the Research API).
+#'   Searches videos using either the Research API (if an authentication token
+#'   is present, see \link{auth_research}) or otherwise the unofficial hidden
+#'   API. See \link{tt_user_videos_api} or \link{tt_user_videos_hidden} respectively for
+#'   information about these functions.
+#'
+#' @param username The username or usernames whose videos you want to retrieve.
+#' @param ... Additional arguments to be passed to the \code{\link{tt_user_videos_hidden}} or
+#'   \code{\link{tt_user_videos_api}} function.
+#'
+#' @examples
+#' \dontrun{
+#' # Get hidden videos from the user "fpoe_at"
+#' tt_user_videos("fpoe_at")
+#' }
 #' @export
 tt_user_videos <- function(username, ...) {
   params <- list(...)
@@ -39,11 +58,7 @@ tt_user_videos <- function(username, ...) {
   if (isFALSE(token)) {
     tt_search_hidden(username, ...)
   } else {
-    query() |>
-      query_or(field_name = "username",
-               operation = "IN",
-               field_values = username) |>
-      tt_search_api(token)
+    tt_user_videos_api(username, ...)
   }
 }
 

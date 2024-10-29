@@ -2,13 +2,10 @@
 % Please edit documentation in R/api_research.r, R/shorthands.r
 \name{tt_user_info_api}
 \alias{tt_user_info_api}
-\alias{tt_user_videos}
 \alias{tt_user_info}
 \title{Lookup TikTok information about a user using the research API}
 \usage{
 tt_user_info_api(username, fields = "all", verbose = TRUE, token = NULL)
-
-tt_user_videos(username, ...)
 
 tt_user_info(username, fields = "all", verbose = TRUE, token = NULL)
 }
