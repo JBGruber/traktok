@@ -92,3 +92,13 @@ is_datetime <- function(x) {
     methods::is(x, "POSIXlt") +
     methods::is(x, "Date") > 0
 }
+
+
+id2url <- function(x) {
+  if (!is.character(x)) {
+    cli::cli_abort("You need to supply a character vector of video URLs or IDs")
+  }
+  x[!grepl("\\D", x)] <- paste0("https://www.tiktok.com/@/video/", x[!grepl("\\D", x)])
+  return(x)
+}
+

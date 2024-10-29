@@ -21,7 +21,7 @@ tt_videos_hidden(
 tt_videos(...)
 }
 \arguments{
-\item{video_urls}{vector of URLs to TikTok videos.}
+\item{video_urls}{vector of URLs or IDs to TikTok videos.}
 
 \item{save_video}{logical. Should the videos be downloaded.}
 

@@ -3,7 +3,7 @@
 #' @description \ifelse{html}{\figure{api-unofficial}{options: alt='[Works on:
 #'   Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
 #'
-#' @param video_urls vector of URLs to TikTok videos.
+#' @param video_urls vector of URLs or IDs to TikTok videos.
 #' @param save_video logical. Should the videos be downloaded.
 #' @param overwrite logical. If save_video=TRUE and the file already exists,
 #'   should it be overwritten?
@@ -50,6 +50,8 @@ tt_videos_hidden <- function(video_urls,
 
   video_urls <- unique(video_urls)
   n_urls <- length(video_urls)
+  video_urls <- id2url(video_urls)
+
   if (verbose) cli::cli_alert_info("Getting {n_urls} unique link{?s}")
   if (!is.null(cookiefile)) cookiemonster::add_cookies(cookiefile)
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
@@ -79,11 +81,11 @@ tt_videos_hidden <- function(video_urls,
                            cookies = cookies,
                            verbose = verbose)
 
-    regex_url <- extract_regex(video_dat$video_url, "(?<=@).+?(?=\\?|$)")
     if (isTRUE(video_dat$video_status_code == 0L)) {
       if (save_video) {
         if (!isTRUE(video_dat$is_slides)) {
-          video_fn <- file.path(dir, paste0(gsub("/", "_", regex_url), ".mp4"))
+          video_fn <- file.path(dir, paste0(video_dat$author_username, "_video_",
+                                            video_dat$video_id, ".mp4"))
 
           f_name <- save_video(video_dat = video_dat,
                                video_fn = video_fn,
@@ -101,16 +103,14 @@ tt_videos_hidden <- function(video_urls,
         } else { # for slides
           download_urls <- strsplit(video_dat$download_url, ", ", fixed = TRUE) |>
             unlist()
-          video_fns <- file.path(dir, paste0(gsub("/", "_", regex_url),
+          video_fns <- file.path(dir, paste0(video_dat$author_username,
+                                             "_video_",
+                                             video_dat$video_id,
                                              "_",
                                              seq_along(download_urls),
                                              ".jpeg"))
           purrr::walk2(download_urls, video_fns, function(u, f) {
-            f_name <- save_video(video_url = u,
-                                 video_fn = f,
-                                 overwrite = overwrite,
-                                 max_tries = max_tries,
-                                 cookies = cookies)
+            curl::curl_download(url = u, destfile = f, quiet = TRUE)
           })
         }
       }

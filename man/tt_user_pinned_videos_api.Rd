@@ -22,6 +22,8 @@ tt_get_pinned(
 )
 }
 \arguments{
+\item{username}{vector of user names (handles) or URLs to users' pages.}
+
 \item{fields}{The fields to be returned (defaults to all)}
 
 \item{cache}{should progress be saved in the current session? It can then be
