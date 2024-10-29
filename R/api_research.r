@@ -215,7 +215,7 @@ tt_query_request <- function(endpoint,
     httr2::req_error(body = api_error_handler) |>
     httr2::req_retry(
       max_tries = 5L,
-      # don't retry when daily quota is reached
+      # don't retry when daily quota is reached (429)
       is_transient = function(resp)
         httr2::resp_status(resp) %in% c(301:399, 401:428, 430:599),
       # increase backoff after each try
@@ -450,6 +450,7 @@ tt_user_reposted_api <- function(username,
 #' @description \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:
 #'   Research API]'}}{\strong{[Works on: Research API]}}
 #'
+#' @param username vector of user names (handles) or URLs to users' pages.
 #' @inheritParams tt_search_api
 #'
 #' @return A data.frame of parsed TikTok videos the user has posted
@@ -725,7 +726,8 @@ tt_user_info_api <- function(username,
       httr2::req_body_json(data = list(username = u)) |>
       httr2::req_error(is_error = api_user_error_checker,
                        body = api_error_handler) |>
-      httr2::req_retry(max_tries = 5) |>
+      httr2::req_retry(max_tries = 5,
+                       backoff = function(t) t ^ 3) |>
       httr2::req_perform() |>
       httr2::resp_body_json(bigint_as_char = TRUE) |>
       purrr::pluck("data") |>
@@ -899,6 +901,7 @@ api_error_handler <- function(resp) {
 
 
 api_user_error_checker <- function(resp) {
+  resp <<- resp
   if (httr2::resp_status(resp) < 400L) return(FALSE)
   if (httr2::resp_status(resp) == 404L) return(TRUE)
   # it looks like the API sometimes returns 500 falsely, but in these cases, no
@@ -909,16 +912,19 @@ api_user_error_checker <- function(resp) {
   }
   # if likes can't be accessed, which is true for many users, this should
   # not throw an error
-  if (grepl("information.cannot.be.returned",
-            httr2::resp_body_json(resp)$error$message)) {
-    cli::cli_alert_warning(httr2::resp_body_json(resp)$error$message)
-    the$result <- FALSE
-    return(FALSE)
-  }
+  issue1 <- grepl("information.cannot.be.returned",
+                  httr2::resp_body_json(resp)$error$message)
   # if the user can't be found, this should not throw an error, which
   # would break the loop
-  if (grepl("cannot find the user",
-            httr2::resp_body_json(resp)$error$message)) {
+  issue2 <- grepl("cannot.find.the.user",
+                  httr2::resp_body_json(resp)$error$message)
+  # if account is private
+  issue3 <- grepl("is.private",
+                  httr2::resp_body_json(resp)$error$message)
+  issue4 <- grepl("API.cannot.return.this.user's.information",
+                  httr2::resp_body_json(resp)$error$message)
+
+  if (any(issue1, issue2, issue3, issue4)) {
     cli::cli_alert_warning(httr2::resp_body_json(resp)$error$message)
     the$result <- FALSE
     return(FALSE)
