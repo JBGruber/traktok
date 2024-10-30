@@ -454,14 +454,14 @@ tt_get_following_hidden <- function(secuid,
                    hasMore = TRUE)
   follower_data <- list()
 
-  while (new_data$hasMore) {
+  while (isTRUE(new_data$hasMore)) {
     if (verbose) cli::cli_progress_step(
       msg = ifelse(length(follower_data) == 0L, "Getting followers...", "Getting more followers..."),
       msg_done = "Got {length(follower_data)} followers."
     )
     resp <- httr2::request("https://www.tiktok.com/api/user/list/") |>
       httr2::req_url_query(
-        count = "198",
+        count = "30",
         minCursor = new_data$minCursor,
         scene = "21",
         secUid = secuid,
@@ -478,7 +478,7 @@ tt_get_following_hidden <- function(secuid,
     } else {
       follower_data <- c(follower_data, purrr::pluck(new_data, "userList", .default = list()))
     }
-    if (new_data$hasMore) wait(sleep_pool)
+    if (isTRUE(new_data$hasMore)) wait(sleep_pool)
   }
   if (verbose) cli::cli_progress_done()
 
@@ -505,25 +505,14 @@ tt_get_follower_hidden <- function(secuid,
                    hasMore = TRUE)
   follower_data <- list()
 
-  while (new_data$hasMore) {
+  while (isTRUE(new_data$hasMore)) {
     if (verbose) cli::cli_progress_step(
       msg = ifelse(length(follower_data) == 0L, "Getting followers...", "Getting more followers..."),
       msg_done = "Got {length(follower_data)} followers."
     )
     resp <- httr2::request("https://www.tiktok.com/api/user/list/") |>
       httr2::req_url_query(
-        count = "198",
-        minCursor = new_data$minCursor,
-        scene = "67",
-        secUid = secuid,
-      ) |>
-      httr2::req_options(cookie = cookies) |>
-      httr2::req_retry(max_tries = max_tries) |>
-      httr2::req_perform()
-
-    resp <- httr2::request("https://www.tiktok.com/api/user/list/") |>
-      httr2::req_url_query(
-        count = "198",
+        count = "30",
         minCursor = new_data$minCursor,
         scene = "67",
         secUid = secuid,
@@ -540,7 +529,7 @@ tt_get_follower_hidden <- function(secuid,
     } else {
       follower_data <- c(follower_data, purrr::pluck(new_data, "userList", .default = list()))
     }
-    if (new_data$hasMore) wait(sleep_pool)
+    if (isTRUE(new_data$hasMore)) wait(sleep_pool)
   }
   if (verbose) cli::cli_progress_done()
 

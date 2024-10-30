@@ -22,7 +22,7 @@ auth_hidden <- function(cookiefile, live = interactive()) {
 
   if (!missing(cookiefile)) {
     cookiemonster::add_cookies(cookiefile)
-    invisible(TRUE)
+    return(invisible(TRUE))
   }
   msg <- paste0(
     "Supply either a cookiefile (see {.url https://jbgruber.github.io/traktok/",
