@@ -392,12 +392,14 @@ tt_user_info_hidden <- function(username,
 
   rlang::check_installed("rvest", reason = "to use this function", version = "1.0.4")
 
-
   if (!grepl("^http[s]*://", username)) {
     username <- paste0("https://www.tiktok.com/@", username)
   }
 
-  #TODO: check if username is a valid tiktok link now
+  if (!grepl("^http[s]*://[www.]*tiktok\\.com/@.+", username)) {
+    cli::cli_abort("The provided username does not resolve to a TikTok account URL: {username}")
+  }
+
   sess <- rvest::read_html_live(username)
 
   json <- sess |>

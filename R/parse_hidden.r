@@ -165,26 +165,16 @@ parse_user <- function(user_data) {
 
   user_info <- spluck(user_data, "__DEFAULT_SCOPE__", "webapp.user-detail", "userInfo")
 
-  tibble::tibble(
-    user_id           = spluck(user_info, "user", "id"),
-    user_name         = spluck(user_info, "user", "uniqueId"),
-    user_nickname     = spluck(user_info, "user", "nickname"),
-    avatar_url        = spluck(user_info, "user", "avatarLarger"),
-    signature         = spluck(user_info, "user", "signature"),
-    verified          = spluck(user_info, "user", "verified"),
-    secUid            = spluck(user_info, "user", "secUid"),
-    bio_link          = spluck(user_info, "user", "bioLink", "link"),
-    commerce_user     = spluck(user_info, "user", "commerceUserInfo"),
-    region            = spluck(user_info, "user", "region"),
-    nickname_modified = as.POSIXct(spluck(user_info, "user", "nickNameModifyTime"),
-                                   origin = "1970-01-01"),
-    language          = spluck(user_info, "user", "language"),
-    follower_count     = spluck(user_info, "stats", "followerCount"),
-    following_count    = spluck(user_info, "stats", "followingCount"),
-    heart_count        = spluck(user_info, "stats", "heartCount"),
-    video_count        = spluck(user_info, "stats", "videoCount"),
-    friend_count       = spluck(user_info, "stats", "friendCount"),
-  )
+  user_info |>
+    purrr::keep_at(c("user", "stats")) |>
+    purrr::list_flatten(name_spec = "{inner}") |>
+    purrr::list_flatten() |>
+    tibble::as_tibble(.name_repair = clean_names) |>
+    # for minimal backwards compatibility
+    dplyr::rename(user_name = unique_id,
+                  secUid = sec_uid) |>
+    dplyr::mutate(create_time = as_datetime(create_time),
+                  nick_name_modify_time = as_datetime(nick_name_modify_time))
 
 }
 

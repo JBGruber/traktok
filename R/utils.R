@@ -93,6 +93,14 @@ is_datetime <- function(x) {
     methods::is(x, "Date") > 0
 }
 
+as_datetime <- function(x) {
+  # TikTok returns 0 for missing
+  if (x > 0) {
+    as.POSIXct(x, origin = "1970-01-01")
+  } else {
+    NA
+  }
+}
 
 id2url <- function(x) {
   if (!is.character(x)) {
@@ -100,5 +108,10 @@ id2url <- function(x) {
   }
   x[!grepl("\\D", x)] <- paste0("https://www.tiktok.com/@/video/", x[!grepl("\\D", x)])
   return(x)
+}
+
+
+clean_names <- function(x) {
+  gsub(pattern = "([A-Z])", replacement = "_\\L\\1", x = x, perl = TRUE)
 }
 
