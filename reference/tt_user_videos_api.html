@@ -69,6 +69,10 @@ Get all videos posted by a user or multiple user's. This is a convenience
 <dd><p>The username or usernames whose videos you want to retrieve.</p></dd>
 
 
+<dt id="arg-since">since<a class="anchor" aria-label="anchor" href="#arg-since"></a></dt>
+<dd><p>limit from when on to go through the account in 30 day windows.</p></dd>
+
+
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p>should the function print status updates to the screen?</p></dd>
 
@@ -82,8 +86,14 @@ Get all videos posted by a user or multiple user's. This is a convenience
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co"># Get hidden videos from the user "fpoe_at"</span></span></span>
-<span class="r-in"><span><span class="fu">tt_user_videos_api</span><span class="op">(</span><span class="st">"fpoe_at"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Get videos from the user "fpoe_at" since October 2024</span></span></span>
+<span class="r-in"><span><span class="fu">tt_user_videos_api</span><span class="op">(</span><span class="st">"fpoe_at"</span>, since <span class="op">=</span> <span class="st">"2024-10-01"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># often makes sense to combine this with the account creation time from the</span></span></span>
+<span class="r-in"><span><span class="co"># hidden URL</span></span></span>
+<span class="r-in"><span><span class="va">fpoe_at_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="tt_user_info_hidden.html">tt_user_info_hidden</a></span><span class="op">(</span>username <span class="op">=</span> <span class="st">"fpoe_at"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">tt_user_videos_api</span><span class="op">(</span><span class="st">"fpoe_at"</span>, since <span class="op">=</span> <span class="va">fpoe_at_info</span><span class="op">$</span><span class="va">create_time</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
