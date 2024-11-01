@@ -671,7 +671,6 @@ tt_user_request <- function(endpoint,
 #' @description \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:
 #'   Research API]'}}{\strong{[Works on: Research API]}}
 #'
-#' @param ... additional arguments handed to \link{tt_search_api}.
 #' @inheritParams tt_user_liked_videos_api
 #'
 #' @return A data.frame of parsed TikTok videos the user has posted

@@ -9,6 +9,8 @@ tt_user_videos_api(username, since = "2020-01-01", verbose = TRUE, ...)
 \arguments{
 \item{username}{The username or usernames whose videos you want to retrieve.}
 
+\item{since}{limit from when on to go through the account in 30 day windows.}
+
 \item{verbose}{should the function print status updates to the screen?}
 
 \item{...}{Additional arguments to be passed to the
@@ -26,7 +28,13 @@ tt_user_videos_api(username, since = "2020-01-01", verbose = TRUE, ...)
 }
 \examples{
 \dontrun{
-# Get hidden videos from the user "fpoe_at"
-tt_user_videos_api("fpoe_at")
+# Get videos from the user "fpoe_at" since October 2024
+tt_user_videos_api("fpoe_at", since = "2024-10-01")
+
+# often makes sense to combine this with the account creation time from the
+# hidden URL
+fpoe_at_info <- tt_user_info_hidden(username = "fpoe_at")
+tt_user_videos_api("fpoe_at", since = fpoe_at_info$create_time)
+
 }
 }

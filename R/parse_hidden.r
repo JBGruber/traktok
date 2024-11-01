@@ -161,6 +161,7 @@ parse_search <- function(res) {
 
 
 #' @noRd
+#' @importFrom rlang .data
 parse_user <- function(user_data) {
 
   user_info <- spluck(user_data, "__DEFAULT_SCOPE__", "webapp.user-detail", "userInfo")
@@ -171,10 +172,10 @@ parse_user <- function(user_data) {
     purrr::list_flatten() |>
     tibble::as_tibble(.name_repair = clean_names) |>
     # for minimal backwards compatibility
-    dplyr::rename(user_name = unique_id,
-                  secUid = sec_uid) |>
-    dplyr::mutate(create_time = as_datetime(create_time),
-                  nick_name_modify_time = as_datetime(nick_name_modify_time))
+    dplyr::rename(user_name = .data$unique_id,
+                  secUid = .data$sec_uid) |>
+    dplyr::mutate(create_time = as_datetime(.data$create_time),
+                  nick_name_modify_time = as_datetime(.data$nick_name_modify_time))
 
 }
 
