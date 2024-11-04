@@ -1,9 +1,13 @@
 #' Authenticate for the official research API
 #'
+#' @description
+#' Guides you through authentication for the Research API
+#'
+#'
 #' @param client_key Client key for authentication
 #' @param client_secret Client secret for authentication
 #'
-#' @returns An authentication token
+#' @returns An authentication token (invisible)
 #'
 #' @details You need to apply for access to the API and get the key
 #' and secret from TikTok. See
@@ -18,8 +22,12 @@
 #' auth_research(client_key, client_secret)
 #' }
 auth_research <- function(client_key, client_secret) {
-  if (missing(client_key))
+
+  if (missing(client_key)) {
+    cli::cli_alert_info(c("Head to {.url https://developers.tiktok.com/research}",
+                          " to get your credentials"))
     client_key <- askpass::askpass("Please enter your client key")
+  }
 
   if (missing(client_secret))
     client_secret <- askpass::askpass("Please enter your client secret")

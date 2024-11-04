@@ -1,12 +1,12 @@
 #' Authenticate for the hidden/unofficial API
 #'
-#' @description
-#' Guides you through authentication for the hidden/unofficial API#'
+#' @description Guides you through authentication for the hidden/unofficial API
 #'
-#' @param cookiefile optional path to your cookiefile. See
-#'   \code{vignette("unofficial-api", package = "traktok")} for more information
-#'   on authentication.
-#' @param live opens Chromium browser to guide you through the auth process.
+#' @param cookiefile path to your cookiefile. Usually not needed after running
+#'   \link{auth_hidden} once. See \code{vignette("unofficial-api", package =
+#'   "traktok")} for more information on authentication.
+#' @param live opens Chromium browser to guide you through the auth process
+#'   (experimental).
 #'
 #' @return nothing. Called to set up authentication
 #' @export
@@ -51,7 +51,7 @@ auth_hidden <- function(cookiefile, live = interactive()) {
     cli::cli_progress_done()
     cli::cli_alert_success("Got cookies!")
     cookiemonster::add_cookies(session = sess)
-    invisible(TRUE)
+    return(invisible(TRUE))
   } else {
     msg <- paste0(msg, " or set {.code live = TRUE} to use interactive authentication")
   }

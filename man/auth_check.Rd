@@ -17,7 +17,7 @@ logical vector (invisible)
 }
 \description{
 \ifelse{html}{\figure{api-both.svg}{options:
-  alt='[Both]'}}{\strong{[Both]}}
+  alt='[Works on: Both]'}}{\strong{[Works on: Both]}}
 
   Check if the necessary token or cookies are stored on your computer
   already. By default, the function checks for the authentication of the

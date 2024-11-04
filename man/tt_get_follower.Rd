@@ -19,7 +19,7 @@ a data.frame
 }
 \description{
 \ifelse{html}{\figure{api-both.svg}{options:
-  alt='[Both]'}}{\strong{[Both]}}
+  alt='[Works on: Both]'}}{\strong{[Works on: Both]}}
 
   Get usernames of users who follows a user (tt_get_follower) or get who a
   user is following (tt_get_following).

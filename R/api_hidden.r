@@ -14,9 +14,9 @@
 #' @param sleep_pool a vector of numbers from which a waiting period is randomly
 #'   drawn.
 #' @param max_tries how often to retry if a request fails.
-#' @param cookiefile path to your cookiefile. See
-#'   \code{vignette("unofficial-api", package = "traktok")} for more information
-#'   on authentication.
+#' @param cookiefile path to your cookiefile. Usually not needed after running
+#'   \link{auth_hidden} once. See \code{vignette("unofficial-api", package =
+#'   "traktok")} for more information on authentication.
 #' @param verbose should the function print status updates to the screen?
 #' @param ... handed to \code{tt_videos_hidden} (for tt_videos) and (further) to
 #'   \link{tt_request_hidden}.
@@ -430,8 +430,8 @@ tt_user_info_hidden <- function(username,
 #'
 #'   Get up to 5,000 accounts who follow a user or accounts a user follows.
 #'
-#' @param secuid The secuid of a user. You can get it with \link{tt_videos} by
-#'   querying the video of an account.
+#' @param secuid The secuid of a user. You can get it with
+#'   \link{tt_user_info_hidden} by querying an account (see example).
 #' @inheritParams tt_search_hidden
 #'
 #' @return a data.frame of followers
@@ -579,7 +579,10 @@ tt_user_videos_hidden <- function(username,
     username <- paste0("https://www.tiktok.com/@", username)
   }
 
-  #TODO: check if username is a valid tiktok link now
+  if (!grepl("^http[s]*://[www.]*tiktok\\.com/@.+", username)) {
+    cli::cli_abort("The provided username does not resolve to a TikTok account URL: {username}")
+  }
+
   if (verbose) cli::cli_progress_step("Opening {username}")
   # reset captcha warning
   the$captcha <- NULL
@@ -607,6 +610,7 @@ tt_user_videos_hidden <- function(username,
   if (return_urls) return(urls)
   tt_videos_hidden(urls, ...)
 }
+
 
 solve_captcha <- function(sess, solve) {
   captcha <- rvest::html_element(sess, "#captcha-verify-image,.captcha-verify-container")

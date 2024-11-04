@@ -14,7 +14,7 @@ tt_user_videos(username, ...)
 }
 \description{
 \ifelse{html}{\figure{api-both.svg}{options:
-  alt='[Both]'}}{\strong{[Both]}}
+  alt='[Works on: Both]'}}{\strong{[Works on: Both]}}
 
   Get all videos posted by a user (or multiple user's for the Research API).
   Searches videos using either the Research API (if an authentication token

@@ -1,7 +1,7 @@
 #' Search videos
 #'
 #' @description \ifelse{html}{\figure{api-both.svg}{options:
-#'   alt='[Both]'}}{\strong{[Both]}}
+#'   alt='[Works on: Both]'}}{\strong{[Works on: Both]}}
 #'
 #'   Searches videos using either the Research API (if an authentication token
 #'   is present, see \link{auth_research}) or otherwise the unofficial hidden
@@ -32,7 +32,7 @@ tt_search <- function(...) {
 #' Get videos from a TikTok user's profile
 #'
 #' @description \ifelse{html}{\figure{api-both.svg}{options:
-#'   alt='[Both]'}}{\strong{[Both]}}
+#'   alt='[Works on: Both]'}}{\strong{[Works on: Both]}}
 #'
 #'   Get all videos posted by a user (or multiple user's for the Research API).
 #'   Searches videos using either the Research API (if an authentication token
@@ -104,7 +104,7 @@ tt_comments <- tt_comments_api
 #' Get followers and following of users
 #'
 #' @description \ifelse{html}{\figure{api-both.svg}{options:
-#'   alt='[Both]'}}{\strong{[Both]}}
+#'   alt='[Works on: Both]'}}{\strong{[Works on: Both]}}
 #'
 #'   Get usernames of users who follows a user (tt_get_follower) or get who a
 #'   user is following (tt_get_following).

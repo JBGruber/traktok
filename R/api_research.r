@@ -6,14 +6,14 @@
 #'   This is the version of \link{tt_search} that explicitly uses Research API.
 #'   Use \link{tt_search_hidden} for the unofficial API version.
 #'
-#' @param query A query string or object (see \link{query})
+#' @param query A query string or object (see \link{query}).
 #' @param start_date,end_date A start and end date to narrow the search
-#'   (required).
+#'   (required; can be a maximum of 30 days apart).
 #' @param fields The fields to be returned (defaults to all)
 #' @param start_cursor The starting cursor, i.e., how many results to skip (for
-#'   picking up an old search)
-#' @param search_id The search id (for picking up an old search)
-#' @param is_random Whether the query is random (defaults to FALSE)
+#'   picking up an old search).
+#' @param search_id The search id (for picking up an old search).
+#' @param is_random Whether the query is random (defaults to FALSE).
 #' @param max_pages results are returned in batches/pages with 100 videos. How
 #'   many should be requested before the function stops?
 #' @param parse Should the results be parsed? Otherwise, the original JSON
@@ -23,7 +23,7 @@
 #'   will use extra memory.
 #' @param verbose should the function print status updates to the screen?
 #' @param token The authentication token (usually supplied automatically after
-#'   running auth_research once)
+#'   running \link{auth_research} once).
 #' @return A data.frame of parsed TikTok videos (or a nested list).
 #' @export
 #' @examples
@@ -247,7 +247,8 @@ tt_query_request <- function(endpoint,
 #' # OR
 #' tt_user_liked_videos_api("https://www.tiktok.com/@tiktok")
 #'
-#' # note: none of these work because nobody has this enabled!
+#' # note: none of these work because I could not find any account that
+#' # has likes public!
 #' }
 tt_user_liked_videos_api <- function(username,
                                      fields = "all",

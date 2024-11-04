@@ -16,7 +16,7 @@ a data.frame
 }
 \description{
 \ifelse{html}{\figure{api-both.svg}{options:
-  alt='[Both]'}}{\strong{[Both]}}
+  alt='[Works on: Both]'}}{\strong{[Works on: Both]}}
 
   Searches videos using either the Research API (if an authentication token
   is present, see \link{auth_research}) or otherwise the unofficial hidden
