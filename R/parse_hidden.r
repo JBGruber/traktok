@@ -170,7 +170,7 @@ parse_user <- function(user_data) {
     purrr::keep_at(c("user", "stats")) |>
     purrr::list_flatten(name_spec = "{inner}") |>
     purrr::list_flatten() |>
-    tibble::as_tibble(.name_repair = clean_names) |>
+    as_tibble_onerow(.name_repair = clean_names) |>
     # for minimal backwards compatibility
     dplyr::rename(user_name = .data$unique_id,
                   secUid = .data$sec_uid) |>

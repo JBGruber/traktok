@@ -76,14 +76,14 @@ spluck <- function(.x, ...) {
 
 
 # makes sure list can be turned into tibble
-as_tibble_onerow <- function(l) {
+as_tibble_onerow <- function(l, ...) {
   l <- purrr::map(l, function(c) {
     if (length(c) != 1) {
       return(list(c))
     }
     return(c)
   })
-  tibble::as_tibble(l)
+  tibble::as_tibble(l, ...)
 }
 
 
@@ -95,7 +95,7 @@ is_datetime <- function(x) {
 
 as_datetime <- function(x) {
   # TikTok returns 0 for missing
-  if (x > 0) {
+  if (all(x > 0)) {
     as.POSIXct(x, origin = "1970-01-01")
   } else {
     NA
