@@ -17,18 +17,20 @@ coverage](https://codecov.io/gh/JBGruber/traktok/branch/main/graph/badge.svg)](h
 
 | Description                 | Shorthand        | Research API              | Hidden API              |
 |:----------------------------|:-----------------|:--------------------------|:------------------------|
-| search videos               | tt_search        | tt_search_api             | tt_search_hidden        |
+| search videos               | tt_search        | tt_search_api             | tt_search_hidden[^1]    |
 | get video detail (+file)    | tt_videos        | \-                        | tt_videos_hidden        |
-| get user videos             | tt_user_info     | tt_user_info_api          | tt_user_videos_hidden   |
-| get user info               | tt_user_info     | tt_user_info_api          | tt_user_videos_hidden   |
+| get user videos             | tt_user_videos   | tt_user_videos_api        | tt_user_videos_hidden   |
+| get user info               | tt_user_info     | tt_user_info_api          | tt_user_info_hidden     |
 | get comments under a video  | tt_comments      | tt_comments_api           | \-                      |
 | get who follows a user      | tt_get_follower  | tt_user_follower_api      | tt_get_follower_hidden  |
 | get who a user is following | tt_get_following | tt_user_following_api     | tt_get_following_hidden |
 | get videos a user liked     | tt_get_liked     | tt_user_liked_videos_api  | \-                      |
 | get pinned videos of users  | tt_get_pinned    | tt_user_pinned_videos_api | \-                      |
 | get videos in a playlist    | tt_playlist      | tt_playlist_api           | \-                      |
-| get raw video data          | \-               | \-                        | tt_request_hidden       |
+| get raw post data           | \-               | \-                        | tt_request_hidden       |
 | authenticate a session      | \-               | auth_research             | auth_hidden             |
+
+[^1]: Currently not working, see [#14](https://github.com/JBGruber/traktok/issues/14).
 
 The goal of traktok is to provide easy access to TikTok data. This
 package one started as an R port of Deen Freelon’s
