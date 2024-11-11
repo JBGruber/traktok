@@ -72,6 +72,11 @@ parse_video <- function(json_string, video_id) {
       video_status          = spluck(tt_data, "__DEFAULT_SCOPE__", "webapp.video-detail", "statusMsg"),
       video_status_code     = spluck(tt_data, "__DEFAULT_SCOPE__", "webapp.video-detail", "statusCode")
     )
+
+    if (identical(out$download_url, "")) {
+      out$download_url <- spluck(video_data, "video", "playAddr")
+    }
+
     if (identical(out$download_url, "")) {
       out$download_url <- purrr::pluck(video_data, "imagePost", "images", "imageURL", "urlList") |>
         purrr::map_chr(1L) |>
