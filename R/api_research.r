@@ -310,28 +310,30 @@ tt_user_liked_videos_api <- function(username,
       }
     }
 
-    videos <- videos |>
-      purrr::map(as_tibble_onerow) |>
-      dplyr::bind_rows() |>
-      # somehow, the order changes between, calls. So I fix it here
-      dplyr::relocate("id",
-                      "username",
-                      "create_time",
-                      "video_description",
-                      "region_code",
-                      "video_duration",
-                      "view_count",
-                      "like_count",
-                      "comment_count",
-                      "share_count",
-                      "music_id")
+    if (length(videos) > 0) {
+      videos <- videos |>
+        purrr::map(as_tibble_onerow) |>
+        dplyr::bind_rows() |>
+        # somehow, the order changes between, calls. So I fix it here
+        dplyr::relocate("id",
+                        "username",
+                        "create_time",
+                        "video_description",
+                        "region_code",
+                        "video_duration",
+                        "view_count",
+                        "like_count",
+                        "comment_count",
+                        "share_count",
+                        "music_id")
 
-    videos <- tibble::add_column(videos, liked_by_user = u)
-    if (verbose) cli::cli_progress_done(
-      result	= ifelse(length(videos) > 1, "done", "failed")
-    )
+      videos <- tibble::add_column(videos, liked_by_user = u)
+      if (verbose) cli::cli_progress_done(
+        result	= ifelse(length(videos) > 1, "done", "failed")
+      )
 
-    return(videos)
+      return(videos)
+    }
   }) |>
     dplyr::bind_rows()
 }
