@@ -15,22 +15,20 @@ coverage](https://codecov.io/gh/JBGruber/traktok/branch/main/graph/badge.svg)](h
 
 ## Feature overview
 
-| Description                 | Shorthand        | Research API              | Hidden API              |
-|:----------------------------|:-----------------|:--------------------------|:------------------------|
-| search videos               | tt_search        | tt_search_api             | tt_search_hidden[^1]    |
-| get video detail (+file)    | tt_videos        | \-                        | tt_videos_hidden        |
-| get user videos             | tt_user_videos   | tt_user_videos_api        | tt_user_videos_hidden   |
-| get user info               | tt_user_info     | tt_user_info_api          | tt_user_info_hidden     |
-| get comments under a video  | tt_comments      | tt_comments_api           | \-                      |
-| get who follows a user      | tt_get_follower  | tt_user_follower_api      | tt_get_follower_hidden  |
-| get who a user is following | tt_get_following | tt_user_following_api     | tt_get_following_hidden |
-| get videos a user liked     | tt_get_liked     | tt_user_liked_videos_api  | \-                      |
-| get pinned videos of users  | tt_get_pinned    | tt_user_pinned_videos_api | \-                      |
-| get videos in a playlist    | tt_playlist      | tt_playlist_api           | \-                      |
-| get raw post data           | \-               | \-                        | tt_request_hidden       |
-| authenticate a session      | \-               | auth_research             | auth_hidden             |
-
-[^1]: Currently not working, see [#14](https://github.com/JBGruber/traktok/issues/14).
+| Description | Shorthand | Research API | Hidden API |
+|:---|:---|:---|:---|
+| search videos | tt_search | tt_search_api | tt_search_hidden[^1] |
+| get video detail (+file) | tt_videos | \- | tt_videos_hidden |
+| get user videos | tt_user_videos | tt_user_videos_api | tt_user_videos_hidden |
+| get user info | tt_user_info | tt_user_info_api | tt_user_info_hidden |
+| get comments under a video | tt_comments | tt_comments_api | \- |
+| get who follows a user | tt_get_follower | tt_user_follower_api | tt_get_follower_hidden |
+| get who a user is following | tt_get_following | tt_user_following_api | tt_get_following_hidden |
+| get videos a user liked | tt_get_liked | tt_user_liked_videos_api | \- |
+| get pinned videos of users | tt_get_pinned | tt_user_pinned_videos_api | \- |
+| get videos in a playlist | tt_playlist | tt_playlist_api | \- |
+| get raw post data | \- | \- | tt_request_hidden |
+| authenticate a session | \- | auth_research | auth_hidden |
 
 The goal of traktok is to provide easy access to TikTok data. This
 package one started as an R port of Deen Freelon’s
@@ -80,6 +78,13 @@ data:
     <https://doi.org/10.5167/UZH-238605>
 4.  Giglietto, F. (2024). Dashboard: TikTok Coordinated Sharing Network.
     <https://fabiogiglietto.github.io/tiktok_csbn/tt_viz.html>
+5.  Widholm, A., Ekman, M., & Larsson, A. O. (2024). A Right-Wing Wave
+    on TikTok? Ideological Orientations, Platform Features, and User
+    Engagement During the Early 2022 Election Campaign in Sweden. Social
+    Media + Society, 10(3). <https://doi.org/10.1177/20563051241269266>
 
 If you have used traktok in your research paper or project, please
 extend this list through a Pull Request or create an issue
+
+[^1]: Currently not working, see
+    [\#14](https://github.com/JBGruber/traktok/issues/14).
