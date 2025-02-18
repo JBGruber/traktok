@@ -70,7 +70,8 @@ parse_video <- function(json_string, video_id) {
       is_for_friend         = isTRUE(spluck(video_data, "forFriend")),
       is_slides             = FALSE,
       video_status          = spluck(tt_data, "__DEFAULT_SCOPE__", "webapp.video-detail", "statusMsg"),
-      video_status_code     = spluck(tt_data, "__DEFAULT_SCOPE__", "webapp.video-detail", "statusCode")
+      video_status_code     = spluck(tt_data, "__DEFAULT_SCOPE__", "webapp.video-detail", "statusCode"),
+      content_classified    = purrr::pluck(video_data, "isContentClassified", .default = FALSE)
     )
 
     if (identical(out$download_url, "")) {
