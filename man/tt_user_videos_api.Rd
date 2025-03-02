@@ -4,12 +4,18 @@
 \alias{tt_user_videos_api}
 \title{Get videos from a TikTok user's profile}
 \usage{
-tt_user_videos_api(username, since = "2020-01-01", verbose = TRUE, ...)
+tt_user_videos_api(
+  username,
+  since = "2020-01-01",
+  to = Sys.Date(),
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{username}{The username or usernames whose videos you want to retrieve.}
 
-\item{since}{limit from when on to go through the account in 30 day windows.}
+\item{since, to}{limits from/to when to go through the account in 30 day windows.}
 
 \item{verbose}{should the function print status updates to the screen?}
 

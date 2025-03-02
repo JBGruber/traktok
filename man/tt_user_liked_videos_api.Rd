@@ -38,7 +38,7 @@ will use extra memory.}
 \item{verbose}{should the function print status updates to the screen?}
 
 \item{token}{The authentication token (usually supplied automatically after
-running auth_research once)}
+running \link{auth_research} once).}
 }
 \value{
 A data.frame of parsed TikTok videos the user has posted
@@ -55,6 +55,7 @@ tt_user_liked_videos_api("https://www.tiktok.com/@tiktok")
 # OR
 tt_user_liked_videos_api("https://www.tiktok.com/@tiktok")
 
-# note: none of these work because nobody has this enabled!
+# note: none of these work because I could not find any account that
+# has likes public!
 }
 }

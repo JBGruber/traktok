@@ -33,7 +33,7 @@ will use extra memory.}
 \item{verbose}{should the function print status updates to the screen?}
 
 \item{token}{The authentication token (usually supplied automatically after
-running auth_research once)}
+running \link{auth_research} once).}
 }
 \value{
 A data.frame of parsed TikTok videos the user has posted

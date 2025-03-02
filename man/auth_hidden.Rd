@@ -7,17 +7,18 @@
 auth_hidden(cookiefile, live = interactive())
 }
 \arguments{
-\item{cookiefile}{optional path to your cookiefile. See
-\code{vignette("unofficial-api", package = "traktok")} for more information
-on authentication.}
+\item{cookiefile}{path to your cookiefile. Usually not needed after running
+\link{auth_hidden} once. See \code{vignette("unofficial-api", package =
+"traktok")} for more information on authentication.}
 
-\item{live}{opens Chromium browser to guide you through the auth process.}
+\item{live}{opens Chromium browser to guide you through the auth process
+(experimental).}
 }
 \value{
 nothing. Called to set up authentication
 }
 \description{
-Guides you through authentication for the hidden/unofficial API#'
+Guides you through authentication for the hidden/unofficial API
 }
 \examples{
 \dontrun{

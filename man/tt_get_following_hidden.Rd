@@ -22,17 +22,17 @@ tt_get_follower_hidden(
 )
 }
 \arguments{
-\item{secuid}{The secuid of a user. You can get it with \link{tt_videos} by
-querying the video of an account.}
+\item{secuid}{The secuid of a user. You can get it with
+\link{tt_user_info_hidden} by querying an account (see example).}
 
 \item{sleep_pool}{a vector of numbers from which a waiting period is randomly
 drawn.}
 
 \item{max_tries}{how often to retry if a request fails.}
 
-\item{cookiefile}{path to your cookiefile. See
-\code{vignette("unofficial-api", package = "traktok")} for more information
-on authentication.}
+\item{cookiefile}{path to your cookiefile. Usually not needed after running
+\link{auth_hidden} once. See \code{vignette("unofficial-api", package =
+"traktok")} for more information on authentication.}
 
 \item{verbose}{should the function print status updates to the screen?}
 }

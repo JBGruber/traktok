@@ -36,19 +36,19 @@ tt_query_videos(
 )
 }
 \arguments{
-\item{query}{A query string or object (see \link{query})}
+\item{query}{A query string or object (see \link{query}).}
 
 \item{start_date, end_date}{A start and end date to narrow the search
-(required).}
+(required; can be a maximum of 30 days apart).}
 
 \item{fields}{The fields to be returned (defaults to all)}
 
 \item{start_cursor}{The starting cursor, i.e., how many results to skip (for
-picking up an old search)}
+picking up an old search).}
 
-\item{search_id}{The search id (for picking up an old search)}
+\item{search_id}{The search id (for picking up an old search).}
 
-\item{is_random}{Whether the query is random (defaults to FALSE)}
+\item{is_random}{Whether the query is random (defaults to FALSE).}
 
 \item{max_pages}{results are returned in batches/pages with 100 videos. How
 many should be requested before the function stops?}
@@ -63,7 +63,7 @@ will use extra memory.}
 \item{verbose}{should the function print status updates to the screen?}
 
 \item{token}{The authentication token (usually supplied automatically after
-running auth_research once)}
+running \link{auth_research} once).}
 }
 \value{
 A data.frame of parsed TikTok videos (or a nested list).

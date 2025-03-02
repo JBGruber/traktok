@@ -12,10 +12,10 @@ auth_research(client_key, client_secret)
 \item{client_secret}{Client secret for authentication}
 }
 \value{
-An authentication token
+An authentication token (invisible)
 }
 \description{
-Authenticate for the official research API
+Guides you through authentication for the Research API
 }
 \details{
 You need to apply for access to the API and get the key

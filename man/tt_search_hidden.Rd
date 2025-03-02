@@ -27,9 +27,9 @@ drawn.}
 
 \item{max_tries}{how often to retry if a request fails.}
 
-\item{cookiefile}{path to your cookiefile. See
-\code{vignette("unofficial-api", package = "traktok")} for more information
-on authentication.}
+\item{cookiefile}{path to your cookiefile. Usually not needed after running
+\link{auth_hidden} once. See \code{vignette("unofficial-api", package =
+"traktok")} for more information on authentication.}
 
 \item{verbose}{should the function print status updates to the screen?}
 }

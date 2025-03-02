@@ -11,9 +11,9 @@ tt_request_hidden(url, max_tries = 5L, cookiefile = NULL)
 
 \item{max_tries}{how often to retry if a request fails.}
 
-\item{cookiefile}{path to your cookiefile. See
-\code{vignette("unofficial-api", package = "traktok")} for more information
-on authentication.}
+\item{cookiefile}{path to your cookiefile. Usually not needed after running
+\link{auth_hidden} once. See \code{vignette("unofficial-api", package =
+"traktok")} for more information on authentication.}
 }
 \description{
 \ifelse{html}{\figure{api-unofficial}{options:

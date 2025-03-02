@@ -10,7 +10,7 @@
 #'   \link{tt_user_videos_hidden} for the unofficial API version.
 #'
 #' @param username The username or usernames whose videos you want to retrieve.
-#' @param since limit from when on to go through the account in 30 day windows.
+#' @param since,to limits from/to when to go through the account in 30 day windows.
 #' @param ... Additional arguments to be passed to the
 #'   \code{\link{tt_search_api}} function.
 #'
@@ -30,15 +30,16 @@
 #' @export
 tt_user_videos_api <- function(username,
                                since = "2020-01-01",
+                               to = Sys.Date(),
                                verbose = TRUE,
                                ...) {
 
-  dates_from <- seq.Date(from = as.Date("2020-01-01"),
-                         to = Sys.Date(),
+  dates_from <- seq.Date(from = as.Date(since),
+                         to = as.Date(to),
                          by = "31 day")
   dates_to <- dates_from + 30
   # we want the last window to end today
-  dates_to[length(dates_to)] <- Sys.Date()
+  dates_to[length(dates_to)] <- as.Date(to)
 
   pb <- FALSE
   if (verbose) {

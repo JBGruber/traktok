@@ -31,7 +31,7 @@ tt_comments(
 \item{fields}{The fields to be returned (defaults to all)}
 
 \item{start_cursor}{The starting cursor, i.e., how many results to skip (for
-picking up an old search)}
+picking up an old search).}
 
 \item{max_pages}{results are returned in batches/pages with 100 videos. How
 many should be requested before the function stops?}
@@ -43,7 +43,7 @@ will use extra memory.}
 \item{verbose}{should the function print status updates to the screen?}
 
 \item{token}{The authentication token (usually supplied automatically after
-running auth_research once)}
+running \link{auth_research} once).}
 }
 \value{
 A data.frame of parsed comments
