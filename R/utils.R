@@ -115,3 +115,10 @@ clean_names <- function(x) {
   gsub(pattern = "([A-Z])", replacement = "_\\L\\1", x = x, perl = TRUE)
 }
 
+# might be slow but probably pretty robust
+extract_urls_sess <- function(sess) {
+  rvest::html_elements(sess, "[id*='column-item-video-container'] a") |>
+    rvest::html_attr("href") |>
+    grep(pattern = "/video/", x = _, value = TRUE, fixed = TRUE)
+}
+

@@ -1,3 +1,7 @@
+# traktok 0.0.8.9000
+
+* revive tt_search_hidden (#14; thanks for th hint @michaelgoodier!)
+
 # traktok 0.0.7.9000
 
 * overhauls tt_user_info_hidden (some breaking changes as names in the output have changed)

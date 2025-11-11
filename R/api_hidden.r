@@ -327,92 +327,85 @@ tt_request_hidden <- function(url, max_tries = 5L, cookiefile = NULL) {
 #'   This is the version of \link{tt_search} that explicitly uses the unofficial
 #'   API. Use \link{tt_search_api} for the Research API version.
 #'
-#' @param query query as one string
-#' @param offset how many videos to skip. For example, if you already have the
-#'   first X of a search.
-#' @param max_pages how many pages to get before stopping the search.
+#' @param query query as one string.
+#' @param headless open the browser to show the scrolling.
+#' @param ... here to absorb parameters of the old function.
 #'
-#' @inheritParams tt_videos_hidden
+#' @inheritParams tt_user_videos_hidden
 #'
-#' @details The function will wait between scraping two videos to make it less
-#'   obvious that a scraper is accessing the site. The period is drawn randomly
-#'   from the `sleep_pool` and multiplied by a random fraction.
+#' @details The function will wait between scraping search results. To get more
+#'   than 6 videos, you need to provide cookies of a logged in account. For more
+#'   details see the unofficial-apI vignette: \code{vignette("unofficial-api",
+#'   package = "traktok")}
 #'
-#' @return a data.frame
+#' @return a character vector of URLs
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' tt_search_hidden("#rstats", max_pages = 2)
+#' tt_search_hidden("#rstats")
+#' # the functions runs until the end of all search results, which can take a
+#' # long time. You can cancel the search and retrieve all collected results
+#' # with last_query though!
+#' last_query()
 #' }
-tt_search_hidden <- function(query,
-                             offset = 0,
-                             max_pages = Inf,
-                             sleep_pool = 1:10,
-                             max_tries = 5L,
-                             cookiefile = NULL,
-                             verbose = TRUE) {
+tt_search_hidden <- function(
+  query,
+  solve_captchas = FALSE,
+  timeout = 5L,
+  verbose = TRUE,
+  headless = TRUE,
+  ...
+) {
+  rlang::check_installed(
+    "rvest",
+    reason = "to use this function",
+    version = "1.0.4"
+  )
+  cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "list")
+  # add leading . where it's missing
+  cookies <- lapply(cookies, function(el) {
+    el$domain <- sub("^tiktok.com$", ".tiktok.com", el$domain)
+    return(el)
+  })
+  # TODO check if login cookies are there
 
-  if (!is.null(cookiefile)) cookiemonster::add_cookies(cookiefile)
-  cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
-
-  results <- list()
-  page <- 1
-  has_more <- TRUE
-  done_msg <- ""
-  search_id <- NULL
-
-  while(page <= max_pages && has_more) {
-    if (verbose) cli::cli_progress_step(
-      "Getting page {page}",
-      # for some reason already uses updated page value
-      msg_done = "Got page {page - 1}. {done_msg}"
+  search_url <- httr2::request("https://www.tiktok.com/search") |>
+    httr2::req_url_query(q = query) |>
+    purrr::pluck("url")
+  if (verbose) {
+    cli::cli_progress_step("Opening {.url {search_url}}")
+  }
+  # create a session to fill it with the cookies
+  sess <- rvest::read_html_live("http://localhost")
+  sess$session$Network$setCookies(cookies = cookies)
+  sess <- rvest::read_html_live(search_url)
+  if (!headless) {
+    sess$view()
+  }
+  Sys.sleep(1)
+  #scroll as far as possible
+  last_y <- -1
+  if (verbose) {
+    cli::cli_progress_bar(
+      format = "{cli::pb_spin} Scrolling down (y={last_y}; waiting {round(wait, 1)} s)",
+      clear = FALSE
     )
-
-    req <- httr2::request("https://www.tiktok.com/api/search/general/full/") |>
-      httr2::req_url_query(
-        aid = "1988",
-        "cookie_enabled" = "true",
-        "from_page" = "search",
-        "keyword" = query,
-        "offset" = offset,
-        search_id = search_id
-      ) |>
-      httr2::req_options(cookie = cookies) |>
-      httr2::req_headers(
-        authority = "www.tiktok.com",
-        accept = "*/*",
-        `accept-language` = "en-GB,en;q=0.9,de-DE;q=0.8,de;q=0.7,en-US;q=0.6",
-        `sec-ch-ua` = "\"Chromium\";v=115\", \"Not/A)Brand\";v=\"99",
-        `sec-ch-ua-mobile` = "?0",
-        `sec-ch-ua-platform` = "\"Linux\"",
-        `sec-fetch-dest` = "empty",
-        `sec-fetch-mode` = "cors",
-        `sec-fetch-site` = "same-origin",
-        `user-agent` = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
-      ) |>
-      httr2::req_retry(max_tries = max_tries) |>
-      httr2::req_timeout(seconds = 60L) |>
-      httr2::req_error(is_error = function(x) FALSE)
-
-    resp <- httr2::req_perform(req)
-    status <- httr2::resp_status(resp)
-    if (status < 400L) results[[page]] <- parse_search(resp)
-    offset <- attr(results[[page]], "cursor")
-    search_id <- attr(results[[page]], "search_id")
-    has_more <- attr(results[[page]], "has_more")
-    done_msg <- glue::glue("Found {nrow(results[[page]])} videos.")
-    page <- page + 1
-    if (!has_more) {
-      if (verbose) cli::cli_progress_done("Reached end of results")
-      break
-    }
-    if (page <= max_pages) wait(sleep_pool)
   }
 
-  video_id <- NULL
-  dplyr::bind_rows(results) |>
-    dplyr::filter(!is.na(video_id))
+  while (sess$get_scroll_position()$y > last_y) {
+    last_y <- sess$get_scroll_position()$y
+    sess$scroll_to(top = 10^5)
+    wait <- timeout * stats::runif(1, 1, 3)
+    if (verbose) {
+      cli::cli_progress_update(force = TRUE)
+    }
+    Sys.sleep(wait)
+    sess$scroll_to(top = 10^5)
+    solve_captcha(sess, solve = solve_captchas)
+    the$videos <- extract_urls_sess(sess)
+  }
+  return(extract_urls_sess(sess))
 }
 
 

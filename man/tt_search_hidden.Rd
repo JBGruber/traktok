@@ -6,35 +6,28 @@
 \usage{
 tt_search_hidden(
   query,
-  offset = 0,
-  max_pages = Inf,
-  sleep_pool = 1:10,
-  max_tries = 5L,
-  cookiefile = NULL,
-  verbose = TRUE
+  solve_captchas = FALSE,
+  timeout = 5L,
+  verbose = TRUE,
+  headless = TRUE,
+  ...
 )
 }
 \arguments{
-\item{query}{query as one string}
+\item{query}{query as one string.}
 
-\item{offset}{how many videos to skip. For example, if you already have the
-first X of a search.}
+\item{solve_captchas}{open browser to solve appearing captchas manually.}
 
-\item{max_pages}{how many pages to get before stopping the search.}
-
-\item{sleep_pool}{a vector of numbers from which a waiting period is randomly
-drawn.}
-
-\item{max_tries}{how often to retry if a request fails.}
-
-\item{cookiefile}{path to your cookiefile. Usually not needed after running
-\link{auth_hidden} once. See \code{vignette("unofficial-api", package =
-"traktok")} for more information on authentication.}
+\item{timeout}{time (in seconds) to wait between scrolling and solving captchas.}
 
 \item{verbose}{should the function print status updates to the screen?}
+
+\item{headless}{open the browser to show the scrolling.}
+
+\item{...}{here to absorb parameters of the old function.}
 }
 \value{
-a data.frame
+a character vector of URLs
 }
 \description{
 \ifelse{html}{\figure{api-unofficial}{options: alt='[Works on:
@@ -44,12 +37,17 @@ a data.frame
   API. Use \link{tt_search_api} for the Research API version.
 }
 \details{
-The function will wait between scraping two videos to make it less
-  obvious that a scraper is accessing the site. The period is drawn randomly
-  from the `sleep_pool` and multiplied by a random fraction.
+The function will wait between scraping search results. To get more
+  than 6 videos, you need to provide cookies of a logged in account. For more
+  details see the unofficial-apI vignette: \code{vignette("unofficial-api",
+  package = "traktok")}
 }
 \examples{
 \dontrun{
-tt_search_hidden("#rstats", max_pages = 2)
+tt_search_hidden("#rstats")
+# the functions runs until the end of all search results, which can take a
+# long time. You can cancel the search and retrieve all collected results
+# with last_query though!
+last_query()
 }
 }
