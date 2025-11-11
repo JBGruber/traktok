@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 
 | Description                 | Shorthand        | Research API              | Hidden API              |
 |:----------------------------|:-----------------|:--------------------------|:------------------------|
-| search videos               | tt_search        | tt_search_api             | tt_search_hidden[^1]    |
+| search videos               | tt_search        | tt_search_api             | tt_search_hidden    |
 | get video detail (+file)    | tt_videos        | \-                        | tt_videos_hidden        |
 | get user videos             | tt_user_videos   | tt_user_videos_api        | tt_user_videos_hidden   |
 | get user info               | tt_user_info     | tt_user_info_api          | tt_user_info_hidden     |
@@ -38,8 +38,6 @@ knitr::opts_chunk$set(
 | get videos in a playlist    | tt_playlist      | tt_playlist_api           | \-                      |
 | get raw post data           | \-               | \-                        | tt_request_hidden       |
 | authenticate a session      | \-               | auth_research             | auth_hidden             |
-
-[^1]: Currently not working, see [#14](https://github.com/JBGruber/traktok/issues/14).
 
 
 The goal of traktok is to provide easy access to TikTok data. This package one started as an R port of Deen Freelon's [Pyktok](https://github.com/dfreelon/pyktok) Python module (though it is a complete rewrite without Python dependencies).

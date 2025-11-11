@@ -17,7 +17,7 @@ coverage](https://codecov.io/gh/JBGruber/traktok/branch/main/graph/badge.svg)](h
 
 | Description | Shorthand | Research API | Hidden API |
 |:---|:---|:---|:---|
-| search videos | tt_search | tt_search_api | tt_search_hidden[^1] |
+| search videos | tt_search | tt_search_api | tt_search_hidden |
 | get video detail (+file) | tt_videos | \- | tt_videos_hidden |
 | get user videos | tt_user_videos | tt_user_videos_api | tt_user_videos_hidden |
 | get user info | tt_user_info | tt_user_info_api | tt_user_info_hidden |
@@ -85,6 +85,3 @@ data:
 
 If you have used traktok in your research paper or project, please
 extend this list through a Pull Request or create an issue
-
-[^1]: Currently not working, see
-    [\#14](https://github.com/JBGruber/traktok/issues/14).
