@@ -37,23 +37,28 @@
 #' \dontrun{
 #' tt_videos("https://www.tiktok.com/@tiktok/video/7106594312292453675")
 #' }
-tt_videos_hidden <- function(video_urls,
-                             save_video = TRUE,
-                             overwrite = FALSE,
-                             dir = ".",
-                             cache_dir = NULL,
-                             sleep_pool = 1:10,
-                             max_tries = 5L,
-                             cookiefile = NULL,
-                             verbose = TRUE,
-                             ...) {
-
+tt_videos_hidden <- function(
+  video_urls,
+  save_video = TRUE,
+  overwrite = FALSE,
+  dir = ".",
+  cache_dir = NULL,
+  sleep_pool = 1:10,
+  max_tries = 5L,
+  cookiefile = NULL,
+  verbose = TRUE,
+  ...
+) {
   video_urls <- unique(video_urls)
   n_urls <- length(video_urls)
   video_urls <- id2url(video_urls)
 
-  if (verbose) cli::cli_alert_info("Getting {n_urls} unique link{?s}")
-  if (!is.null(cookiefile)) cookiemonster::add_cookies(cookiefile)
+  if (verbose) {
+    cli::cli_alert_info("Getting {n_urls} unique link{?s}")
+  }
+  if (!is.null(cookiefile)) {
+    cookiemonster::add_cookies(cookiefile)
+  }
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
   f_name <- ""
 
@@ -67,48 +72,75 @@ tt_videos_hidden <- function(video_urls,
     )
     i <- which(u == video_urls)
     done_msg <- ""
-    if (verbose) cli::cli_progress_step(
-      "Getting video {video_id}",
-      msg_done = "Got video {video_id} ({i}/{n_urls}). {done_msg}"
-    )
+    if (verbose) {
+      cli::cli_progress_step(
+        "Getting video {video_id}",
+        msg_done = "Got video {video_id} ({i}/{n_urls}). {done_msg}"
+      )
+    }
 
     the$retries <- 5L
-    video_dat <- get_video(url = u,
-                           video_id = video_id,
-                           overwrite = overwrite,
-                           cache_dir = cache_dir,
-                           max_tries = max_tries,
-                           cookies = cookies,
-                           verbose = verbose)
+    video_dat <- get_video(
+      url = u,
+      video_id = video_id,
+      overwrite = overwrite,
+      cache_dir = cache_dir,
+      max_tries = max_tries,
+      cookies = cookies,
+      verbose = verbose
+    )
 
     if (isTRUE(video_dat$video_status_code == 0L)) {
       if (save_video) {
         if (!isTRUE(video_dat$is_slides)) {
-          video_fn <- file.path(dir, paste0(video_dat$author_username, "_video_",
-                                            video_dat$video_id, ".mp4"))
+          video_fn <- file.path(
+            dir,
+            paste0(
+              video_dat$author_username,
+              "_video_",
+              video_dat$video_id,
+              ".mp4"
+            )
+          )
 
-          f_name <- save_video(video_dat = video_dat,
-                               video_fn = video_fn,
-                               overwrite = overwrite,
-                               max_tries = max_tries,
-                               cookies = cookies)
+          f_name <- save_video(
+            video_dat = video_dat,
+            video_fn = video_fn,
+            overwrite = overwrite,
+            max_tries = max_tries,
+            cookies = cookies
+          )
 
           f_size <- file.size(f_name)
           if (isTRUE(f_size > 1000)) {
-            done_msg <- glue::glue("File size: {utils:::format.object_size(f_size, 'auto')}.")
+            done_msg <- glue::glue(
+              "File size: {utils:::format.object_size(f_size, 'auto')}."
+            )
           } else {
-            cli::cli_warn("Video {video_id} has a very small file size (less than 1kB) and is likely corrupt.")
+            cli::cli_warn(
+              "Video {video_id} has a very small file size (less than 1kB) and is likely corrupt."
+            )
           }
           video_dat$video_fn <- video_fn
-        } else { # for slides
-          download_urls <- strsplit(video_dat$download_url, ", ", fixed = TRUE) |>
+        } else {
+          # for slides
+          download_urls <- strsplit(
+            video_dat$download_url,
+            ", ",
+            fixed = TRUE
+          ) |>
             unlist()
-          video_fns <- file.path(dir, paste0(video_dat$author_username,
-                                             "_video_",
-                                             video_dat$video_id,
-                                             "_",
-                                             seq_along(download_urls),
-                                             ".jpeg"))
+          video_fns <- file.path(
+            dir,
+            paste0(
+              video_dat$author_username,
+              "_video_",
+              video_dat$video_id,
+              "_",
+              seq_along(download_urls),
+              ".jpeg"
+            )
+          )
           purrr::walk2(download_urls, video_fns, function(u, f) {
             curl::curl_download(url = u, destfile = f, quiet = TRUE)
           })
@@ -123,22 +155,23 @@ tt_videos_hidden <- function(video_urls,
 
     return(video_dat)
   }))
-
 }
 
 
 #' @noRd
-get_video <- function(url,
-                      video_id,
-                      overwrite,
-                      cache_dir,
-                      max_tries,
-                      cookies,
-                      verbose) {
-
+get_video <- function(
+  url,
+  video_id,
+  overwrite,
+  cache_dir,
+  max_tries,
+  cookies,
+  verbose
+) {
   json_fn <- ""
-  if (!is.null(cache_dir)) json_fn <- file.path(cache_dir,
-                                                paste0(video_id, ".json"))
+  if (!is.null(cache_dir)) {
+    json_fn <- file.path(cache_dir, paste0(video_id, ".json"))
+  }
 
   if (overwrite || !file.exists(json_fn)) {
     tt_json <- tt_request_hidden(url, max_tries = max_tries)
@@ -146,37 +179,33 @@ get_video <- function(url,
   } else {
     tt_json <- readChar(json_fn, nchars = file.size(json_fn), useBytes = TRUE)
     # TODO: not ideal as not consistent with request
-    attr(tt_json,"url_full") <- url
-    attr(tt_json,"html_status") <- 200L
+    attr(tt_json, "url_full") <- url
+    attr(tt_json, "html_status") <- 200L
     the$skipped <- TRUE
   }
   # make sure json can be parsed, otherwise retry
   out <- try(parse_video(tt_json, video_id), silent = TRUE)
   if (methods::is(out, "try-error") && the$retries > 0) {
     the$retries <- the$retries - 1
-    out <- get_video(url,
-                     video_id,
-                     overwrite = TRUE, # most common reason for failure here is a malformed cached json
-                     cache_dir,
-                     max_tries,
-                     cookies,
-                     verbose)
+    out <- get_video(
+      url,
+      video_id,
+      overwrite = TRUE, # most common reason for failure here is a malformed cached json
+      cache_dir,
+      max_tries,
+      cookies,
+      verbose
+    )
   }
   return(out)
 }
 
 
 #' @noRd
-save_video <- function(video_dat,
-                       video_fn,
-                       overwrite,
-                       max_tries,
-                       cookies) {
-
+save_video <- function(video_dat, video_fn, overwrite, max_tries, cookies) {
   video_url <- video_dat$download_url
   f <- structure("", class = "try-error")
   if (!is.null(video_url)) {
-
     if (overwrite || !file.exists(video_fn)) {
       while (methods::is(f, "try-error") && max_tries > 0) {
         the$skipped <- FALSE
@@ -185,9 +214,15 @@ save_video <- function(video_dat,
           cookie = cookies,
           referer = "https://www.tiktok.com/"
         )
-        f <- try(curl::curl_download(
-          video_url, video_fn, quiet = TRUE, handle = h
-        ), silent = TRUE)
+        f <- try(
+          curl::curl_download(
+            video_url,
+            video_fn,
+            quiet = TRUE,
+            handle = h
+          ),
+          silent = TRUE
+        )
 
         if (methods::is(f, "try-error")) {
           cli::cli_alert_warning(
@@ -195,13 +230,15 @@ save_video <- function(video_dat,
           )
           # if this fails, the download link has likely expired, so better get a
           # new one
-          video_url <- get_video(url = video_dat$video_url,
-                                 video_id = video_dat$video_id,
-                                 overwrite = TRUE,
-                                 cache_dir = NULL,
-                                 max_tries = 1,
-                                 cookies = NULL,
-                                 verbose = FALSE)$download_url
+          video_url <- get_video(
+            url = video_dat$video_url,
+            video_id = video_dat$video_id,
+            overwrite = TRUE,
+            cache_dir = NULL,
+            max_tries = 1,
+            cookies = NULL,
+            verbose = FALSE
+          )$download_url
           Sys.sleep(10)
         }
 
@@ -211,12 +248,10 @@ save_video <- function(video_dat,
       f <- video_fn
       the$skipped <- TRUE
     }
-
   } else {
     cli::cli_warn("No valid video URL found for download.")
   }
   return(f)
-
 }
 
 
@@ -234,11 +269,10 @@ save_video <- function(video_dat,
 #'
 #' @inheritParams tt_videos_hidden
 #' @export
-tt_request_hidden <- function(url,
-                              max_tries = 5L,
-                              cookiefile = NULL) {
-
-  if (!is.null(cookiefile)) cookiemonster::add_cookies(cookiefile)
+tt_request_hidden <- function(url, max_tries = 5L, cookiefile = NULL) {
+  if (!is.null(cookiefile)) {
+    cookiemonster::add_cookies(cookiefile)
+  }
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
 
   req <- httr2::request(url) |>
@@ -259,8 +293,14 @@ tt_request_hidden <- function(url,
   res <- httr2::req_perform(req)
   status <- httr2::resp_status(res)
   if (status >= 400) {
-    cli::cli_warn("Retrieving {url} resulted in html status {status}, the row will contain NAs.")
-    out <- paste0('{"__DEFAULT_SCOPE__":{"webapp.video-detail":{"statusCode":"', status, '","statusMsg":"html_error"}}}')
+    cli::cli_warn(
+      "Retrieving {url} resulted in html status {status}, the row will contain NAs."
+    )
+    out <- paste0(
+      '{"__DEFAULT_SCOPE__":{"webapp.video-detail":{"statusCode":"',
+      status,
+      '","statusMsg":"html_error"}}}'
+    )
   } else {
     out <- res |>
       httr2::resp_body_html() |>
@@ -268,7 +308,9 @@ tt_request_hidden <- function(url,
       rvest::html_text()
   }
 
-  if (isFALSE(nchar(out) > 10)) stop("no json found")
+  if (isFALSE(nchar(out) > 10)) {
+    stop("no json found")
+  }
 
   attr(out, "url_full") <- res$url
   attr(out, "html_status") <- status
@@ -387,17 +429,21 @@ tt_search_hidden <- function(query,
 #' \dontrun{
 #' df <- tt_user_info_hidden("https://www.tiktok.com/@fpoe_at")
 #' }
-tt_user_info_hidden <- function(username,
-                                parse = TRUE) {
-
-  rlang::check_installed("rvest", reason = "to use this function", version = "1.0.4")
+tt_user_info_hidden <- function(username, parse = TRUE) {
+  rlang::check_installed(
+    "rvest",
+    reason = "to use this function",
+    version = "1.0.4"
+  )
 
   if (!grepl("^http[s]*://", username)) {
     username <- paste0("https://www.tiktok.com/@", username)
   }
 
   if (!grepl("^http[s]*://[www.]*tiktok\\.com/@.+", username)) {
-    cli::cli_abort("The provided username does not resolve to a TikTok account URL: {username}")
+    cli::cli_abort(
+      "The provided username does not resolve to a TikTok account URL: {username}"
+    )
   }
 
   sess <- rvest::read_html_live(username)
@@ -419,7 +465,6 @@ tt_user_info_hidden <- function(username,
   } else {
     return(user_data)
   }
-
 }
 
 
@@ -442,25 +487,32 @@ tt_user_info_hidden <- function(username,
 #' df <- tt_user_info_hidden("https://www.tiktok.com/@fpoe_at")
 #' tt_get_follower_hidden(df$secUid)
 #' }
-tt_get_following_hidden <- function(secuid,
-                                    sleep_pool = 1:10,
-                                    max_tries = 5L,
-                                    cookiefile = NULL,
-                                    verbose = TRUE) {
-
-  if (!is.null(cookiefile)) cookiemonster::add_cookies(cookiefile)
+tt_get_following_hidden <- function(
+  secuid,
+  sleep_pool = 1:10,
+  max_tries = 5L,
+  cookiefile = NULL,
+  verbose = TRUE
+) {
+  if (!is.null(cookiefile)) {
+    cookiemonster::add_cookies(cookiefile)
+  }
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
 
-  new_data <- list(minCursor = 0,
-                   total = Inf,
-                   hasMore = TRUE)
+  new_data <- list(minCursor = 0, total = Inf, hasMore = TRUE)
   follower_data <- list()
 
   while (isTRUE(new_data$hasMore)) {
-    if (verbose) cli::cli_progress_step(
-      msg = ifelse(length(follower_data) == 0L, "Getting followers...", "Getting more followers..."),
-      msg_done = "Got {length(follower_data)} followers."
-    )
+    if (verbose) {
+      cli::cli_progress_step(
+        msg = ifelse(
+          length(follower_data) == 0L,
+          "Getting followers...",
+          "Getting more followers..."
+        ),
+        msg_done = "Got {length(follower_data)} followers."
+      )
+    }
     resp <- httr2::request("https://www.tiktok.com/api/user/list/") |>
       httr2::req_url_query(
         count = "30",
@@ -474,44 +526,56 @@ tt_get_following_hidden <- function(secuid,
 
     new_data <- try(httr2::resp_body_json(resp), silent = TRUE)
     if (methods::is(new_data, "try-error")) {
-      new_data <- list(minCursor = 0,
-                       total = Inf,
-                       hasMore = TRUE)
+      new_data <- list(minCursor = 0, total = Inf, hasMore = TRUE)
     } else {
-      follower_data <- c(follower_data, purrr::pluck(new_data, "userList", .default = list()))
+      follower_data <- c(
+        follower_data,
+        purrr::pluck(new_data, "userList", .default = list())
+      )
     }
     if (isTRUE(new_data$hasMore)) wait(sleep_pool)
   }
-  if (verbose) cli::cli_progress_done()
+  if (verbose) {
+    cli::cli_progress_done()
+  }
 
-  if (verbose) cli::cli_progress_step(
-    msg = "Parsing results"
-  )
+  if (verbose) {
+    cli::cli_progress_step(
+      msg = "Parsing results"
+    )
+  }
   return(parse_followers(follower_data))
-
 }
+
 
 #' @rdname tt_get_following_hidden
 #' @export
-tt_get_follower_hidden <- function(secuid,
-                                   sleep_pool = 1:10,
-                                   max_tries = 5L,
-                                   cookiefile = NULL,
-                                   verbose = TRUE) {
-
-  if (!is.null(cookiefile)) cookiemonster::add_cookies(cookiefile)
+tt_get_follower_hidden <- function(
+  secuid,
+  sleep_pool = 1:10,
+  max_tries = 5L,
+  cookiefile = NULL,
+  verbose = TRUE
+) {
+  if (!is.null(cookiefile)) {
+    cookiemonster::add_cookies(cookiefile)
+  }
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
 
-  new_data <- list(minCursor = 0,
-                   total = Inf,
-                   hasMore = TRUE)
+  new_data <- list(minCursor = 0, total = Inf, hasMore = TRUE)
   follower_data <- list()
 
   while (isTRUE(new_data$hasMore)) {
-    if (verbose) cli::cli_progress_step(
-      msg = ifelse(length(follower_data) == 0L, "Getting followers...", "Getting more followers..."),
-      msg_done = "Got {length(follower_data)} followers."
-    )
+    if (verbose) {
+      cli::cli_progress_step(
+        msg = ifelse(
+          length(follower_data) == 0L,
+          "Getting followers...",
+          "Getting more followers..."
+        ),
+        msg_done = "Got {length(follower_data)} followers."
+      )
+    }
     resp <- httr2::request("https://www.tiktok.com/api/user/list/") |>
       httr2::req_url_query(
         count = "30",
@@ -525,21 +589,25 @@ tt_get_follower_hidden <- function(secuid,
 
     new_data <- try(httr2::resp_body_json(resp), silent = TRUE)
     if (methods::is(new_data, "try-error")) {
-      new_data <- list(minCursor = 0,
-                       total = Inf,
-                       hasMore = TRUE)
+      new_data <- list(minCursor = 0, total = Inf, hasMore = TRUE)
     } else {
-      follower_data <- c(follower_data, purrr::pluck(new_data, "userList", .default = list()))
+      follower_data <- c(
+        follower_data,
+        purrr::pluck(new_data, "userList", .default = list())
+      )
     }
     if (isTRUE(new_data$hasMore)) wait(sleep_pool)
   }
-  if (verbose) cli::cli_progress_done()
+  if (verbose) {
+    cli::cli_progress_done()
+  }
 
-  if (verbose) cli::cli_progress_step(
-    msg = "Parsing results"
-  )
+  if (verbose) {
+    cli::cli_progress_step(
+      msg = "Parsing results"
+    )
+  }
   return(parse_followers(follower_data))
-
 }
 
 
@@ -566,38 +634,53 @@ tt_get_follower_hidden <- function(secuid,
 #' tt_user_videos_hidden("fpoe_at")
 #' }
 #' @export
-tt_user_videos_hidden <- function(username,
-                                  solve_captchas = FALSE,
-                                  return_urls = FALSE,
-                                  timeout = 5L,
-                                  verbose = TRUE,
-                                  ...) {
-
-  rlang::check_installed("rvest", reason = "to use this function", version = "1.0.4")
+tt_user_videos_hidden <- function(
+  username,
+  solve_captchas = FALSE,
+  return_urls = FALSE,
+  timeout = 5L,
+  verbose = TRUE,
+  ...
+) {
+  rlang::check_installed(
+    "rvest",
+    reason = "to use this function",
+    version = "1.0.4"
+  )
 
   if (!grepl("^http[s]*://", username)) {
     username <- paste0("https://www.tiktok.com/@", username)
   }
 
   if (!grepl("^http[s]*://[www.]*tiktok\\.com/@.+", username)) {
-    cli::cli_abort("The provided username does not resolve to a TikTok account URL: {username}")
+    cli::cli_abort(
+      "The provided username does not resolve to a TikTok account URL: {username}"
+    )
   }
 
-  if (verbose) cli::cli_progress_step("Opening {username}")
+  if (verbose) {
+    cli::cli_progress_step("Opening {username}")
+  }
   # reset captcha warning
   the$captcha <- NULL
   sess <- rvest::read_html_live(username)
   last_y <- -1
   #scroll as far as possible
-  if (verbose) cli::cli_progress_bar(format = "{cli::pb_spin} Scrolling down (y={last_y})")
+  if (verbose) {
+    cli::cli_progress_bar(format = "{cli::pb_spin} Scrolling down (y={last_y})")
+  }
   while (sess$get_scroll_position()$y > last_y) {
     solve_captcha(sess, solve = solve_captchas)
     last_y <- sess$get_scroll_position()$y
-    sess$scroll_to(top = 10 ^ 5)
-    if (verbose) cli::cli_progress_update()
+    sess$scroll_to(top = 10^5)
+    if (verbose) {
+      cli::cli_progress_update()
+    }
     Sys.sleep(timeout * stats::runif(1, 1, 3))
   }
-  if (verbose) cli::cli_progress_step("Collecting discovered URLs")
+  if (verbose) {
+    cli::cli_progress_step("Collecting discovered URLs")
+  }
   urls <- sess |>
     rvest::html_elements("a") |>
     rvest::html_attr("href")
@@ -607,13 +690,18 @@ tt_user_videos_hidden <- function(username,
     cli::cli_progress_done()
     cli::cli_alert_success("{length(urls)} URLs discovered")
   }
-  if (return_urls) return(urls)
+  if (return_urls) {
+    return(urls)
+  }
   tt_videos_hidden(urls, ...)
 }
 
 
 solve_captcha <- function(sess, solve) {
-  captcha <- rvest::html_element(sess, "#captcha-verify-image,.captcha-verify-container")
+  captcha <- rvest::html_element(
+    sess,
+    "#captcha-verify-image,.captcha-verify-container"
+  )
   if (length(captcha) == 0L) {
     the$view <- NULL
     the$captcha <- NULL
@@ -625,8 +713,9 @@ solve_captcha <- function(sess, solve) {
     the$captcha <- TRUE
   }
   if (solve) {
-    if (is.null(the$view))
+    if (is.null(the$view)) {
       the$view <- sess$view()
+    }
     solve_captcha(sess, solve = solve)
   }
 }
