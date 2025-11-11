@@ -1,0 +1,160 @@
+# traktok
+
+## Feature overview
+
+| Description                 | Shorthand        | Research API              | Hidden API                |
+|:----------------------------|:-----------------|:--------------------------|:--------------------------|
+| search videos               | tt_search        | tt_search_api             | tt_search_hidden[¹](#fn1) |
+| get video detail (+file)    | tt_videos        | \-                        | tt_videos_hidden          |
+| get user videos             | tt_user_videos   | tt_user_videos_api        | tt_user_videos_hidden     |
+| get user info               | tt_user_info     | tt_user_info_api          | tt_user_info_hidden       |
+| get comments under a video  | tt_comments      | tt_comments_api           | \-                        |
+| get who follows a user      | tt_get_follower  | tt_user_follower_api      | tt_get_follower_hidden    |
+| get who a user is following | tt_get_following | tt_user_following_api     | tt_get_following_hidden   |
+| get videos a user liked     | tt_get_liked     | tt_user_liked_videos_api  | \-                        |
+| get pinned videos of users  | tt_get_pinned    | tt_user_pinned_videos_api | \-                        |
+| get videos in a playlist    | tt_playlist      | tt_playlist_api           | \-                        |
+| get raw post data           | \-               | \-                        | tt_request_hidden         |
+| authenticate a session      | \-               | auth_research             | auth_hidden               |
+
+The goal of traktok is to provide easy access to TikTok data. This
+package one started as an R port of Deen Freelon’s
+[Pyktok](https://github.com/dfreelon/pyktok) Python module (though it is
+a complete rewrite without Python dependencies). It now covers functions
+from the secret hidden API that TikTok is using to show/search/play
+videos on their Website and the official [Research
+API](https://developers.tiktok.com/products/research-api/). Since the
+Research API misses some important features (and since not everyone has
+access to it) it can often make sense to still use the hidden API that
+mocks requests from a browser. However, an important disclaimer for the
+hidden API applies:
+
+> This program may stop working suddenly if TikTok changes how it stores
+> its data ([see Freelon,
+> 2018](https://osf.io/preprints/socarxiv/56f4q/)).
+
+However, the last times, it was fixed rather quickly (e.g., \#12).
+
+## Installation
+
+You can install the development version of traktok from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("JBGruber/traktok")
+```
+
+## In Research
+
+The research papers and projects below have used traktok to gather their
+data:
+
+1.  Hohner, J., Kakavand, A., & Rothut, S. (2024). Analyzing Radical
+    Visuals at Scale: How Far-Right Groups Mobilize on TikTok. Journal
+    of Digital Social Research, 6(1), 10–30.
+    <https://doi.org/10.33621/jdsr.v6i1.200>
+2.  Bach, P., Gitomer, A., Devries, M., Walker, C., Deyoe, D.,
+    Atienza-Bathelemy, J., Foucault Welles, B., Freelon, D., & Zulli, D.
+    (2023, October). Stitching Politics and Identity on TikTok. Panel
+    presented at AoIR2023: The 24th Annual Conference of the Association
+    of Internet Researchers. Philadelphia, PA, USA: AoIR. Retrieved from
+    <http://spir.aoir.org>
+3.  Wirz, D. S., Zai, F., Vogler, D., Urman, A., & Eisenegger, M.
+    (2023). Die Qualität von Schweizer Medien auf Instagram und TikTok.
+    <https://doi.org/10.5167/UZH-238605>
+4.  Giglietto, F. (2024). Dashboard: TikTok Coordinated Sharing Network.
+    <https://fabiogiglietto.github.io/tiktok_csbn/tt_viz.html>
+5.  Widholm, A., Ekman, M., & Larsson, A. O. (2024). A Right-Wing Wave
+    on TikTok? Ideological Orientations, Platform Features, and User
+    Engagement During the Early 2022 Election Campaign in Sweden. Social
+    Media + Society, 10(3). <https://doi.org/10.1177/20563051241269266>
+
+If you have used traktok in your research paper or project, please
+extend this list through a Pull Request or create an issue
+
+------------------------------------------------------------------------
+
+1.  Currently not working, see
+    [\#14](https://github.com/JBGruber/traktok/issues/14).
+
+# Package index
+
+## All functions
+
+- [`auth_check()`](https://jbgruber.github.io/traktok/reference/auth_check.md)
+  : Check whether you are authenticated
+- [`auth_hidden()`](https://jbgruber.github.io/traktok/reference/auth_hidden.md)
+  : Authenticate for the hidden/unofficial API
+- [`auth_research()`](https://jbgruber.github.io/traktok/reference/auth_research.md)
+  : Authenticate for the official research API
+- [`last_query()`](https://jbgruber.github.io/traktok/reference/last_query.md)
+  [`last_comments()`](https://jbgruber.github.io/traktok/reference/last_query.md)
+  : Retrieve most recent query
+- [`print(`*`<traktok_query>`*`)`](https://jbgruber.github.io/traktok/reference/print.traktok_query.md)
+  : Print a traktok query
+- [`print(`*`<tt_results>`*`)`](https://jbgruber.github.io/traktok/reference/print.tt_results.md)
+  : Print search result
+- [`query()`](https://jbgruber.github.io/traktok/reference/query.md)
+  [`query_and()`](https://jbgruber.github.io/traktok/reference/query.md)
+  [`query_or()`](https://jbgruber.github.io/traktok/reference/query.md)
+  [`query_not()`](https://jbgruber.github.io/traktok/reference/query.md)
+  : Create a traktok query
+- [`tt_comments_api()`](https://jbgruber.github.io/traktok/reference/tt_comments_api.md)
+  [`tt_comments()`](https://jbgruber.github.io/traktok/reference/tt_comments_api.md)
+  : Retrieve video comments
+- [`tt_get_follower()`](https://jbgruber.github.io/traktok/reference/tt_get_follower.md)
+  [`tt_get_following()`](https://jbgruber.github.io/traktok/reference/tt_get_follower.md)
+  : Get followers and following of users
+- [`tt_get_following_hidden()`](https://jbgruber.github.io/traktok/reference/tt_get_following_hidden.md)
+  [`tt_get_follower_hidden()`](https://jbgruber.github.io/traktok/reference/tt_get_following_hidden.md)
+  : Get followers and following of a user from the hidden API
+- [`tt_json()`](https://jbgruber.github.io/traktok/reference/tt_json.md)
+  : Get json file from a TikTok URL
+- [`tt_playlist_api()`](https://jbgruber.github.io/traktok/reference/tt_playlist_api.md)
+  [`tt_playlist()`](https://jbgruber.github.io/traktok/reference/tt_playlist_api.md)
+  : Lookup TikTok playlist using the research API
+- [`tt_request_hidden()`](https://jbgruber.github.io/traktok/reference/tt_request_hidden.md)
+  : Get json string from a TikTok URL using the hidden API
+- [`tt_search()`](https://jbgruber.github.io/traktok/reference/tt_search.md)
+  : Search videos
+- [`tt_search_api()`](https://jbgruber.github.io/traktok/reference/tt_search_api.md)
+  [`tt_query_videos()`](https://jbgruber.github.io/traktok/reference/tt_search_api.md)
+  : Query TikTok videos using the research API
+- [`tt_search_hidden()`](https://jbgruber.github.io/traktok/reference/tt_search_hidden.md)
+  : Search videos
+- [`tt_user_follower_api()`](https://jbgruber.github.io/traktok/reference/tt_user_follower_api.md)
+  [`tt_user_following_api()`](https://jbgruber.github.io/traktok/reference/tt_user_follower_api.md)
+  : Get followers and following of users from the research API
+- [`tt_user_info_api()`](https://jbgruber.github.io/traktok/reference/tt_user_info_api.md)
+  [`tt_user_info()`](https://jbgruber.github.io/traktok/reference/tt_user_info_api.md)
+  : Lookup TikTok information about a user using the research API
+- [`tt_user_info_hidden()`](https://jbgruber.github.io/traktok/reference/tt_user_info_hidden.md)
+  : Get infos about a user from the hidden API
+- [`tt_user_liked_videos_api()`](https://jbgruber.github.io/traktok/reference/tt_user_liked_videos_api.md)
+  [`tt_get_liked()`](https://jbgruber.github.io/traktok/reference/tt_user_liked_videos_api.md)
+  : Lookup which videos were liked by a user using the research API
+- [`tt_user_pinned_videos_api()`](https://jbgruber.github.io/traktok/reference/tt_user_pinned_videos_api.md)
+  [`tt_get_pinned()`](https://jbgruber.github.io/traktok/reference/tt_user_pinned_videos_api.md)
+  : Lookup which videos were pinned by a user using the research API
+- [`tt_user_reposted_api()`](https://jbgruber.github.io/traktok/reference/tt_user_reposted_api.md)
+  [`tt_get_reposted()`](https://jbgruber.github.io/traktok/reference/tt_user_reposted_api.md)
+  : Lookup which videos were liked by a user using the research API
+- [`tt_user_videos()`](https://jbgruber.github.io/traktok/reference/tt_user_videos.md)
+  : Get videos from a TikTok user's profile
+- [`tt_user_videos_api()`](https://jbgruber.github.io/traktok/reference/tt_user_videos_api.md)
+  : Get videos from a TikTok user's profile
+- [`tt_user_videos_hidden()`](https://jbgruber.github.io/traktok/reference/tt_user_videos_hidden.md)
+  : Get videos from a TikTok user's profile
+- [`tt_videos_hidden()`](https://jbgruber.github.io/traktok/reference/tt_videos_hidden.md)
+  [`tt_videos()`](https://jbgruber.github.io/traktok/reference/tt_videos_hidden.md)
+  : Get video metadata and video files from URLs
+
+# Articles
+
+### All vignettes
+
+- [Research
+  API](https://jbgruber.github.io/traktok/articles/research-api.md):
+- [Unofficial
+  API](https://jbgruber.github.io/traktok/articles/unofficial-api.md):

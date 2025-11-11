@@ -1,0 +1,23 @@
+# Authors and Citation
+
+## Authors
+
+- **Johannes B. Gruber**. Author, maintainer.
+  [](https://orcid.org/0000-0001-9177-1772)
+
+## Citation
+
+Source:
+[`inst/CITATION`](https://github.com/JBGruber/traktok/blob/main/inst/CITATION)
+
+Gruber, Johannes B. (2023). traktok. An R package to scrape data from
+TikTok. R package version 0.0.4.9000.
+https://github.com/JBGruber/traktok.
+
+    @Manual{,
+      title = {traktok. Getting TikTok data through the official and unofficial APIs},
+      author = {Johannes B. Gruber},
+      year = {2023},
+      url = {https://github.com/JBGruber/traktok},
+      note = {R package version 0.0.4.9000},
+    }
