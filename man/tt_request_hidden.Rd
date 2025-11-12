@@ -15,6 +15,9 @@ tt_request_hidden(url, max_tries = 5L, cookiefile = NULL)
 \link{auth_hidden} once. See \code{vignette("unofficial-api", package =
 "traktok")} for more information on authentication.}
 }
+\value{
+a json string containing post or account data.
+}
 \description{
 \ifelse{html}{\figure{api-unofficial}{options:
   alt='[Works on: Unofficial API]'}}{\strong{[Works on: Unofficial API]}}

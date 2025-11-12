@@ -30,7 +30,7 @@
 #'   metadata, this link will not work in most cases.
 #'
 #'
-#' @return a data.frame
+#' @return a data.frame containing post metadata.
 #' @export
 #'
 #' @examples
@@ -268,6 +268,7 @@ save_video <- function(video_dat, video_fn, overwrite, max_tries, cookies) {
 #' @param url a URL to a TikTok video or account
 #'
 #' @inheritParams tt_videos_hidden
+#' @return a json string containing post or account data.
 #' @export
 tt_request_hidden <- function(url, max_tries = 5L, cookiefile = NULL) {
   if (!is.null(cookiefile)) {
@@ -335,10 +336,10 @@ tt_request_hidden <- function(url, max_tries = 5L, cookiefile = NULL) {
 #'
 #' @details The function will wait between scraping search results. To get more
 #'   than 6 videos, you need to provide cookies of a logged in account. For more
-#'   details see the unofficial-apI vignette: \code{vignette("unofficial-api",
+#'   details see the unofficial-api vignette: \code{vignette("unofficial-api",
 #'   package = "traktok")}
 #'
-#' @return a character vector of URLs
+#' @return a character vector of URLs.
 #' @export
 #'
 #' @examples
@@ -470,7 +471,7 @@ tt_user_info_hidden <- function(username, parse = TRUE) {
 #'
 #' @param secuid The secuid of a user. You can get it with
 #'   \link{tt_user_info_hidden} by querying an account (see example).
-#' @inheritParams tt_search_hidden
+#' @inheritParams tt_videos_hidden
 #'
 #' @return a data.frame of followers
 #' @export
@@ -621,6 +622,7 @@ tt_get_follower_hidden <- function(
 #'
 #' @return A list of video data or URLs, depending on the value of \code{return_urls}.
 #'
+#' @return a data.frame containing metadata of user posts.
 #' @examples
 #' \dontrun{
 #' # Get hidden videos from the user "fpoe_at"

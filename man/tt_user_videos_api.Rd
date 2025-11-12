@@ -22,6 +22,9 @@ tt_user_videos_api(
 \item{...}{Additional arguments to be passed to the
 \code{\link{tt_search_api}} function.}
 }
+\value{
+a data.frame containing metadata of user posts.
+}
 \description{
 \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:
   Research API]'}}{\strong{[Works on: Research API]}}

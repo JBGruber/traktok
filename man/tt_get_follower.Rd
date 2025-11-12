@@ -15,7 +15,7 @@ tt_get_following(...)
 (e.g., \code{token = NULL}).}
 }
 \value{
-a data.frame
+a data.frame of followers and following of users
 }
 \description{
 \ifelse{html}{\figure{api-both.svg}{options:

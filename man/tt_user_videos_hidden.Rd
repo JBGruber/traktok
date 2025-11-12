@@ -28,6 +28,8 @@ tt_user_videos_hidden(
 }
 \value{
 A list of video data or URLs, depending on the value of \code{return_urls}.
+
+a data.frame containing metadata of user posts.
 }
 \description{
 \ifelse{html}{\figure{api-unofficial}{options: alt='[Works on:

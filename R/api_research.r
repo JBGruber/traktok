@@ -24,6 +24,7 @@
 #' @param verbose should the function print status updates to the screen?
 #' @param token The authentication token (usually supplied automatically after
 #'   running \link{auth_research} once).
+#' 
 #' @return A data.frame of parsed TikTok videos (or a nested list).
 #' @export
 #' @examples
@@ -236,7 +237,7 @@ tt_query_request <- function(endpoint,
 #' @param fields The fields to be returned (defaults to all)
 #' @inheritParams tt_search_api
 #'
-#' @return A data.frame of parsed TikTok videos the user has posted
+#' @return A data.frame of parsed TikTok videos the user has posted.
 #' @export
 #'
 #' @examples
@@ -348,7 +349,7 @@ tt_user_liked_videos_api <- function(username,
 #' @param fields The fields to be returned (defaults to all)
 #' @inheritParams tt_search_api
 #'
-#' @return A data.frame of parsed TikTok videos the user has posted
+#' @return A data.frame of parsed TikTok videos the user has posted.
 #' @export
 #'
 #' @examples
@@ -456,7 +457,7 @@ tt_user_reposted_api <- function(username,
 #' @param username vector of user names (handles) or URLs to users' pages.
 #' @inheritParams tt_search_api
 #'
-#' @return A data.frame of parsed TikTok videos the user has posted
+#' @return A data.frame of parsed TikTok videos the user has posted.
 #' @export
 #'
 #' @examples
@@ -540,7 +541,7 @@ tt_user_pinned_videos_api <- function(username,
 #' @param username name(s) of the user(s) to be queried
 #' @inheritParams tt_search_api
 #'
-#' @return A data.frame
+#' @return A data.frame containing follower of following account information.
 #' @export
 #'
 #' @examples
@@ -676,7 +677,7 @@ tt_user_request <- function(endpoint,
 #'
 #' @inheritParams tt_user_liked_videos_api
 #'
-#' @return A data.frame of parsed TikTok videos the user has posted
+#' @return A data.frame of parsed TikTok videos the user has posted.
 #' @export
 #'
 #' @examples
@@ -751,7 +752,7 @@ tt_user_info_api <- function(username,
 #' @param video_id The id or URL of a video
 #' @inheritParams tt_search_api
 #'
-#' @return A data.frame of parsed comments
+#' @return A data.frame of parsed comments.
 #' @export
 #'
 #' @examples
@@ -833,7 +834,7 @@ tt_comments_api <- function(video_id,
 #' @param playlist_id playlist ID or URL to a playlist.
 #' @inheritParams tt_user_info_api
 #'
-#' @return A data.frame
+#' @return A data.frame video metadata.
 #' @export
 tt_playlist_api <- function(playlist_id,
                             verbose = TRUE,

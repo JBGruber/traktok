@@ -27,6 +27,6 @@ test_that("parse", {
   )
   expect_equal(
     dim(parse_video('{"__DEFAULT_SCOPE__":{"webapp.video-detail":{"itemInfo":{"itemStruct":{"test":1}}}}}', video_id = 1L)),
-    c(1L, 22L)
+    c(1L, 23L)
   )
 })

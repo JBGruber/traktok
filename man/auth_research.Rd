@@ -12,7 +12,7 @@ auth_research(client_key, client_secret)
 \item{client_secret}{Client secret for authentication}
 }
 \value{
-An authentication token (invisible)
+An authentication token (invisible).
 }
 \description{
 Guides you through authentication for the Research API

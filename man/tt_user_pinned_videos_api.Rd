@@ -36,7 +36,7 @@ will use extra memory.}
 running \link{auth_research} once).}
 }
 \value{
-A data.frame of parsed TikTok videos the user has posted
+A data.frame of parsed TikTok videos the user has posted.
 }
 \description{
 \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:

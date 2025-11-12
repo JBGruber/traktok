@@ -11,6 +11,9 @@
 
 \item{...}{not used.}
 }
+\value{
+nothing. Prints search results.
+}
 \description{
 Print a traktok search results
 }

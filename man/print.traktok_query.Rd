@@ -11,6 +11,9 @@
 
 \item{...}{Additional arguments passed to \code{lobstr::tree}}
 }
+\value{
+nothing. Prints traktok query.
+}
 \description{
 Print a traktok query as a tree
 }

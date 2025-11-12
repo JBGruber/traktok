@@ -12,7 +12,7 @@ tt_search(...)
 (e.g., \code{token = NULL}).}
 }
 \value{
-a data.frame
+a data.frame of video metadata
 }
 \description{
 \ifelse{html}{\figure{api-both.svg}{options:

@@ -18,7 +18,7 @@ tt_playlist(playlist_id, verbose = TRUE, token = NULL)
 running \link{auth_research} once).}
 }
 \value{
-A data.frame
+A data.frame video metadata.
 }
 \description{
 \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:

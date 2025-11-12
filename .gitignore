@@ -13,3 +13,8 @@ cookies.txt
 test.r
 docs
 pkgdown
+notes.md
+
+/.quarto/
+**/*.quarto_ipynb
+cran-todo.md

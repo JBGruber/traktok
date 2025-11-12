@@ -45,8 +45,10 @@ parse_api_comments <- function(x) {
 #' @description Print a traktok search results
 #' @param x An object of class \code{tt_results}
 #' @param ... not used.
+#' 
+#' @return nothing. Prints search results.
 #' @export
 print.tt_results <- function(x, ...) {
   cli::cat_rule(paste("search id:",  cli::col_red(attr(x, "search_id"))))
-  print(tibble::as_tibble(x))
+  print(tibble::as_tibble(x, ...))
 }

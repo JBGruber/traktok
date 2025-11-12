@@ -131,6 +131,8 @@ clean_query <- function(q) {
 #' @description Print a traktok query as a tree
 #' @param x An object of class \code{traktok_query}
 #' @param ... Additional arguments passed to \code{lobstr::tree}
+#' 
+#' @return nothing. Prints traktok query.
 #' @export
 #' @examples
 #' query() |>

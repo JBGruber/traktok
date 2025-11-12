@@ -7,7 +7,7 @@
 #' @param client_key Client key for authentication
 #' @param client_secret Client secret for authentication
 #'
-#' @returns An authentication token (invisible)
+#' @returns An authentication token (invisible).
 #'
 #' @details You need to apply for access to the API and get the key
 #' and secret from TikTok. See

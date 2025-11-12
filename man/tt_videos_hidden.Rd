@@ -49,7 +49,7 @@ drawn.}
 \link{tt_request_hidden}.}
 }
 \value{
-a data.frame
+a data.frame containing post metadata.
 }
 \description{
 \ifelse{html}{\figure{api-unofficial}{options: alt='[Works on:

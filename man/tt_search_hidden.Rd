@@ -27,7 +27,7 @@ tt_search_hidden(
 \item{...}{here to absorb parameters of the old function.}
 }
 \value{
-a character vector of URLs
+a character vector of URLs.
 }
 \description{
 \ifelse{html}{\figure{api-unofficial}{options: alt='[Works on:
@@ -39,7 +39,7 @@ a character vector of URLs
 \details{
 The function will wait between scraping search results. To get more
   than 6 videos, you need to provide cookies of a logged in account. For more
-  details see the unofficial-apI vignette: \code{vignette("unofficial-api",
+  details see the unofficial-api vignette: \code{vignette("unofficial-api",
   package = "traktok")}
 }
 \examples{

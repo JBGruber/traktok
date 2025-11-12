@@ -37,7 +37,7 @@ will use extra memory.}
 running \link{auth_research} once).}
 }
 \value{
-A data.frame
+A data.frame containing follower of following account information.
 }
 \description{
 \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:

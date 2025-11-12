@@ -10,7 +10,7 @@ last_query()
 last_comments()
 }
 \value{
-a list of unparsed videos
+a list of unparsed videos or comments.
 }
 \description{
 If \code{tt_search_api} or \code{tt_comments_api} fail after already getting

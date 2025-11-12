@@ -12,6 +12,9 @@ tt_user_videos(username, ...)
 \item{...}{Additional arguments to be passed to the \code{\link{tt_user_videos_hidden}} or
 \code{\link{tt_user_videos_api}} function.}
 }
+\value{
+a data.frame containing metadata of user posts.
+}
 \description{
 \ifelse{html}{\figure{api-both.svg}{options:
   alt='[Works on: Both]'}}{\strong{[Works on: Both]}}

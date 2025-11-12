@@ -5,10 +5,11 @@
 #' retrieved so far from memory. Does not work when the session has crashed. In
 #' that case, look in \code{tempdir()} for an RDS file as a last resort.
 #'
-#' @return a list of unparsed videos
+#' @return a list of unparsed videos or comments.
 #' @export
 last_query <- function() {
   q <- the$videos
+  # for searches from
   if (isTRUE(is.character(q))) return(q)
   out <- try(parse_api_search(q), silent = TRUE)
   if (methods::is(out, "try-error")) {

@@ -46,7 +46,7 @@ will use extra memory.}
 running \link{auth_research} once).}
 }
 \value{
-A data.frame of parsed comments
+A data.frame of parsed comments.
 }
 \description{
 \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on: Research API]'}}{\strong{[Works on: Research API]}}

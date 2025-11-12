@@ -12,7 +12,7 @@
 #'   \link{tt_search_hidden}. To use the research API, include \code{token}
 #'   (e.g., \code{token = NULL}).
 #'
-#' @return a data.frame
+#' @return a data.frame of video metadata
 #' @export
 tt_search <- function(...) {
 
@@ -44,6 +44,7 @@ tt_search <- function(...) {
 #' @param ... Additional arguments to be passed to the \code{\link{tt_user_videos_hidden}} or
 #'   \code{\link{tt_user_videos_api}} function.
 #'
+#' @return a data.frame containing metadata of user posts.
 #' @examples
 #' \dontrun{
 #' # Get hidden videos from the user "fpoe_at"
@@ -113,7 +114,7 @@ tt_comments <- tt_comments_api
 #'   \link{tt_get_follower_hidden}. To use the research API, include \code{token}
 #'   (e.g., \code{token = NULL}).
 #'
-#' @return a data.frame
+#' @return a data.frame of followers and following of users
 #' @export
 tt_get_follower <- function(...) {
 
@@ -145,17 +146,3 @@ tt_get_following <- function(...) {
   }
 
 }
-
-
-#' Get json file from a TikTok URL
-#'
-#' This function was replaced by \code{tt_request_hidden()}.
-#'
-#' @param ... \code{tt_request_hidden()}.
-#' @export
-tt_json <- function(...) {
-
-  cli::cli_warn("This function has been replaced by {.fn tt_request_hidden}")
-  tt_request_hidden(...)
-}
-

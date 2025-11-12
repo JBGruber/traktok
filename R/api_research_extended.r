@@ -16,6 +16,7 @@
 #'
 #' @inheritParams tt_search_api
 #'
+#' @return a data.frame containing metadata of user posts.
 #' @examples
 #' \dontrun{
 #' # Get videos from the user "fpoe_at" since October 2024
