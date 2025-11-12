@@ -20,6 +20,10 @@ print(x, ...)
   Additional arguments passed to
   [`lobstr::tree`](https://lobstr.r-lib.org/reference/tree.html)
 
+## Value
+
+nothing. Prints traktok query.
+
 ## Examples
 
 ``` r

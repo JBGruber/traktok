@@ -32,6 +32,10 @@ tt_user_videos(username, ...)
   [`tt_user_videos_api`](https://jbgruber.github.io/traktok/reference/tt_user_videos_api.md)
   function.
 
+## Value
+
+a data.frame containing metadata of user posts.
+
 ## Examples
 
 ``` r

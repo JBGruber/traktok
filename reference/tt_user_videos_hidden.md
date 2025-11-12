@@ -50,6 +50,8 @@ tt_user_videos_hidden(
 
 A list of video data or URLs, depending on the value of `return_urls`.
 
+a data.frame containing metadata of user posts.
+
 ## Details
 
 This function uses rvest to scrape a TikTok user's profile and retrieve

@@ -20,7 +20,7 @@ auth_research(client_key, client_secret)
 
 ## Value
 
-An authentication token (invisible)
+An authentication token (invisible).
 
 ## Details
 

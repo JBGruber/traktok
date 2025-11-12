@@ -17,4 +17,4 @@ last_comments()
 
 ## Value
 
-a list of unparsed videos
+a list of unparsed videos or comments.

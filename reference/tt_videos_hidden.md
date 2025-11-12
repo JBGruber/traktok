@@ -73,7 +73,7 @@ tt_videos(...)
 
 ## Value
 
-a data.frame
+a data.frame containing post metadata.
 
 ## Details
 

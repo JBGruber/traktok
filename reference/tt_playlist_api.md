@@ -28,4 +28,4 @@ tt_playlist(playlist_id, verbose = TRUE, token = NULL)
 
 ## Value
 
-A data.frame
+A data.frame video metadata.

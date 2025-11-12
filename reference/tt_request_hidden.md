@@ -30,3 +30,7 @@ tt_request_hidden(url, max_tries = 5L, cookiefile = NULL)
   once. See
   [`vignette("unofficial-api", package = "traktok")`](https://jbgruber.github.io/traktok/articles/unofficial-api.md)
   for more information on authentication.
+
+## Value
+
+a json string containing post or account data.

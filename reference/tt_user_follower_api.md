@@ -52,7 +52,7 @@ tt_user_following_api(
 
 ## Value
 
-A data.frame
+A data.frame containing follower of following account information.
 
 ## Examples
 

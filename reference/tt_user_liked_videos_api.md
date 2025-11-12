@@ -58,7 +58,7 @@ tt_get_liked(
 
 ## Value
 
-A data.frame of parsed TikTok videos the user has posted
+A data.frame of parsed TikTok videos the user has posted.
 
 ## Examples
 

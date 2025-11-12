@@ -29,4 +29,4 @@ tt_search(...)
 
 ## Value
 
-a data.frame
+a data.frame of video metadata

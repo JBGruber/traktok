@@ -44,6 +44,10 @@ tt_user_videos_api(
   [`tt_search_api`](https://jbgruber.github.io/traktok/reference/tt_search_api.md)
   function.
 
+## Value
+
+a data.frame containing metadata of user posts.
+
 ## Examples
 
 ``` r

@@ -18,3 +18,7 @@ print(x, ...)
 - ...:
 
   not used.
+
+## Value
+
+nothing. Prints search results.

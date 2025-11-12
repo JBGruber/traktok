@@ -32,7 +32,7 @@ tt_user_info(username, fields = "all", verbose = TRUE, token = NULL)
 
 ## Value
 
-A data.frame of parsed TikTok videos the user has posted
+A data.frame of parsed TikTok videos the user has posted.
 
 ## Examples
 

@@ -25,4 +25,4 @@ tt_get_following(...)
 
 ## Value
 
-a data.frame
+a data.frame of followers and following of users

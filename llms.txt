@@ -123,8 +123,6 @@ extend this list through a Pull Request or create an issue
 - [`tt_get_following_hidden()`](https://jbgruber.github.io/traktok/reference/tt_get_following_hidden.md)
   [`tt_get_follower_hidden()`](https://jbgruber.github.io/traktok/reference/tt_get_following_hidden.md)
   : Get followers and following of a user from the hidden API
-- [`tt_json()`](https://jbgruber.github.io/traktok/reference/tt_json.md)
-  : Get json file from a TikTok URL
 - [`tt_playlist_api()`](https://jbgruber.github.io/traktok/reference/tt_playlist_api.md)
   [`tt_playlist()`](https://jbgruber.github.io/traktok/reference/tt_playlist_api.md)
   : Lookup TikTok playlist using the research API

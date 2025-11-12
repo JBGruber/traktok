@@ -51,7 +51,7 @@ tt_get_pinned(
 
 ## Value
 
-A data.frame of parsed TikTok videos the user has posted
+A data.frame of parsed TikTok videos the user has posted.
 
 ## Examples
 

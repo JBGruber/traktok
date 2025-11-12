@@ -49,13 +49,13 @@ tt_search_hidden(
 
 ## Value
 
-a character vector of URLs
+a character vector of URLs.
 
 ## Details
 
 The function will wait between scraping search results. To get more than
 6 videos, you need to provide cookies of a logged in account. For more
-details see the unofficial-apI vignette:
+details see the unofficial-api vignette:
 [`vignette("unofficial-api", package = "traktok")`](https://jbgruber.github.io/traktok/articles/unofficial-api.md)
 
 ## Examples

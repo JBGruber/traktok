@@ -65,7 +65,7 @@ tt_comments(
 
 ## Value
 
-A data.frame of parsed comments
+A data.frame of parsed comments.
 
 ## Examples
 
