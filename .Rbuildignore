@@ -9,3 +9,4 @@ tiktok.com_cookies.txt
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^LICENSE\.md$
