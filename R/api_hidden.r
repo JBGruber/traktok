@@ -158,6 +158,49 @@ tt_videos_hidden <- function(
 }
 
 
+tt_slideshow <- function(slideshow_url, dir = ".", solve_captchas = TRUE, headless = TRUE) {
+  # cookies setup
+  rlang::check_installed(
+    "rvest",
+    reason = "to use this function",
+    version = "1.0.4"
+  )
+  cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "list")
+  # add leading . where it's missing
+  cookies <- lapply(cookies, function(el) {
+    el$domain <- sub("^tiktok.com$", ".tiktok.com", el$domain)
+    return(el)
+  })
+
+  video_id <- extract_regex(
+    slideshow_url,
+    "(?<=/video/)(.+?)(?=\\?|$)|(?<=/photo/)(.+?)(?=\\?|$)|(?<=https://vm.tiktok.com/).+?(?=/|$)"
+  )
+  dir <- file.path(dir, video_id)
+
+  # create a session to fill it with the cookies
+  sess <- rvest::read_html_live("http://localhost")
+  sess$session$Network$setCookies(cookies = cookies)
+  sess <- rvest::read_html_live(slideshow_url)
+  if (!headless) {
+    sess$view()
+  }
+  Sys.sleep(5)
+  solve_captcha(sess, solve = solve_captchas)
+  Sys.sleep(5)
+  links <- rvest::html_elements(sess, ".swiper-slide img") |>
+    rvest::html_attr("src") |>
+    unique()
+
+  if (!dir.exists(dir) & length(links)) {
+    dir.create(dir)
+  }
+  fnames <- extract_regex(links, "[a-zA-Z0-9~-]+\\.jpeg")
+  purrr::map(links, httr2::request) |>
+    httr2::req_perform_parallel(paths = file.path(dir, fnames))
+}
+
+
 #' @noRd
 get_video <- function(
   url,
@@ -709,6 +752,9 @@ solve_captcha <- function(sess, solve) {
     if (is.null(the$view)) {
       the$view <- sess$view()
     }
-    solve_captcha(sess, solve = solve)
+    if (solve_captcha(sess, solve = solve)) {
+      cli::cli_alert_success("Captcha solved, updating cookies")
+      cookiemonster::add_cookies(session = sess)
+    }
   }
 }
