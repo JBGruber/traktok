@@ -330,6 +330,9 @@ tt_request_hidden <- function(url, max_tries = 5L, cookiefile = NULL) {
 #'
 #' @param query query as one string.
 #' @param headless open the browser to show the scrolling.
+#' @param scroll how long to keep scrolling before returning results. Can be a
+#'   numeric value of seconds or a string with seconds, minutes, hours or days
+#'   (see examples).
 #' @param ... here to absorb parameters of the old function.
 #'
 #' @inheritParams tt_user_videos_hidden
@@ -344,7 +347,23 @@ tt_request_hidden <- function(url, max_tries = 5L, cookiefile = NULL) {
 #'
 #' @examples
 #' \dontrun{
+#' # search videos with hastag #rstats for default time
 #' tt_search_hidden("#rstats")
+#'
+#' # search videos for 10 seconds
+#' tt_search_hidden("#rstats", scroll = "10s")
+#' tt_search_hidden("#rstats", scroll = 10)
+#'
+#' # search videos for 10 minutes
+#' tt_search_hidden("#rstats", scroll = "10m")
+#' tt_search_hidden("#rstats", scroll = "10mins")
+#'
+#' # search videos for 10 hours
+#' tt_search_hidden("#rstats", scroll = "10h")
+#' tt_search_hidden("#rstats", scroll = "10hours")
+#'
+#' # search videos until all are found
+#' tt_search_hidden("#rstats", scroll = Inf)
 #' # the functions runs until the end of all search results, which can take a
 #' # long time. You can cancel the search and retrieve all collected results
 #' # with last_query though!
@@ -354,6 +373,7 @@ tt_search_hidden <- function(
   query,
   solve_captchas = FALSE,
   timeout = 5L,
+  scroll = "5m",
   verbose = TRUE,
   headless = TRUE,
   ...
@@ -389,6 +409,7 @@ tt_search_hidden <- function(
   if (!headless) {
     sess$view()
   }
+  max_time <- scroll2timestamp(scroll)
   Sys.sleep(1)
   #scroll as far as possible
   last_y <- -1
@@ -410,6 +431,7 @@ tt_search_hidden <- function(
     sess$scroll_to(top = 10^5)
     solve_captcha(sess, solve = solve_captchas)
     the$videos <- extract_urls_sess(sess)
+    if (Sys.time() > max_time) break
   }
   return(extract_urls_sess(sess))
 }

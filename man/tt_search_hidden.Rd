@@ -8,6 +8,7 @@ tt_search_hidden(
   query,
   solve_captchas = FALSE,
   timeout = 5L,
+  scroll = "5m",
   verbose = TRUE,
   headless = TRUE,
   ...
@@ -19,6 +20,10 @@ tt_search_hidden(
 \item{solve_captchas}{open browser to solve appearing captchas manually.}
 
 \item{timeout}{time (in seconds) to wait between scrolling and solving captchas.}
+
+\item{scroll}{how long to keep scrolling before returning results. Can be a
+numeric value of seconds or a string with seconds, minutes, hours or days
+(see examples).}
 
 \item{verbose}{should the function print status updates to the screen?}
 
@@ -44,7 +49,23 @@ The function will wait between scraping search results. To get more
 }
 \examples{
 \dontrun{
+# search videos with hastag #rstats for default time
 tt_search_hidden("#rstats")
+
+# search videos for 10 seconds
+tt_search_hidden("#rstats", scroll = "10s")
+tt_search_hidden("#rstats", scroll = 10)
+
+# search videos for 10 minutes
+tt_search_hidden("#rstats", scroll = "10m")
+tt_search_hidden("#rstats", scroll = "10mins")
+
+# search videos for 10 hours
+tt_search_hidden("#rstats", scroll = "10h")
+tt_search_hidden("#rstats", scroll = "10hours")
+
+# search videos until all are found
+tt_search_hidden("#rstats", scroll = Inf)
 # the functions runs until the end of all search results, which can take a
 # long time. You can cancel the search and retrieve all collected results
 # with last_query though!
