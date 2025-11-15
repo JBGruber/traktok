@@ -62,3 +62,11 @@
 #     c(TRUE, NA)
 #   )
 # })
+
+test_that("convert scroll to timestamp", {
+  expect_equal(scroll2timestamp("1s"), Sys.time() + 1)
+  expect_equal(scroll2timestamp("1m"), Sys.time() + 60)
+  expect_equal(scroll2timestamp("1h"), Sys.time() + 60 * 60)
+  expect_equal(scroll2timestamp("1d"), Sys.time() + 60 * 60 * 24)
+  expect_error(scroll2timestamp("1jiffy"), "Invalid.unit")
+})
