@@ -151,7 +151,7 @@ extract_urls_sess <- function(sess) {
 #' @noRd
 scroll2timestamp <- function(scroll) {
   if (is.numeric(scroll)) {
-    return(scroll)
+    return(Sys.time() + scroll)
   }
   value <- as.numeric(extract_regex(scroll, "^[0-9.]+"))
   unit <- extract_regex(scroll, "[A-z]+$")
