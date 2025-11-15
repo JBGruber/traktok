@@ -363,6 +363,11 @@ tt_search_hidden <- function(
     reason = "to use this function",
     version = "1.0.4"
   )
+  rlang::check_installed(
+    "cookiemonster",
+    reason = "to use this function",
+    version = "0.0.4"
+  )
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "list")
   # add leading . where it's missing
   cookies <- lapply(cookies, function(el) {

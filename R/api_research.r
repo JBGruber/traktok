@@ -24,7 +24,7 @@
 #' @param verbose should the function print status updates to the screen?
 #' @param token The authentication token (usually supplied automatically after
 #'   running \link{auth_research} once).
-#' 
+#'
 #' @return A data.frame of parsed TikTok videos (or a nested list).
 #' @export
 #' @examples
@@ -904,7 +904,6 @@ api_error_handler <- function(resp) {
 
 
 api_user_error_checker <- function(resp) {
-  resp <<- resp
   if (httr2::resp_status(resp) < 400L) return(FALSE)
   if (httr2::resp_status(resp) == 404L) return(TRUE)
   # it looks like the API sometimes returns 500 falsely, but in these cases, no
