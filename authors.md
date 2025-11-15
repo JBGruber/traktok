@@ -10,14 +10,15 @@
 Source:
 [`inst/CITATION`](https://github.com/JBGruber/traktok/blob/main/inst/CITATION)
 
-Gruber, Johannes B. (2023). traktok. An R package to scrape data from
-TikTok. R package version 0.0.4.9000.
-https://github.com/JBGruber/traktok.
+Gruber, Johannes B. (2025). traktok — Making TikTok Data Accessible for
+Research. SocArXiv. https://doi.org/10.31235/osf.io/xrgc6_v1
 
-    @Manual{,
-      title = {traktok. Getting TikTok data through the official and unofficial APIs},
+    @Article{,
+      title = {traktok — Making TikTok Data Accessible for Research},
       author = {Johannes B. Gruber},
-      year = {2023},
-      url = {https://github.com/JBGruber/traktok},
-      note = {R package version 0.0.4.9000},
+      year = {2025},
+      month = {jun},
+      journal = {SocArXiv},
+      doi = {10.31235/osf.io/xrgc6_v1},
+      url = {https://osf.io/xrgc6_v1},
     }
