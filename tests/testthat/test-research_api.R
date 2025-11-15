@@ -16,7 +16,8 @@ test_that("query", {
 
 test_that("request", {
   mock_success <- function(req) {
-    # req <<- req # use this to test request below
+    # don't remove, this needs to be here!
+    req <<- req # use this to test request below
     httr2::response(status_code = 200,
                     headers = "Content-Type: application/json",
                     body = charToRaw(
