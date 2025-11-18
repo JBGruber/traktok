@@ -11,7 +11,7 @@ tt_comments_api(
   start_cursor = 0L,
   max_pages = 1L,
   cache = TRUE,
-  verbose = TRUE,
+  verbose = interactive(),
   token = NULL
 )
 
@@ -21,7 +21,7 @@ tt_comments(
   start_cursor = 0L,
   max_pages = 1L,
   cache = TRUE,
-  verbose = TRUE,
+  verbose = interactive(),
   token = NULL
 )
 ```

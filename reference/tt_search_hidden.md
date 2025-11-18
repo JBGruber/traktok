@@ -1,6 +1,6 @@
 # Search videos
 
-![\[Works on: Unofficial API\]](figures/api-unofficial)
+![\[Works on: Unofficial API\]](figures/api-unofficial.svg)
 
 This is the version of
 [tt_search](https://jbgruber.github.io/traktok/reference/tt_search.md)
@@ -16,7 +16,9 @@ tt_search_hidden(
   solve_captchas = FALSE,
   timeout = 5L,
   scroll = "5m",
-  verbose = TRUE,
+  return_urls = FALSE,
+  save_video = FALSE,
+  verbose = interactive(),
   headless = TRUE,
   ...
 )
@@ -42,6 +44,16 @@ tt_search_hidden(
   value of seconds or a string with seconds, minutes, hours or days (see
   examples).
 
+- return_urls:
+
+  return video URLs instead of downloading the vidoes.
+
+- save_video:
+
+  passed to
+  [`tt_videos_hidden`](https://jbgruber.github.io/traktok/reference/tt_videos_hidden.md)
+  if `return_urls = FALSE`.
+
 - verbose:
 
   should the function print status updates to the screen?
@@ -52,11 +64,14 @@ tt_search_hidden(
 
 - ...:
 
-  here to absorb parameters of the old function.
+  Additional arguments to be passed to the
+  [`tt_videos_hidden`](https://jbgruber.github.io/traktok/reference/tt_videos_hidden.md)
+  function.
 
 ## Value
 
-a character vector of URLs.
+a data.frame containing metadata searched posts or character vector of
+URLs.
 
 ## Details
 

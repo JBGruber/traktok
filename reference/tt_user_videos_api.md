@@ -19,7 +19,7 @@ tt_user_videos_api(
   username,
   since = "2020-01-01",
   to = Sys.Date(),
-  verbose = TRUE,
+  verbose = interactive(),
   ...
 )
 ```

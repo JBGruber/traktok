@@ -1,6 +1,8 @@
 # Get infos about a user from the hidden API
 
-Get infos about a user from the hidden API
+![\[Works on: Unofficial API\]](figures/api-unofficial.svg)
+
+Access the publicly available information about a user.
 
 ## Usage
 
@@ -21,7 +23,7 @@ tt_user_info_hidden(username, parse = TRUE)
 
 ## Value
 
-A data.frame of user info.
+A data.frame or list of user info.
 
 ## Examples
 

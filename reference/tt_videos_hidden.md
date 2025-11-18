@@ -1,6 +1,6 @@
 # Get video metadata and video files from URLs
 
-![\[Works on: Unofficial API\]](figures/api-unofficial)
+![\[Works on: Unofficial API\]](figures/api-unofficial.svg)
 
 ## Usage
 
@@ -14,7 +14,7 @@ tt_videos_hidden(
   sleep_pool = 1:10,
   max_tries = 5L,
   cookiefile = NULL,
-  verbose = TRUE,
+  verbose = interactive(),
   ...
 )
 
@@ -79,7 +79,7 @@ a data.frame containing post metadata.
 
 The function will wait between scraping two videos to make it less
 obvious that a scraper is accessing the site. The period is drawn
-randomly from the \`sleep_pool\` and multiplied by a random fraction.
+randomly from the `sleep_pool` and multiplied by a random fraction.
 
 Note that the video file has to be requested in the same session as the
 metadata. So while the URL to the video file is included in the

@@ -1,15 +1,18 @@
 # Unofficial API
 
 The unofficial or hidden API is essentially what the TikTok website uses
-to display you content. Partly based on [Deen Freelon’s `Pyktok` Python
-module](https://github.com/dfreelon/pyktok), `traktok` contains
-functions to simulate a browser accessing some of these API endpoints.
-How these endpoints work was discovered through reverse engineering and
-TikTok might change how these endpoints operate at any moment. As of
-writing this (2023-11-28), there are functions that can:
+to display you content. Originally based on a translation of [Deen
+Freelon’s `Pyktok` Python module](https://github.com/dfreelon/pyktok),
+`traktok` contains functions to simulate a browser accessing some of
+these API endpoints. How these endpoints work was discovered through
+reverse engineering and TikTok might change how these endpoints operate
+at any moment. As of writing this (2025-11-18), there are functions that
+can:
 
 - search videos using a search term
 - get video details and the video files from a given video URL
+- get user videos
+- get user info
 - get who follows a user
 - get who a user is following
 
@@ -51,6 +54,13 @@ cookiemonster::add_cookies("tiktok.com_cookies.txt")
 ```
 
 And that’s it! `traktok` will access these cookies whenever necessary.
+To check if authentication was succesful, you can use:
+
+``` r
+auth_check()
+#> ✔ Research API authenticated
+#> ✔ Hidden API authenticated
+```
 
 ## Usage
 
@@ -58,73 +68,64 @@ And that’s it! `traktok` will access these cookies whenever necessary.
 
 To search for videos, you can use either `tt_search` or
 `tt_search_hidden`, which do the same, as long as you do not have a
-token for the Research API. To get the first two pages of search results
-(one page has 12 videos), you can use this command:
+token for the Research API. The function opens a browser in the
+background (or you can see what is happening with `headless = TRUE`) and
+scrolls down. Below, we let it scroll for up to one minute and solve
+captchas if they appear:
 
 ``` r
-rstats_df <- tt_search_hidden("#rstats", max_pages = 2)
-#> 
-ℹ Getting page 1
-⏲ waiting 0.5 seconds
-ℹ Getting page 1
-✔ Got page 1. Found 12 videos. [1.9s]
-#> 
-ℹ Getting page 2
-✔ Got page 2. Found 12 videos. [690ms]
+rstats_df <- tt_search_hidden("#rstats", solve_captchas = TRUE, scroll = "1m")
 rstats_df
-#> # A tibble: 24 × 20
-#>    video_id  video_timestamp     video_url video_length video_title
-#>    <chr>     <dttm>              <glue>           <int> <chr>      
-#>  1 71151144… 2022-06-30 19:17:53 https://…          135 "R for Beg…
-#>  2 72522261… 2023-07-05 07:01:45 https://…           36 "Wow!!! TH…
-#>  3 72420686… 2023-06-07 22:05:16 https://…           34 "R GRAPHIC…
-#>  4 72134135… 2023-03-22 16:49:12 https://…            6 "R and me …
-#>  5 72576898… 2023-07-20 00:23:40 https://…           56 "Pie chart…
-#>  6 72999870… 2023-11-10 23:58:21 https://…           51 "Quick R Q…
-#>  7 72783048… 2023-09-13 13:40:21 https://…           36 "Quick R Q…
-#>  8 73029706… 2023-11-19 00:56:09 https://…          163 "What is c…
-#>  9 71670108… 2022-11-17 15:42:56 https://…           58 "Here’s an…
-#> 10 72933174… 2023-10-24 00:36:48 https://…            9 "#CapCut #…
-#> # ℹ 14 more rows
-#> # ℹ 15 more variables: video_diggcount <int>,
-#> #   video_sharecount <int>, video_commentcount <int>,
-#> #   video_playcount <int>, video_is_ad <lgl>, author_name <chr>,
-#> #   author_nickname <chr>, author_followercount <int>,
-#> #   author_followingcount <int>, author_heartcount <int>,
-#> #   author_videocount <int>, author_diggcount <int>, …
+#> # A tibble: 111 × 25
+#>    video_id  video_url video_timestamp     video_length video_title
+#>    <chr>     <chr>     <dttm>                     <int> <chr>      
+#>  1 72522261… https://… 2023-07-05 07:01:45           36 "Wow!!! TH…
+#>  2 72478540… https://… 2023-06-23 12:15:59            5 "#CapCut #…
+#>  3 73029706… https://… 2023-11-19 00:56:09          163 "What is c…
+#>  4 71670108… https://… 2022-11-17 15:42:56           58 "Here’s an…
+#>  5 75284293… https://… 2025-07-18 14:43:31           27 "How to Co…
+#>  6 71710339… https://… 2022-11-28 11:54:12            8 "please do…
+#>  7 75631651… https://… 2025-10-20 05:05:18           36 "Quick R Q…
+#>  8 72933174… https://… 2023-10-24 00:36:48            9 "#CapCut #…
+#>  9 73024703… https://… 2023-11-17 16:34:44           31 "Did you k…
+#> 10 68446099… https://… 2020-07-01 20:22:14           27 "Things in…
+#> # ℹ 101 more rows
+#> # ℹ 20 more variables: video_locationcreated <chr>,
+#> #   video_diggcount <int>, video_sharecount <int>,
+#> #   video_commentcount <int>, video_playcount <int>,
+#> #   author_id <chr>, author_secuid <chr>, author_username <chr>,
+#> #   author_nickname <chr>, author_bio <chr>, download_url <chr>,
+#> #   html_status <int>, music <list>, challenges <list>, …
 ```
+
+[video of a captcha being
+solved](https://jbgruber.github.io/traktok/articles/captchas.webm)
+
+video of a captcha being solved
 
 This already gives you pretty much all information you could want about
 the videos that were found.
 
 ### Get metadata and download videos
 
-However, you can obtain some more information, and importantly the video
-file, using `tt_videos`:
+If you already have URLs, you can obtain some more information,
+including the video files, using `tt_videos`:
 
 ``` r
 rstats_df2 <- tt_videos(rstats_df$video_url[1:2], save_video = TRUE)
-#> 
-ℹ Getting video 7115114419314560298
-⏲ waiting 0.2 seconds              
-ℹ Getting video 7115114419314560298
-✔ Got video 7115114419314560298 (1/2). File size: 2.5 Mb. [2.5s]
-#> 
-ℹ Getting video 7252226153828584731
-✔ Got video 7252226153828584731 (2/2). File size: 1.7 Mb. [999ms]
 rstats_df2
-#> # A tibble: 2 × 19
+#> # A tibble: 2 × 26
 #>   video_id   video_url video_timestamp     video_length video_title
-#>   <glue>     <chr>     <dttm>                     <int> <chr>      
-#> 1 711511441… https://… 2022-06-30 19:17:53          135 R for Begi…
-#> 2 725222615… https://… 2023-07-05 07:01:45           36 Wow!!! THI…
-#> # ℹ 14 more variables: video_locationcreated <chr>,
+#>   <chr>      <chr>     <dttm>                     <int> <chr>      
+#> 1 725222615… https://… 2023-07-05 07:01:45           36 "Wow!!! TH…
+#> 2 724785406… https://… 2023-06-23 12:15:59            5 "#CapCut #…
+#> # ℹ 21 more variables: video_locationcreated <chr>,
 #> #   video_diggcount <int>, video_sharecount <int>,
 #> #   video_commentcount <int>, video_playcount <int>,
-#> #   author_username <chr>, author_nickname <chr>,
-#> #   author_bio <chr>, download_url <chr>, html_status <int>,
-#> #   music <list>, challenges <list>, is_classified <lgl>,
-#> #   video_fn <chr>
+#> #   author_id <chr>, author_secuid <chr>, author_username <chr>,
+#> #   author_nickname <chr>, author_bio <chr>, download_url <chr>,
+#> #   html_status <int>, music <list>, challenges <list>,
+#> #   is_secret <lgl>, is_for_friend <lgl>, is_slides <lgl>, …
 ```
 
 Per default, the function waits between one and ten seconds (chosen at
@@ -134,28 +135,24 @@ by changing the `sleep_pool` argument, which controls the minimum and
 maximum number of seconds to wait:
 
 ``` r
-rstats_df3 <- tt_videos(rstats_df$video_url[3:4], save_video = TRUE, sleep_pool = 0.1)
-#> 
-ℹ Getting video 7242068680484408581
-⏲ waiting 0.1 seconds              
-ℹ Getting video 7242068680484408581
-✔ Got video 7242068680484408581 (1/2). File size: 1.8 Mb. [2.6s]
-#> 
-ℹ Getting video 7213413598998056234
-✔ Got video 7213413598998056234 (2/2). File size: 598.1 Kb. [1.7s]
+rstats_df3 <- tt_videos(
+  rstats_df$video_url[3:4],
+  save_video = TRUE,
+  sleep_pool = 0.1
+)
 rstats_df3
-#> # A tibble: 2 × 19
+#> # A tibble: 2 × 26
 #>   video_id   video_url video_timestamp     video_length video_title
-#>   <glue>     <chr>     <dttm>                     <int> <chr>      
-#> 1 724206868… https://… 2023-06-07 22:05:16           34 "R GRAPHIC…
-#> 2 721341359… https://… 2023-03-22 16:49:12            6 "R and me …
-#> # ℹ 14 more variables: video_locationcreated <chr>,
+#>   <chr>      <chr>     <dttm>                     <int> <chr>      
+#> 1 730297066… https://… 2023-11-19 00:56:09          163 "What is c…
+#> 2 716701086… https://… 2022-11-17 15:42:56           58 "Here’s an…
+#> # ℹ 21 more variables: video_locationcreated <chr>,
 #> #   video_diggcount <int>, video_sharecount <int>,
 #> #   video_commentcount <int>, video_playcount <int>,
-#> #   author_username <chr>, author_nickname <chr>,
-#> #   author_bio <chr>, download_url <chr>, html_status <int>,
-#> #   music <list>, challenges <list>, is_classified <lgl>,
-#> #   video_fn <chr>
+#> #   author_id <chr>, author_secuid <chr>, author_username <chr>,
+#> #   author_nickname <chr>, author_bio <chr>, download_url <chr>,
+#> #   html_status <int>, music <list>, challenges <list>,
+#> #   is_secret <lgl>, is_for_friend <lgl>, is_slides <lgl>, …
 ```
 
 When you are scraping a lot of URLs, the function might fail eventually,
@@ -165,16 +162,8 @@ directory:
 
 ``` r
 rstats_df3 <- tt_videos(rstats_df$video_url[5:6], cache_dir = "rstats")
-#> 
-ℹ Getting video 7257689890245201153
-⏲ waiting 1.7 seconds
-ℹ Getting video 7257689890245201153
-✔ Got video 7257689890245201153 (1/2). File size: 1.7 Mb. [2.6s]
-#> 
-ℹ Getting video 7299987059417042209
-✔ Got video 7299987059417042209 (2/2). File size: 1.2 Mb. [1.8s]
 list.files("rstats")
-#> [1] "7257689890245201153.json" "7299987059417042209.json"
+#> [1] "7171033929175026949.json" "7528429314807696673.json"
 ```
 
 Note that the video files are downloaded into the `dir` directory (your
@@ -194,23 +183,21 @@ the data you are interested in is there
 
 ### Get followers and who a user is following
 
-Getting followers and who a user is following is (at the moment?) a
-little tricky to use, since TikTok blocks requests to a users profile
-page with anti-scraping measures. To circumvent that, you can open a
-users page in your browser and then right-click to show the source
-code:[¹](#fn1)
-
-![](source-code.png)
-
-You can then search for and copy the `authorSecId` value:
-
-![](secuid.png)
-
-Once you have this `authorSecId` you can look up a maximum of 5,000
-followers per account:
+To get followers and who a user is following, we need to first look up
+their SecID, which is a special ID for users. We can do so using the
+`tt_user_info_hidden` function:
 
 ``` r
-tt_get_follower(secuid = "MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi",
+user_info <- tt_user_info_hidden("tiktok")
+user_info$secUid
+#> [1] "MS4wLjABAAAAv7iSuuXDJGDvJkmH_vz1qkDZYo1apxgzaxdBSeIuPiM"
+```
+
+Once you have the `secUid` you can look up a maximum of 5,000 followers
+per account:
+
+``` r
+tt_get_follower_hidden(secuid = "MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi",
                 verbose = FALSE)
 #> 
 #> # A tibble: 1,116 × 27
@@ -238,8 +225,10 @@ tt_get_follower(secuid = "MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6
 Likewise, you can also check who this account follows:
 
 ``` r
-tt_get_following(secuid = "MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi",
-                 verbose = FALSE)
+tt_get_following_hidden(
+  secuid = "MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi",
+  verbose = FALSE
+)
 #> 
 #> # A tibble: 489 × 28
 #>    avatarLarger             avatarMedium avatarThumb commentSetting
@@ -262,17 +251,3 @@ tt_get_following(secuid = "MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q
 #> #   stitchSetting <int>, ttSeller <lgl>, uniqueId <chr>,
 #> #   verified <lgl>, diggCount <int>, followerCount <int>, …
 ```
-
-``` r
-list.files(pattern = ".mp4") |>
-  unlink()
-unlink("rstats", recursive = TRUE)
-```
-
-------------------------------------------------------------------------
-
-1.  You can of course also use tools like
-    [Playwright](https://playwright.dev/),
-    [Selenium](https://www.selenium.dev/), or [](https://pptr.dev/) to
-    automate this process. But that is beyond the scope of this vignette
-    and package.

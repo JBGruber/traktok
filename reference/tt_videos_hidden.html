@@ -38,7 +38,7 @@
     </div>
 
     <div class="ref-description section level2">
-    <p><img src="figures/api-unofficial" alt="[Works on: Unofficial API]"></p>
+    <p><img src="figures/api-unofficial.svg" alt="[Works on: Unofficial API]"></p>
     </div>
 
     <div class="section level2">
@@ -52,7 +52,7 @@
 <span>  sleep_pool <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,</span>
 <span>  max_tries <span class="op">=</span> <span class="fl">5L</span>,</span>
 <span>  cookiefile <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -98,7 +98,7 @@ drawn.</p></dd>
 <dt id="arg-cookiefile">cookiefile<a class="anchor" aria-label="anchor" href="#arg-cookiefile"></a></dt>
 <dd><p>path to your cookiefile. Usually not needed after running
 <a href="auth_hidden.html">auth_hidden</a> once. See <code><a href="../articles/unofficial-api.html">vignette("unofficial-api", package =
-"traktok")</a></code> for more information on authentication.</p></dd>
+  "traktok")</a></code> for more information on authentication.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
@@ -117,11 +117,11 @@ drawn.</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The function will wait between scraping two videos to make it less
-  obvious that a scraper is accessing the site. The period is drawn randomly
-  from the `sleep_pool` and multiplied by a random fraction.</p>
+obvious that a scraper is accessing the site. The period is drawn randomly
+from the <code>sleep_pool</code> and multiplied by a random fraction.</p>
 <p>Note that the video file has to be requested in the same session as
-  the metadata. So while the URL to the video file is included in the
-  metadata, this link will not work in most cases.</p>
+the metadata. So while the URL to the video file is included in the
+metadata, this link will not work in most cases.</p>
     </div>
 
     <div class="section level2">

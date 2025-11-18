@@ -5,9 +5,9 @@
 ## Usage
 
 ``` r
-tt_playlist_api(playlist_id, verbose = TRUE, token = NULL)
+tt_playlist_api(playlist_id, verbose = interactive(), token = NULL)
 
-tt_playlist(playlist_id, verbose = TRUE, token = NULL)
+tt_playlist(playlist_id, verbose = interactive(), token = NULL)
 ```
 
 ## Arguments

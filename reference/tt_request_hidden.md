@@ -1,6 +1,6 @@
 # Get json string from a TikTok URL using the hidden API
 
-![\[Works on: Unofficial API\]](figures/api-unofficial)
+![\[Works on: Unofficial API\]](figures/api-unofficial.svg)
 
 Use this function in case you want to check the full data for a given
 TikTok video or account. In tt_videos, only an opinionated selection of

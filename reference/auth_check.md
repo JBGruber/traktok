@@ -4,12 +4,15 @@
 
 Check if the necessary token or cookies are stored on your computer
 already. By default, the function checks for the authentication of the
-research and hidden API. To learn how you can authenticate, look at the
-vignette for the research
-([`vignette("research-api", package = "traktok")`](https://jbgruber.github.io/traktok/articles/research-api.md))
-or hidden
-([`vignette("unofficial-api", package = "traktok")`](https://jbgruber.github.io/traktok/articles/unofficial-api.md))
-API.
+research and hidden API. To learn how you can authenticate, see the
+[research API
+vignette](https://jbgruber.github.io/traktok/articles/research-api.html#authentication)
+or [hidden API
+vignette](https://jbgruber.github.io/traktok/articles/unofficial-api.html#authentication).
+You can also view these locally with
+[`vignette("research-api", package = "traktok")`](https://jbgruber.github.io/traktok/articles/research-api.md)
+and
+[`vignette("unofficial-api", package = "traktok")`](https://jbgruber.github.io/traktok/articles/unofficial-api.md).
 
 ## Usage
 
@@ -35,8 +38,18 @@ logical vector (invisible)
 
 ``` r
 auth_check()
-#> Error in cookiemonster::get_cookies("^(www.)*tiktok.com") : 
-#>   The directory ~/.cache/r_cookies does not contain any cookies yet. Use
-#> `add_cookies()` to store cookies for a website (see `vignette("cookies",
-#> "cookiemonster")` for details).
+#> Error in auth_check(): It looks like you are using traktok for the first time. You need to add
+#> some basic authentication for this function to work. See `?auth_check()`.
+
+au <- auth_check()
+#> Error in auth_check(): It looks like you are using traktok for the first time. You need to add
+#> some basic authentication for this function to work. See `?auth_check()`.
+if (isTRUE(au["research"])) {
+  message("Ready to use the research API!")
+}
+#> Error: object 'au' not found
+if (isTRUE(au["hidden"])) {
+  message("Ready to use all function of unofficial the API!")
+}
+#> Error: object 'au' not found
 ```

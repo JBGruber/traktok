@@ -1,6 +1,10 @@
 # Authenticate for the hidden/unofficial API
 
-Guides you through authentication for the hidden/unofficial API
+Guides you through authentication for the hidden/unofficial API. To
+learn more, see the [hidden API
+vignette](https://jbgruber.github.io/traktok/articles/unofficial-api.html#authentication)
+or view it locally with
+[`vignette("unofficial-api", package = "traktok")`](https://jbgruber.github.io/traktok/articles/unofficial-api.md).
 
 ## Usage
 

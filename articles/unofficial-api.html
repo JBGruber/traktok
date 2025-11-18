@@ -66,15 +66,17 @@
     
     
 <p>The unofficial or hidden API is essentially what the TikTok website
-uses to display you content. Partly based on <a href="https://github.com/dfreelon/pyktok" class="external-link">Deen Freelon’s
+uses to display you content. Originally based on a translation of <a href="https://github.com/dfreelon/pyktok" class="external-link">Deen Freelon’s
 <code>Pyktok</code> Python module</a>, <code>traktok</code> contains
 functions to simulate a browser accessing some of these API endpoints.
 How these endpoints work was discovered through reverse engineering and
 TikTok might change how these endpoints operate at any moment. As of
-writing this (2023-11-28), there are functions that can:</p>
+writing this (2025-11-18), there are functions that can:</p>
 <ul>
 <li>search videos using a search term</li>
 <li>get video details and the video files from a given video URL</li>
+<li>get user videos</li>
+<li>get user info</li>
 <li>get who follows a user</li>
 <li>get who a user is following</li>
 </ul>
@@ -109,7 +111,12 @@ cookies into a specific encrypted file, simply use:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">cookiemonster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cookiemonster/man/add_cookies.html" class="external-link">add_cookies</a></span><span class="op">(</span><span class="st">"tiktok.com_cookies.txt"</span><span class="op">)</span></span></code></pre></div>
 <p>And that’s it! <code>traktok</code> will access these cookies
-whenever necessary.</p>
+whenever necessary. To check if authentication was succesful, you can
+use:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/auth_check.html">auth_check</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ✔ Research API authenticated</span></span>
+<span><span class="co">#&gt; ✔ Hidden API authenticated</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
@@ -119,117 +126,99 @@ whenever necessary.</p>
 </h3>
 <p>To search for videos, you can use either <code>tt_search</code> or
 <code>tt_search_hidden</code>, which do the same, as long as you do not
-have a token for the Research API. To get the first two pages of search
-results (one page has 12 videos), you can use this command:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>rstats_df <span class="ot">&lt;-</span> <span class="fu">tt_search_hidden</span>(<span class="st">"#rstats"</span>, <span class="at">max_pages =</span> <span class="dv">2</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>ℹ Getting page <span class="dv">1</span></span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>⏲ waiting <span class="fl">0.5</span> seconds</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>ℹ Getting page <span class="dv">1</span></span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>✔ Got page <span class="fl">1.</span> Found <span class="dv">12</span> videos. [<span class="fl">1.9</span>s]</span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>ℹ Getting page <span class="dv">2</span></span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>✔ Got page <span class="fl">2.</span> Found <span class="dv">12</span> videos. [<span class="dv">690</span>ms]</span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>rstats_df</span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; # A tibble: 24 × 20</span></span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt;    video_id  video_timestamp     video_url video_length video_title</span></span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;     &lt;dttm&gt;              &lt;glue&gt;           &lt;int&gt; &lt;chr&gt;      </span></span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt;  1 71151144… 2022-06-30 19:17:53 https://…          135 "R for Beg…</span></span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt;  2 72522261… 2023-07-05 07:01:45 https://…           36 "Wow!!! TH…</span></span>
-<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt;  3 72420686… 2023-06-07 22:05:16 https://…           34 "R GRAPHIC…</span></span>
-<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt;  4 72134135… 2023-03-22 16:49:12 https://…            6 "R and me …</span></span>
-<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt;  5 72576898… 2023-07-20 00:23:40 https://…           56 "Pie chart…</span></span>
-<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt;  6 72999870… 2023-11-10 23:58:21 https://…           51 "Quick R Q…</span></span>
-<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt;  7 72783048… 2023-09-13 13:40:21 https://…           36 "Quick R Q…</span></span>
-<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt;  8 73029706… 2023-11-19 00:56:09 https://…          163 "What is c…</span></span>
-<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt;  9 71670108… 2022-11-17 15:42:56 https://…           58 "Here’s an…</span></span>
-<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt; 10 72933174… 2023-10-24 00:36:48 https://…            9 "#CapCut #…</span></span>
-<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt; # ℹ 14 more rows</span></span>
-<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt; # ℹ 15 more variables: video_diggcount &lt;int&gt;,</span></span>
-<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt; #   video_sharecount &lt;int&gt;, video_commentcount &lt;int&gt;,</span></span>
-<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="co">#&gt; #   video_playcount &lt;int&gt;, video_is_ad &lt;lgl&gt;, author_name &lt;chr&gt;,</span></span>
-<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="co">#&gt; #   author_nickname &lt;chr&gt;, author_followercount &lt;int&gt;,</span></span>
-<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a><span class="co">#&gt; #   author_followingcount &lt;int&gt;, author_heartcount &lt;int&gt;,</span></span>
-<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a><span class="co">#&gt; #   author_videocount &lt;int&gt;, author_diggcount &lt;int&gt;, …</span></span></code></pre></div>
+have a token for the Research API. The function opens a browser in the
+background (or you can see what is happening with
+<code>headless = TRUE</code>) and scrolls down. Below, we let it scroll
+for up to one minute and solve captchas if they appear:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">rstats_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tt_search_hidden.html">tt_search_hidden</a></span><span class="op">(</span><span class="st">"#rstats"</span>, solve_captchas <span class="op">=</span> <span class="cn">TRUE</span>, scroll <span class="op">=</span> <span class="st">"1m"</span><span class="op">)</span></span>
+<span><span class="va">rstats_df</span></span>
+<span><span class="co">#&gt; # A tibble: 111 × 25</span></span>
+<span><span class="co">#&gt;    video_id  video_url video_timestamp     video_length video_title</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;     &lt;chr&gt;     &lt;dttm&gt;                     &lt;int&gt; &lt;chr&gt;      </span></span>
+<span><span class="co">#&gt;  1 72522261… https://… 2023-07-05 07:01:45           36 "Wow!!! TH…</span></span>
+<span><span class="co">#&gt;  2 72478540… https://… 2023-06-23 12:15:59            5 "#CapCut #…</span></span>
+<span><span class="co">#&gt;  3 73029706… https://… 2023-11-19 00:56:09          163 "What is c…</span></span>
+<span><span class="co">#&gt;  4 71670108… https://… 2022-11-17 15:42:56           58 "Here’s an…</span></span>
+<span><span class="co">#&gt;  5 75284293… https://… 2025-07-18 14:43:31           27 "How to Co…</span></span>
+<span><span class="co">#&gt;  6 71710339… https://… 2022-11-28 11:54:12            8 "please do…</span></span>
+<span><span class="co">#&gt;  7 75631651… https://… 2025-10-20 05:05:18           36 "Quick R Q…</span></span>
+<span><span class="co">#&gt;  8 72933174… https://… 2023-10-24 00:36:48            9 "#CapCut #…</span></span>
+<span><span class="co">#&gt;  9 73024703… https://… 2023-11-17 16:34:44           31 "Did you k…</span></span>
+<span><span class="co">#&gt; 10 68446099… https://… 2020-07-01 20:22:14           27 "Things in…</span></span>
+<span><span class="co">#&gt; # ℹ 101 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 20 more variables: video_locationcreated &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   video_diggcount &lt;int&gt;, video_sharecount &lt;int&gt;,</span></span>
+<span><span class="co">#&gt; #   video_commentcount &lt;int&gt;, video_playcount &lt;int&gt;,</span></span>
+<span><span class="co">#&gt; #   author_id &lt;chr&gt;, author_secuid &lt;chr&gt;, author_username &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   author_nickname &lt;chr&gt;, author_bio &lt;chr&gt;, download_url &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   html_status &lt;int&gt;, music &lt;list&gt;, challenges &lt;list&gt;, …</span></span></code></pre></div>
+<div class="float">
+<video src="captchas.webm" controls=""><a href="captchas.webm">video of
+a captcha being solved</a></video><div class="figcaption">video of a captcha being solved</div>
+</div>
 <p>This already gives you pretty much all information you could want
 about the videos that were found.</p>
 </div>
 <div class="section level3">
 <h3 id="get-metadata-and-download-videos">Get metadata and download videos<a class="anchor" aria-label="anchor" href="#get-metadata-and-download-videos"></a>
 </h3>
-<p>However, you can obtain some more information, and importantly the
-video file, using <code>tt_videos</code>:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>rstats_df2 <span class="ot">&lt;-</span> <span class="fu">tt_videos</span>(rstats_df<span class="sc">$</span>video_url[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="at">save_video =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>ℹ Getting video <span class="dv">7115114419314560298</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>⏲ waiting <span class="fl">0.2</span> seconds              </span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>ℹ Getting video <span class="dv">7115114419314560298</span></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>✔ Got video <span class="dv">7115114419314560298</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>). File size<span class="sc">:</span> <span class="fl">2.5</span> Mb. [<span class="fl">2.5</span>s]</span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>ℹ Getting video <span class="dv">7252226153828584731</span></span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>✔ Got video <span class="dv">7252226153828584731</span> (<span class="dv">2</span><span class="sc">/</span><span class="dv">2</span>). File size<span class="sc">:</span> <span class="fl">1.7</span> Mb. [<span class="dv">999</span>ms]</span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>rstats_df2</span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 19</span></span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt;   video_id   video_url video_timestamp     video_length video_title</span></span>
-<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt;   &lt;glue&gt;     &lt;chr&gt;     &lt;dttm&gt;                     &lt;int&gt; &lt;chr&gt;      </span></span>
-<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt; 1 711511441… https://… 2022-06-30 19:17:53          135 R for Begi…</span></span>
-<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; 2 725222615… https://… 2023-07-05 07:01:45           36 Wow!!! THI…</span></span>
-<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; # ℹ 14 more variables: video_locationcreated &lt;chr&gt;,</span></span>
-<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt; #   video_diggcount &lt;int&gt;, video_sharecount &lt;int&gt;,</span></span>
-<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt; #   video_commentcount &lt;int&gt;, video_playcount &lt;int&gt;,</span></span>
-<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co">#&gt; #   author_username &lt;chr&gt;, author_nickname &lt;chr&gt;,</span></span>
-<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt; #   author_bio &lt;chr&gt;, download_url &lt;chr&gt;, html_status &lt;int&gt;,</span></span>
-<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co">#&gt; #   music &lt;list&gt;, challenges &lt;list&gt;, is_classified &lt;lgl&gt;,</span></span>
-<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="co">#&gt; #   video_fn &lt;chr&gt;</span></span></code></pre></div>
+<p>If you already have URLs, you can obtain some more information,
+including the video files, using <code>tt_videos</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">rstats_df2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tt_videos_hidden.html">tt_videos</a></span><span class="op">(</span><span class="va">rstats_df</span><span class="op">$</span><span class="va">video_url</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>, save_video <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">rstats_df2</span></span>
+<span><span class="co">#&gt; # A tibble: 2 × 26</span></span>
+<span><span class="co">#&gt;   video_id   video_url video_timestamp     video_length video_title</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;      &lt;chr&gt;     &lt;dttm&gt;                     &lt;int&gt; &lt;chr&gt;      </span></span>
+<span><span class="co">#&gt; 1 725222615… https://… 2023-07-05 07:01:45           36 "Wow!!! TH…</span></span>
+<span><span class="co">#&gt; 2 724785406… https://… 2023-06-23 12:15:59            5 "#CapCut #…</span></span>
+<span><span class="co">#&gt; # ℹ 21 more variables: video_locationcreated &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   video_diggcount &lt;int&gt;, video_sharecount &lt;int&gt;,</span></span>
+<span><span class="co">#&gt; #   video_commentcount &lt;int&gt;, video_playcount &lt;int&gt;,</span></span>
+<span><span class="co">#&gt; #   author_id &lt;chr&gt;, author_secuid &lt;chr&gt;, author_username &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   author_nickname &lt;chr&gt;, author_bio &lt;chr&gt;, download_url &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   html_status &lt;int&gt;, music &lt;list&gt;, challenges &lt;list&gt;,</span></span>
+<span><span class="co">#&gt; #   is_secret &lt;lgl&gt;, is_for_friend &lt;lgl&gt;, is_slides &lt;lgl&gt;, …</span></span></code></pre></div>
 <p>Per default, the function waits between one and ten seconds (chosen
 at random) between making two calls, to not make it too obvious that
 data is scraped from TikTok. You can speed up the process (at your own
 risk), by changing the <code>sleep_pool</code> argument, which controls
 the minimum and maximum number of seconds to wait:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>rstats_df3 <span class="ot">&lt;-</span> <span class="fu">tt_videos</span>(rstats_df<span class="sc">$</span>video_url[<span class="dv">3</span><span class="sc">:</span><span class="dv">4</span>], <span class="at">save_video =</span> <span class="cn">TRUE</span>, <span class="at">sleep_pool =</span> <span class="fl">0.1</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>ℹ Getting video <span class="dv">7242068680484408581</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>⏲ waiting <span class="fl">0.1</span> seconds              </span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>ℹ Getting video <span class="dv">7242068680484408581</span></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>✔ Got video <span class="dv">7242068680484408581</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>). File size<span class="sc">:</span> <span class="fl">1.8</span> Mb. [<span class="fl">2.6</span>s]</span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>ℹ Getting video <span class="dv">7213413598998056234</span></span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>✔ Got video <span class="dv">7213413598998056234</span> (<span class="dv">2</span><span class="sc">/</span><span class="dv">2</span>). File size<span class="sc">:</span> <span class="fl">598.1</span> Kb. [<span class="fl">1.7</span>s]</span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>rstats_df3</span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 19</span></span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt;   video_id   video_url video_timestamp     video_length video_title</span></span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt;   &lt;glue&gt;     &lt;chr&gt;     &lt;dttm&gt;                     &lt;int&gt; &lt;chr&gt;      </span></span>
-<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt; 1 724206868… https://… 2023-06-07 22:05:16           34 "R GRAPHIC…</span></span>
-<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt; 2 721341359… https://… 2023-03-22 16:49:12            6 "R and me …</span></span>
-<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co">#&gt; # ℹ 14 more variables: video_locationcreated &lt;chr&gt;,</span></span>
-<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="co">#&gt; #   video_diggcount &lt;int&gt;, video_sharecount &lt;int&gt;,</span></span>
-<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="co">#&gt; #   video_commentcount &lt;int&gt;, video_playcount &lt;int&gt;,</span></span>
-<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="co">#&gt; #   author_username &lt;chr&gt;, author_nickname &lt;chr&gt;,</span></span>
-<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="co">#&gt; #   author_bio &lt;chr&gt;, download_url &lt;chr&gt;, html_status &lt;int&gt;,</span></span>
-<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="co">#&gt; #   music &lt;list&gt;, challenges &lt;list&gt;, is_classified &lt;lgl&gt;,</span></span>
-<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="co">#&gt; #   video_fn &lt;chr&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">rstats_df3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tt_videos_hidden.html">tt_videos</a></span><span class="op">(</span></span>
+<span>  <span class="va">rstats_df</span><span class="op">$</span><span class="va">video_url</span><span class="op">[</span><span class="fl">3</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>,</span>
+<span>  save_video <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  sleep_pool <span class="op">=</span> <span class="fl">0.1</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">rstats_df3</span></span>
+<span><span class="co">#&gt; # A tibble: 2 × 26</span></span>
+<span><span class="co">#&gt;   video_id   video_url video_timestamp     video_length video_title</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;      &lt;chr&gt;     &lt;dttm&gt;                     &lt;int&gt; &lt;chr&gt;      </span></span>
+<span><span class="co">#&gt; 1 730297066… https://… 2023-11-19 00:56:09          163 "What is c…</span></span>
+<span><span class="co">#&gt; 2 716701086… https://… 2022-11-17 15:42:56           58 "Here’s an…</span></span>
+<span><span class="co">#&gt; # ℹ 21 more variables: video_locationcreated &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   video_diggcount &lt;int&gt;, video_sharecount &lt;int&gt;,</span></span>
+<span><span class="co">#&gt; #   video_commentcount &lt;int&gt;, video_playcount &lt;int&gt;,</span></span>
+<span><span class="co">#&gt; #   author_id &lt;chr&gt;, author_secuid &lt;chr&gt;, author_username &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   author_nickname &lt;chr&gt;, author_bio &lt;chr&gt;, download_url &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   html_status &lt;int&gt;, music &lt;list&gt;, challenges &lt;list&gt;,</span></span>
+<span><span class="co">#&gt; #   is_secret &lt;lgl&gt;, is_for_friend &lt;lgl&gt;, is_slides &lt;lgl&gt;, …</span></span></code></pre></div>
 <p>When you are scraping a lot of URLs, the function might fail
 eventually, due to a poor connection or because TikTok is blocking your
 requests. It therefore usually makes sense to save your progress in a
 cache directory:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>rstats_df3 <span class="ot">&lt;-</span> <span class="fu">tt_videos</span>(rstats_df<span class="sc">$</span>video_url[<span class="dv">5</span><span class="sc">:</span><span class="dv">6</span>], <span class="at">cache_dir =</span> <span class="st">"rstats"</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>ℹ Getting video <span class="dv">7257689890245201153</span></span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>⏲ waiting <span class="fl">1.7</span> seconds</span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>ℹ Getting video <span class="dv">7257689890245201153</span></span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>✔ Got video <span class="dv">7257689890245201153</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>). File size<span class="sc">:</span> <span class="fl">1.7</span> Mb. [<span class="fl">2.6</span>s]</span>
-<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>ℹ Getting video <span class="dv">7299987059417042209</span></span>
-<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>✔ Got video <span class="dv">7299987059417042209</span> (<span class="dv">2</span><span class="sc">/</span><span class="dv">2</span>). File size<span class="sc">:</span> <span class="fl">1.2</span> Mb. [<span class="fl">1.8</span>s]</span>
-<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="fu">list.files</span>(<span class="st">"rstats"</span>)</span>
-<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt; [1] "7257689890245201153.json" "7299987059417042209.json"</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">rstats_df3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tt_videos_hidden.html">tt_videos</a></span><span class="op">(</span><span class="va">rstats_df</span><span class="op">$</span><span class="va">video_url</span><span class="op">[</span><span class="fl">5</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span>, cache_dir <span class="op">=</span> <span class="st">"rstats"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="st">"rstats"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "7171033929175026949.json" "7528429314807696673.json"</span></span></code></pre></div>
 <p>Note that the video files are downloaded into the <code>dir</code>
 directory (your working directory by default), independently from your
 cache directory.</p>
 <p>If there are information that you feel are missing from the
 <code>data.frame</code> <code>tt_videos</code> returns, you can look at
 the raw, unparsed json data using:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rstats_list1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tt_request_hidden.html">tt_request_hidden</a></span><span class="op">(</span><span class="va">rstats_df</span><span class="op">$</span><span class="va">video_url</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html" class="external-link">fromJSON</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Parsing the result into a list using <code>fromJSON</code>, results
@@ -239,20 +228,17 @@ yourself if the data you are interested in is there</p>
 <div class="section level3">
 <h3 id="get-followers-and-who-a-user-is-following">Get followers and who a user is following<a class="anchor" aria-label="anchor" href="#get-followers-and-who-a-user-is-following"></a>
 </h3>
-<p>Getting followers and who a user is following is (at the moment?) a
-little tricky to use, since TikTok blocks requests to a users profile
-page with anti-scraping measures. To circumvent that, you can open a
-users page in your browser and then right-click to show the source
-code:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt; You can of course also use tools like &lt;a href="https://playwright.dev/" class="external-link"&gt;Playwright&lt;/a&gt;, &lt;a href="https://www.selenium.dev/" class="external-link"&gt;Selenium&lt;/a&gt;, or &lt;a href="https://pptr.dev/" class="external-link"&gt;&lt;/a&gt; to automate this process. But that is
-beyond the scope of this vignette and package.&lt;/p&gt;'><sup>1</sup></a></p>
-<p><img src="source-code.png"></p>
-<p>You can then search for and copy the <code>authorSecId</code>
-value:</p>
-<p><img src="secuid.png"></p>
-<p>Once you have this <code>authorSecId</code> you can look up a maximum
-of 5,000 followers per account:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/tt_get_follower.html">tt_get_follower</a></span><span class="op">(</span>secuid <span class="op">=</span> <span class="st">"MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi"</span>,</span>
+<p>To get followers and who a user is following, we need to first look
+up their SecID, which is a special ID for users. We can do so using the
+<code>tt_user_info_hidden</code> function:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">user_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tt_user_info_hidden.html">tt_user_info_hidden</a></span><span class="op">(</span><span class="st">"tiktok"</span><span class="op">)</span></span>
+<span><span class="va">user_info</span><span class="op">$</span><span class="va">secUid</span></span>
+<span><span class="co">#&gt; [1] "MS4wLjABAAAAv7iSuuXDJGDvJkmH_vz1qkDZYo1apxgzaxdBSeIuPiM"</span></span></code></pre></div>
+<p>Once you have the <code>secUid</code> you can look up a maximum of
+5,000 followers per account:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/tt_get_following_hidden.html">tt_get_follower_hidden</a></span><span class="op">(</span>secuid <span class="op">=</span> <span class="st">"MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi"</span>,</span>
 <span>                verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; # A tibble: 1,116 × 27</span></span>
@@ -276,9 +262,11 @@ of 5,000 followers per account:</p>
 <span><span class="co">#&gt; #   stitchSetting &lt;int&gt;, ttSeller &lt;lgl&gt;, uniqueId &lt;chr&gt;,</span></span>
 <span><span class="co">#&gt; #   verified &lt;lgl&gt;, diggCount &lt;int&gt;, followerCount &lt;int&gt;, …</span></span></code></pre></div>
 <p>Likewise, you can also check who this account follows:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/tt_get_follower.html">tt_get_following</a></span><span class="op">(</span>secuid <span class="op">=</span> <span class="st">"MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi"</span>,</span>
-<span>                 verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/tt_get_following_hidden.html">tt_get_following_hidden</a></span><span class="op">(</span></span>
+<span>  secuid <span class="op">=</span> <span class="st">"MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi"</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; # A tibble: 489 × 28</span></span>
 <span><span class="co">#&gt;    avatarLarger             avatarMedium avatarThumb commentSetting</span></span>
@@ -300,13 +288,8 @@ of 5,000 followers per account:</p>
 <span><span class="co">#&gt; #   secUid &lt;chr&gt;, secret &lt;lgl&gt;, signature &lt;chr&gt;,</span></span>
 <span><span class="co">#&gt; #   stitchSetting &lt;int&gt;, ttSeller &lt;lgl&gt;, uniqueId &lt;chr&gt;,</span></span>
 <span><span class="co">#&gt; #   verified &lt;lgl&gt;, diggCount &lt;int&gt;, followerCount &lt;int&gt;, …</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">".mp4"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="st">"rstats"</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
-
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>

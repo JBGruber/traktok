@@ -9,7 +9,7 @@ tt_user_pinned_videos_api(
   username,
   fields = "all",
   cache = TRUE,
-  verbose = TRUE,
+  verbose = interactive(),
   token = NULL
 )
 
@@ -17,7 +17,7 @@ tt_get_pinned(
   username,
   fields = "all",
   cache = TRUE,
-  verbose = TRUE,
+  verbose = interactive(),
   token = NULL
 )
 ```

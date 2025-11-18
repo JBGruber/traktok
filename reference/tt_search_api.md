@@ -22,7 +22,7 @@ tt_search_api(
   max_pages = 1,
   parse = TRUE,
   cache = TRUE,
-  verbose = TRUE,
+  verbose = interactive(),
   token = NULL
 )
 
@@ -37,7 +37,7 @@ tt_query_videos(
   max_pages = 1,
   parse = TRUE,
   cache = TRUE,
-  verbose = TRUE,
+  verbose = interactive(),
   token = NULL
 )
 ```

@@ -5,9 +5,14 @@
 ## Usage
 
 ``` r
-tt_user_info_api(username, fields = "all", verbose = TRUE, token = NULL)
+tt_user_info_api(
+  username,
+  fields = "all",
+  verbose = interactive(),
+  token = NULL
+)
 
-tt_user_info(username, fields = "all", verbose = TRUE, token = NULL)
+tt_user_info(username, fields = "all", verbose = interactive(), token = NULL)
 ```
 
 ## Arguments

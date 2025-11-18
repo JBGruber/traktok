@@ -40,7 +40,7 @@ Get all videos posted by a TikTok user."><meta property="og:image" content="http
     </div>
 
     <div class="ref-description section level2">
-    <p><img src="figures/api-unofficial" alt="[Works on: Unofficial API]"></p>
+    <p><img src="figures/api-unofficial.svg" alt="[Works on: Unofficial API]"></p>
 <p>Get all videos posted by a TikTok user.</p>
     </div>
 
@@ -50,8 +50,10 @@ Get all videos posted by a TikTok user."><meta property="og:image" content="http
 <span>  <span class="va">username</span>,</span>
 <span>  solve_captchas <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  return_urls <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  save_video <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  timeout <span class="op">=</span> <span class="fl">5L</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  scroll <span class="op">=</span> <span class="st">"5m"</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -61,7 +63,8 @@ Get all videos posted by a TikTok user."><meta property="og:image" content="http
 
 
 <dl><dt id="arg-username">username<a class="anchor" aria-label="anchor" href="#arg-username"></a></dt>
-<dd><p>The username of the TikTok user whose hidden videos you want to retrieve.</p></dd>
+<dd><p>The username of the TikTok user whose hidden videos you want
+to retrieve.</p></dd>
 
 
 <dt id="arg-solve-captchas">solve_captchas<a class="anchor" aria-label="anchor" href="#arg-solve-captchas"></a></dt>
@@ -72,8 +75,19 @@ Get all videos posted by a TikTok user."><meta property="og:image" content="http
 <dd><p>return video URLs instead of downloading the vidoes.</p></dd>
 
 
+<dt id="arg-save-video">save_video<a class="anchor" aria-label="anchor" href="#arg-save-video"></a></dt>
+<dd><p>passed to <code><a href="tt_videos_hidden.html">tt_videos_hidden</a></code> if <code>return_urls = FALSE</code>.</p></dd>
+
+
 <dt id="arg-timeout">timeout<a class="anchor" aria-label="anchor" href="#arg-timeout"></a></dt>
-<dd><p>time (in seconds) to wait between scrolling and solving captchas.</p></dd>
+<dd><p>time (in seconds) to wait between scrolling and solving
+captchas.</p></dd>
+
+
+<dt id="arg-scroll">scroll<a class="anchor" aria-label="anchor" href="#arg-scroll"></a></dt>
+<dd><p>how long to keep scrolling before returning results. Can be a
+numeric value of seconds or a string with seconds, minutes, hours or days
+(see examples).</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
@@ -81,17 +95,21 @@ Get all videos posted by a TikTok user."><meta property="og:image" content="http
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments to be passed to the <code><a href="tt_videos_hidden.html">tt_videos_hidden</a></code> function.</p></dd>
+<dd><p>Additional arguments to be passed to the
+<code><a href="tt_videos_hidden.html">tt_videos_hidden</a></code> function.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list of video data or URLs, depending on the value of <code>return_urls</code>.</p>
-<p>a data.frame containing metadata of user posts.</p>
+    <p>A list of video data or URLs, depending on the value of
+<code>return_urls</code>.</p>
+<p>a data.frame containing metadata of user posts or character vector of
+URLs.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This function uses rvest to scrape a TikTok user's profile and retrieve any hidden videos.</p>
+    <p>This function uses rvest to scrape a TikTok user's profile and retrieve any
+hidden videos.</p>
     </div>
 
     <div class="section level2">
