@@ -8,37 +8,44 @@ tt_user_videos_hidden(
   username,
   solve_captchas = FALSE,
   return_urls = FALSE,
+  save_video = FALSE,
   timeout = 5L,
   verbose = TRUE,
   ...
 )
 }
 \arguments{
-\item{username}{The username of the TikTok user whose hidden videos you want to retrieve.}
+\item{username}{The username of the TikTok user whose hidden videos you want
+to retrieve.}
 
 \item{solve_captchas}{open browser to solve appearing captchas manually.}
 
 \item{return_urls}{return video URLs instead of downloading the vidoes.}
 
-\item{timeout}{time (in seconds) to wait between scrolling and solving captchas.}
+\item{timeout}{time (in seconds) to wait between scrolling and solving
+captchas.}
 
 \item{verbose}{should the function print status updates to the screen?}
 
-\item{...}{Additional arguments to be passed to the \code{\link{tt_videos_hidden}} function.}
+\item{...}{Additional arguments to be passed to the
+\code{\link{tt_videos_hidden}} function.}
 }
 \value{
-A list of video data or URLs, depending on the value of \code{return_urls}.
+A list of video data or URLs, depending on the value of
+\code{return_urls}.
 
-a data.frame containing metadata of user posts.
+a data.frame containing metadata of user posts or character vector of
+URLs.
 }
 \description{
-\ifelse{html}{\figure{api-unofficial.svg}{options: alt='[Works on:
-  Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
+\ifelse{html}{\figure{api-unofficial.svg}{options: alt='[Works
+  on: Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
 
 Get all videos posted by a TikTok user.
 }
 \details{
-This function uses rvest to scrape a TikTok user's profile and retrieve any hidden videos.
+This function uses rvest to scrape a TikTok user's profile and retrieve any
+hidden videos.
 }
 \examples{
 \dontrun{

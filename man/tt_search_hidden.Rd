@@ -10,6 +10,7 @@ tt_search_hidden(
   timeout = 5L,
   scroll = "5m",
   return_urls = FALSE,
+  save_video = FALSE,
   verbose = TRUE,
   headless = TRUE,
   ...
@@ -20,7 +21,8 @@ tt_search_hidden(
 
 \item{solve_captchas}{open browser to solve appearing captchas manually.}
 
-\item{timeout}{time (in seconds) to wait between scrolling and solving captchas.}
+\item{timeout}{time (in seconds) to wait between scrolling and solving
+captchas.}
 
 \item{scroll}{how long to keep scrolling before returning results. Can be a
 numeric value of seconds or a string with seconds, minutes, hours or days
@@ -32,14 +34,16 @@ numeric value of seconds or a string with seconds, minutes, hours or days
 
 \item{headless}{open the browser to show the scrolling.}
 
-\item{...}{Additional arguments to be passed to the \code{\link{tt_videos_hidden}} function.}
+\item{...}{Additional arguments to be passed to the
+\code{\link{tt_videos_hidden}} function.}
 }
 \value{
-a character vector of URLs.
+a data.frame containing metadata searched posts or character vector
+of URLs.
 }
 \description{
-\ifelse{html}{\figure{api-unofficial.svg}{options: alt='[Works on:
-  Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
+\ifelse{html}{\figure{api-unofficial.svg}{options: alt='[Works
+  on: Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
 
 This is the version of \link{tt_search} that explicitly uses the unofficial
 API. Use \link{tt_search_api} for the Research API version.

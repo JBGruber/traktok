@@ -337,8 +337,8 @@ tt_request_hidden <- function(url, max_tries = 5L, cookiefile = NULL) {
 
 #' Search videos
 #'
-#' @description \ifelse{html}{\figure{api-unofficial.svg}{options: alt='[Works on:
-#'   Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
+#' @description \ifelse{html}{\figure{api-unofficial.svg}{options: alt='[Works
+#'   on: Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
 #'
 #'   This is the version of \link{tt_search} that explicitly uses the unofficial
 #'   API. Use \link{tt_search_api} for the Research API version.
@@ -348,7 +348,8 @@ tt_request_hidden <- function(url, max_tries = 5L, cookiefile = NULL) {
 #' @param scroll how long to keep scrolling before returning results. Can be a
 #'   numeric value of seconds or a string with seconds, minutes, hours or days
 #'   (see examples).
-#' @param ... Additional arguments to be passed to the \code{\link{tt_videos_hidden}} function.
+#' @param ... Additional arguments to be passed to the
+#'   \code{\link{tt_videos_hidden}} function.
 #'
 #' @inheritParams tt_user_videos_hidden
 #'
@@ -357,7 +358,8 @@ tt_request_hidden <- function(url, max_tries = 5L, cookiefile = NULL) {
 #'   details see the unofficial-api vignette: \code{vignette("unofficial-api",
 #'   package = "traktok")}
 #'
-#' @return a character vector of URLs.
+#' @return a data.frame containing metadata searched posts or character vector
+#'   of URLs.
 #' @export
 #'
 #' @examples
@@ -390,6 +392,7 @@ tt_search_hidden <- function(
   timeout = 5L,
   scroll = "5m",
   return_urls = FALSE,
+  save_video = FALSE,
   verbose = TRUE,
   headless = TRUE,
   ...
@@ -455,11 +458,13 @@ tt_search_hidden <- function(
     if (Sys.time() > max_time) break
   }
   urls <- extract_urls_sess(sess)
-  # TODO: collect video instead or offer option
   if (return_urls) {
     return(urls)
   }
-  tt_videos_hidden(urls, ...)
+  if (verbose) {
+    cli::cli_progress_step("Collecting post data from {length(urls)} URLs")
+  }
+  tt_videos_hidden(urls, save_video = save_video, verbose = verbose, ...)
 }
 
 
@@ -675,22 +680,28 @@ tt_get_follower_hidden <- function(
 
 #' Get videos from a TikTok user's profile
 #'
-#' This function uses rvest to scrape a TikTok user's profile and retrieve any hidden videos.
-#' @description \ifelse{html}{\figure{api-unofficial.svg}{options: alt='[Works on:
-#'   Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
+#' This function uses rvest to scrape a TikTok user's profile and retrieve any
+#' hidden videos.
+#' @description \ifelse{html}{\figure{api-unofficial.svg}{options: alt='[Works
+#'   on: Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
 #'
 #'   Get all videos posted by a TikTok user.
 #'
-#' @param username The username of the TikTok user whose hidden videos you want to retrieve.
+#' @param username The username of the TikTok user whose hidden videos you want
+#'   to retrieve.
 #' @param solve_captchas open browser to solve appearing captchas manually.
 #' @param return_urls return video URLs instead of downloading the vidoes.
-#' @param timeout time (in seconds) to wait between scrolling and solving captchas.
+#' @param timeout time (in seconds) to wait between scrolling and solving
+#'   captchas.
 #' @param verbose should the function print status updates to the screen?
-#' @param ... Additional arguments to be passed to the \code{\link{tt_videos_hidden}} function.
+#' @param ... Additional arguments to be passed to the
+#'   \code{\link{tt_videos_hidden}} function.
 #'
-#' @return A list of video data or URLs, depending on the value of \code{return_urls}.
+#' @return A list of video data or URLs, depending on the value of
+#'   \code{return_urls}.
 #'
-#' @return a data.frame containing metadata of user posts.
+#' @return a data.frame containing metadata of user posts or character vector of
+#'   URLs.
 #' @examples
 #' \dontrun{
 #' # Get hidden videos from the user "fpoe_at"
@@ -701,6 +712,7 @@ tt_user_videos_hidden <- function(
   username,
   solve_captchas = FALSE,
   return_urls = FALSE,
+  save_video = FALSE,
   timeout = 5L,
   verbose = TRUE,
   ...
@@ -756,8 +768,10 @@ tt_user_videos_hidden <- function(
   if (return_urls) {
     return(urls)
   }
-  # TODO: add status
-  tt_videos_hidden(urls, ...)
+  if (verbose) {
+    cli::cli_progress_step("Collecting post data from {length(urls)} URLs")
+  }
+  tt_videos_hidden(urls, save_video = save_video, verbose = verbose, ...)
 }
 
 
