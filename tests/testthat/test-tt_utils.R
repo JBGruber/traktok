@@ -203,7 +203,7 @@ test_that("extract_urls_sess", {
         <div id="column-item-video-container-2">
           <a href="https://www.tiktok.com/@user2/video/9876543210">Video 2</a>
         </div>
-        <div id="other-container">
+        <div id="column-item-video-container-3">
           <a href="https://www.tiktok.com/@user3/photo/1111111111">Photo</a>
         </div>
       </body>
@@ -215,7 +215,7 @@ test_that("extract_urls_sess", {
 
   # Test extraction
   urls <- extract_urls_sess(sess)
-  expect_length(urls, 2)
-  expect_true(all(grepl("/video/", urls)))
-  expect_true(any(grepl("/photo/", urls)))
+  expect_length(urls, 3L)
+  expect_equal(sum(grepl("/video/", urls)), 2L)
+  expect_equal(sum(grepl("/photo/", urls)), 1L)
 })
