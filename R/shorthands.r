@@ -15,16 +15,11 @@
 #' @return a data.frame of video metadata
 #' @export
 tt_search <- function(...) {
-  params <- list(...)
-  token <- params$token
-  params$token <- NULL
-  if (is.null(token)) {
-    token <- get_token(auth = FALSE)
-  }
-  if (isFALSE(token)) {
-    tt_search_hidden(...)
+  auth <- auth_check(silent = TRUE)
+  if (isTRUE(auth["research"])) {
+    tt_search_api(...)
   } else {
-    tt_search_api(..., token)
+    tt_search_hidden(...)
   }
 }
 
@@ -52,16 +47,11 @@ tt_search <- function(...) {
 #' }
 #' @export
 tt_user_videos <- function(username, ...) {
-  params <- list(...)
-  token <- params$token
-  params$token <- NULL
-  if (is.null(token)) {
-    token <- get_token(auth = FALSE)
-  }
-  if (isFALSE(token)) {
-    tt_search_hidden(username, ...)
-  } else {
+  auth <- auth_check(silent = TRUE)
+  if (isTRUE(auth["research"])) {
     tt_user_videos_api(username, ...)
+  } else {
+    tt_user_videos_hidden(username, ...)
   }
 }
 
@@ -69,7 +59,7 @@ tt_user_videos <- function(username, ...) {
 #' @rdname tt_videos_hidden
 #' @export
 tt_videos <- function(...) {
-  # mainly here in case the research API gains the ability to dowload videos
+  # mainly here in case the research API gains the ability to download videos
   tt_videos_hidden(...)
 }
 
@@ -119,16 +109,11 @@ tt_comments <- tt_comments_api
 #' @return a data.frame of followers and following of users
 #' @export
 tt_get_follower <- function(...) {
-  params <- list(...)
-  token <- params$token
-  params$token <- NULL
-  if (is.null(token)) {
-    token <- get_token(auth = FALSE)
-  }
-  if (isFALSE(token)) {
-    tt_get_follower_hidden(...)
+  auth <- auth_check(silent = TRUE)
+  if (isTRUE(auth["research"])) {
+    tt_user_follower_api(...)
   } else {
-    tt_user_follower_api(..., token)
+    tt_get_follower_hidden(...)
   }
 }
 
@@ -136,15 +121,10 @@ tt_get_follower <- function(...) {
 #' @rdname tt_get_follower
 #' @export
 tt_get_following <- function(...) {
-  params <- list(...)
-  token <- params$token
-  params$token <- NULL
-  if (is.null(token)) {
-    token <- get_token(auth = FALSE)
-  }
-  if (isFALSE(token)) {
-    tt_get_following_hidden(...)
+  auth <- auth_check(silent = TRUE)
+  if (isTRUE(auth["research"])) {
+    tt_user_following_api(...)
   } else {
-    tt_user_following_api(..., token)
+    tt_get_following_hidden(...)
   }
 }

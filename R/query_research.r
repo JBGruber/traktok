@@ -67,7 +67,7 @@ query <- function(and = NULL, or = NULL, not = NULL) {
 #' @rdname query
 #' @export
 query_and <- function(q, field_name, operation, field_values) {
-  ield_values <- unname(field_values)
+  field_values <- unname(field_values)
   if (!is_query(q)) {
     cli::cli_abort("{.fn query_and} needs a query as input")
   }
@@ -104,7 +104,7 @@ query_or <- function(q, field_name, operation, field_values) {
 #' @rdname query
 #' @export
 query_not <- function(q, field_name, operation, field_values) {
-  ield_values <- unname(field_values)
+  field_values <- unname(field_values)
   if (!is_query(q)) {
     cli::cli_abort("{.fn query_not} needs a query as input")
   }

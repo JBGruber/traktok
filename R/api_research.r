@@ -116,7 +116,7 @@ tt_search_api <- function(
 
   if (is_datetime(end_date)) {
     end_date <- format(end_date, "%Y%m%d")
-  } else if (!grepl("\\d{8}", start_date)) {
+  } else if (!grepl("\\d{8}", end_date)) {
     cli::cli_abort(
       "{.code start_date} needs to be a valid date or a string like, e.g., \"20210102\""
     )
@@ -475,7 +475,7 @@ tt_user_reposted_api <- function(
       }
     }
 
-    videos2 <- videos |>
+    videos <- videos |>
       purrr::map(as_tibble_onerow) |>
       dplyr::bind_rows() |>
       # somehow, the order changes between, calls. So I fix it here
