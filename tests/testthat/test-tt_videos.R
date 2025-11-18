@@ -1,6 +1,11 @@
 test_that("get meta and download", {
   skip_if(
-    !isTRUE(auth_check(research = FALSE, hidden = TRUE, silent = TRUE)[
+    !isTRUE(auth_check(
+      research = FALSE,
+      hidden = TRUE,
+      silent = TRUE,
+      fail = FALSE
+    )[
       "hidden"
     ])
   )
