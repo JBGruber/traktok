@@ -63,7 +63,9 @@ tt_videos_hidden <- function(
   auth_check(research = FALSE, hidden = TRUE, silent = TRUE)
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
   if (nchar(cookies) <= 1L) {
-    cli::cli_alert_danger("No TikTok cookies found. This will likely fail. See {.help auth_check}.")
+    cli::cli_alert_danger(
+      "No TikTok cookies found. This will likely fail. See {.help auth_check}."
+    )
   }
 
   f_name <- ""
@@ -284,7 +286,9 @@ tt_request_hidden <- function(url, max_tries = 5L, cookiefile = NULL) {
   auth_check(research = FALSE, hidden = TRUE, silent = TRUE)
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
   if (nchar(cookies) <= 1L) {
-    cli::cli_alert_danger("No TikTok cookies found. This will likely fail. See {.help auth_check}.")
+    cli::cli_alert_danger(
+      "No TikTok cookies found. This will likely fail. See {.help auth_check}."
+    )
   }
 
   req <- httr2::request(url) |>
@@ -402,7 +406,9 @@ tt_search_hidden <- function(
   )
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "list")
   if (!isTRUE(auth_check(research = FALSE, hidden = TRUE, silent = TRUE))) {
-    cli::cli_abort("This function needs authentication. See {.help auth_hidden}.")
+    cli::cli_abort(
+      "This function needs authentication. See {.help auth_hidden}."
+    )
   }
 
   # add leading . where it's missing
@@ -544,7 +550,9 @@ tt_get_following_hidden <- function(
     cookiemonster::add_cookies(cookiefile)
   }
   if (!isTRUE(auth_check(research = FALSE, hidden = TRUE, silent = TRUE))) {
-    cli::cli_abort("This function needs authentication. See {.help auth_hidden}.")
+    cli::cli_abort(
+      "This function needs authentication. See {.help auth_hidden}."
+    )
   }
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
 
@@ -610,7 +618,9 @@ tt_get_follower_hidden <- function(
     cookiemonster::add_cookies(cookiefile)
   }
   if (!isTRUE(auth_check(research = FALSE, hidden = TRUE, silent = TRUE))) {
-    cli::cli_abort("This function needs authentication. See {.help auth_hidden}.")
+    cli::cli_abort(
+      "This function needs authentication. See {.help auth_hidden}."
+    )
   }
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
 

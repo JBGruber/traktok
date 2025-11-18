@@ -67,47 +67,59 @@
 #'   tt_search_api(start_cursor = length(last_pull) + 1,
 #'                 search_id = attr(last_pull, "search_id"))
 #' }
-tt_search_api <- function(query,
-                          start_date = Sys.Date() - 1,
-                          end_date = Sys.Date(),
-                          fields = "all",
-                          start_cursor = 0L,
-                          search_id = NULL,
-                          is_random = FALSE,
-                          max_pages = 1,
-                          parse = TRUE,
-                          cache = TRUE,
-                          verbose = TRUE,
-                          token = NULL) {
-
+tt_search_api <- function(
+  query,
+  start_date = Sys.Date() - 1,
+  end_date = Sys.Date(),
+  fields = "all",
+  start_cursor = 0L,
+  search_id = NULL,
+  is_random = FALSE,
+  max_pages = 1,
+  parse = TRUE,
+  cache = TRUE,
+  verbose = TRUE,
+  token = NULL
+) {
   if (is.character(query)) {
-    query <- query(or = list(
-      list(
-        field_name = "hashtag_name",
-        operation = "IN",
-        field_values = as.list(sub("#", "", strsplit(query, " ", fixed = TRUE)))
-      ),
-      list(
-        field_name = "keyword",
-        operation = "IN",
-        field_values = as.list(strsplit(query, " ", fixed = TRUE))
+    query <- query(
+      or = list(
+        list(
+          field_name = "hashtag_name",
+          operation = "IN",
+          field_values = as.list(sub(
+            "#",
+            "",
+            strsplit(query, " ", fixed = TRUE)
+          ))
+        ),
+        list(
+          field_name = "keyword",
+          operation = "IN",
+          field_values = as.list(strsplit(query, " ", fixed = TRUE))
+        )
       )
-    ))
+    )
   }
 
-  if (fields == "all")
+  if (fields == "all") {
     fields <- "id,video_description,create_time,region_code,share_count,view_count,like_count,comment_count,music_id,hashtag_names,username,effect_ids,playlist_id,voice_to_text"
+  }
 
   if (is_datetime(start_date)) {
     start_date <- format(start_date, "%Y%m%d")
   } else if (!grepl("\\d{8}", start_date)) {
-    cli::cli_abort("{.code start_date} needs to be a valid date or a string like, e.g., \"20210102\"")
+    cli::cli_abort(
+      "{.code start_date} needs to be a valid date or a string like, e.g., \"20210102\""
+    )
   }
 
   if (is_datetime(end_date)) {
     end_date <- format(end_date, "%Y%m%d")
   } else if (!grepl("\\d{8}", start_date)) {
-    cli::cli_abort("{.code start_date} needs to be a valid date or a string like, e.g., \"20210102\"")
+    cli::cli_abort(
+      "{.code start_date} needs to be a valid date or a string like, e.g., \"20210102\""
+    )
   }
 
   if (verbose) {
@@ -132,16 +144,23 @@ tt_search_api <- function(query,
 
   the$page <- 1
 
-  if (verbose) cli::cli_progress_bar(
-    format = "{cli::pb_spin} Got {page} page{?s} with {length(videos)} video{?s} {cli::col_silver('[', cli::pb_elapsed, ']')}",
-    format_done = "{cli::col_green(cli::symbol$tick)} Got {page} page{?s} with {length(videos)} video{?s}",
-    .envir = the
-  )
+  if (verbose) {
+    cli::cli_progress_bar(
+      format = "{cli::pb_spin} Got {page} page{?s} with {length(videos)} video{?s} {cli::col_silver('[', cli::pb_elapsed, ']')}",
+      format_done = "{cli::col_green(cli::symbol$tick)} Got {page} page{?s} with {length(videos)} video{?s}",
+      .envir = the
+    )
+  }
 
-  while (purrr::pluck(res, "data", "has_more", .default = FALSE) && the$page < max_pages) {
+  while (
+    purrr::pluck(res, "data", "has_more", .default = FALSE) &&
+      the$page < max_pages
+  ) {
     the$page <- the$page + 1
     the$cursor <- spluck(res, "data", "cursor")
-    if (verbose) cli::cli_progress_update(force = TRUE, .envir = the)
+    if (verbose) {
+      cli::cli_progress_update(force = TRUE, .envir = the)
+    }
     res <- tt_query_request(
       endpoint = "query/",
       query = query,
@@ -181,30 +200,36 @@ tt_query_videos <- tt_search_api
 
 
 # used to iterate over search requests
-tt_query_request <- function(endpoint,
-                             query = NULL,
-                             video_id = NULL,
-                             start_date = NULL,
-                             end_date = NULL,
-                             fields = NULL,
-                             cursor = NULL,
-                             search_id = NULL,
-                             is_random = NULL,
-                             token = NULL) {
+tt_query_request <- function(
+  endpoint,
+  query = NULL,
+  video_id = NULL,
+  start_date = NULL,
+  end_date = NULL,
+  fields = NULL,
+  cursor = NULL,
+  search_id = NULL,
+  is_random = NULL,
+  token = NULL
+) {
+  if (is.null(token)) {
+    token <- get_token()
+  }
 
-  if (is.null(token)) token <- get_token()
-
-  if (!is.null(query) && !is_query(query))
+  if (!is.null(query) && !is_query(query)) {
     cli::cli_abort("query needs to be a query object (see {.code ?query})")
+  }
 
-  body <- list(query = unclass(query),
-               video_id = video_id,
-               start_date = start_date,
-               end_date = end_date,
-               max_count = 100L,
-               cursor = cursor,
-               search_id = search_id,
-               is_random = is_random)
+  body <- list(
+    query = unclass(query),
+    video_id = video_id,
+    start_date = start_date,
+    end_date = end_date,
+    max_count = 100L,
+    cursor = cursor,
+    search_id = search_id,
+    is_random = is_random
+  )
 
   httr2::request("https://open.tiktokapis.com/v2/research/video/") |>
     httr2::req_url_path_append(endpoint) |>
@@ -217,14 +242,14 @@ tt_query_request <- function(endpoint,
     httr2::req_retry(
       max_tries = 5L,
       # don't retry when daily quota is reached (429)
-      is_transient = function(resp)
-        httr2::resp_status(resp) %in% c(301:399, 401:428, 430:599),
+      is_transient = function(resp) {
+        httr2::resp_status(resp) %in% c(301:399, 401:428, 430:599)
+      },
       # increase backoff after each try
-      backoff = function(t) t ^ 3
+      backoff = function(t) t^3
     ) |>
     httr2::req_perform() |>
     httr2::resp_body_json(bigint_as_char = TRUE)
-
 }
 
 
@@ -251,13 +276,14 @@ tt_query_request <- function(endpoint,
 #' # note: none of these work because I could not find any account that
 #' # has likes public!
 #' }
-tt_user_liked_videos_api <- function(username,
-                                     fields = "all",
-                                     max_pages = 1,
-                                     cache = TRUE,
-                                     verbose = TRUE,
-                                     token = NULL) {
-
+tt_user_liked_videos_api <- function(
+  username,
+  fields = "all",
+  max_pages = 1,
+  cache = TRUE,
+  verbose = TRUE,
+  token = NULL
+) {
   purrr::map(username, function(u) {
     # if username is given as URL
     if (grepl("/", u)) {
@@ -266,10 +292,16 @@ tt_user_liked_videos_api <- function(username,
         "(?<=.com/@)(.+?)(?=\\?|$|/)"
       )
     }
-    if (verbose) cli::cli_progress_step(msg = "Getting user {u}",
-                                        msg_done = "Got user {u}")
+    if (verbose) {
+      cli::cli_progress_step(
+        msg = "Getting user {u}",
+        msg_done = "Got user {u}"
+      )
+    }
     the$result <- TRUE
-    if (is.null(token)) token <- get_token()
+    if (is.null(token)) {
+      token <- get_token()
+    }
 
     if (fields == "all") {
       fields <- c(
@@ -292,18 +324,23 @@ tt_user_liked_videos_api <- function(username,
     }
 
     res <- list(data = list(has_more = TRUE, cursor = NULL))
-    the$page <-  0L
+    the$page <- 0L
     videos <- list()
     # iterate over pages
-    while (purrr::pluck(res, "data", "has_more", .default = FALSE) && the$page < max_pages) {
+    while (
+      purrr::pluck(res, "data", "has_more", .default = FALSE) &&
+        the$page < max_pages
+    ) {
       the$page <- the$page + 1
       the$cursor <- purrr::pluck(res, "data", "cursor")
 
-      res <- tt_user_request(endpoint = "liked_videos/",
-                             username = u,
-                             fields = fields,
-                             cursor = the$cursor,
-                             token = token)
+      res <- tt_user_request(
+        endpoint = "liked_videos/",
+        username = u,
+        fields = fields,
+        cursor = the$cursor,
+        token = token
+      )
 
       videos <- c(videos, purrr::pluck(res, "data", "user_liked_videos"))
       if (cache) {
@@ -316,22 +353,26 @@ tt_user_liked_videos_api <- function(username,
         purrr::map(as_tibble_onerow) |>
         dplyr::bind_rows() |>
         # somehow, the order changes between, calls. So I fix it here
-        dplyr::relocate("id",
-                        "username",
-                        "create_time",
-                        "video_description",
-                        "region_code",
-                        "video_duration",
-                        "view_count",
-                        "like_count",
-                        "comment_count",
-                        "share_count",
-                        "music_id")
+        dplyr::relocate(
+          "id",
+          "username",
+          "create_time",
+          "video_description",
+          "region_code",
+          "video_duration",
+          "view_count",
+          "like_count",
+          "comment_count",
+          "share_count",
+          "music_id"
+        )
 
       videos <- tibble::add_column(videos, liked_by_user = u)
-      if (verbose) cli::cli_progress_done(
-        result	= ifelse(length(videos) > 1, "done", "failed")
-      )
+      if (verbose) {
+        cli::cli_progress_done(
+          result = ifelse(length(videos) > 1, "done", "failed")
+        )
+      }
 
       return(videos)
     }
@@ -362,13 +403,14 @@ tt_user_liked_videos_api <- function(username,
 #'
 #' # note: none of these work because nobody has this enabled!
 #' }
-tt_user_reposted_api <- function(username,
-                                     fields = "all",
-                                     max_pages = 1,
-                                     cache = TRUE,
-                                     verbose = TRUE,
-                                     token = NULL) {
-
+tt_user_reposted_api <- function(
+  username,
+  fields = "all",
+  max_pages = 1,
+  cache = TRUE,
+  verbose = TRUE,
+  token = NULL
+) {
   purrr::map(username, function(u) {
     # if username is given as URL
     if (grepl("/", u)) {
@@ -377,10 +419,16 @@ tt_user_reposted_api <- function(username,
         "(?<=.com/@)(.+?)(?=\\?|$|/)"
       )
     }
-    if (verbose) cli::cli_progress_step(msg = "Getting user {u}",
-                                        msg_done = "Got user {u}")
+    if (verbose) {
+      cli::cli_progress_step(
+        msg = "Getting user {u}",
+        msg_done = "Got user {u}"
+      )
+    }
     the$result <- TRUE
-    if (is.null(token)) token <- get_token()
+    if (is.null(token)) {
+      token <- get_token()
+    }
 
     if (fields == "all") {
       fields <- c(
@@ -403,18 +451,23 @@ tt_user_reposted_api <- function(username,
     }
 
     res <- list(data = list(has_more = TRUE, cursor = NULL))
-    the$page <-  0L
+    the$page <- 0L
     videos <- list()
     # iterate over pages
-    while (purrr::pluck(res, "data", "has_more", .default = FALSE) && the$page < max_pages) {
+    while (
+      purrr::pluck(res, "data", "has_more", .default = FALSE) &&
+        the$page < max_pages
+    ) {
       the$page <- the$page + 1
       the$cursor <- purrr::pluck(res, "data", "cursor")
 
-      res <- tt_user_request(endpoint = "reposted_videos/",
-                             username = u,
-                             fields = fields,
-                             cursor = the$cursor,
-                             token = token)
+      res <- tt_user_request(
+        endpoint = "reposted_videos/",
+        username = u,
+        fields = fields,
+        cursor = the$cursor,
+        token = token
+      )
 
       videos <- c(videos, purrr::pluck(res, "data", "reposted_videos"))
       if (cache) {
@@ -426,22 +479,26 @@ tt_user_reposted_api <- function(username,
       purrr::map(as_tibble_onerow) |>
       dplyr::bind_rows() |>
       # somehow, the order changes between, calls. So I fix it here
-      dplyr::relocate("id",
-                      "username",
-                      "create_time",
-                      "video_description",
-                      "region_code",
-                      "video_duration",
-                      "view_count",
-                      "like_count",
-                      "comment_count",
-                      "share_count",
-                      "music_id")
+      dplyr::relocate(
+        "id",
+        "username",
+        "create_time",
+        "video_description",
+        "region_code",
+        "video_duration",
+        "view_count",
+        "like_count",
+        "comment_count",
+        "share_count",
+        "music_id"
+      )
 
     videos <- tibble::add_column(videos, reposted_by_user = u)
-    if (verbose) cli::cli_progress_done(
-      result	= ifelse(length(videos) > 1, "done", "failed")
-    )
+    if (verbose) {
+      cli::cli_progress_done(
+        result = ifelse(length(videos) > 1, "done", "failed")
+      )
+    }
 
     return(videos)
   }) |>
@@ -468,12 +525,13 @@ tt_user_reposted_api <- function(username,
 #' # OR
 #' tt_user_pinned_videos_api("https://www.tiktok.com/@tiktok")
 #' }
-tt_user_pinned_videos_api <- function(username,
-                                      fields = "all",
-                                      cache = TRUE,
-                                      verbose = TRUE,
-                                      token = NULL) {
-
+tt_user_pinned_videos_api <- function(
+  username,
+  fields = "all",
+  cache = TRUE,
+  verbose = TRUE,
+  token = NULL
+) {
   purrr::map(username, function(u) {
     # if username is given as URL
     if (grepl("/", u)) {
@@ -482,10 +540,16 @@ tt_user_pinned_videos_api <- function(username,
         "(?<=.com/@)(.+?)(?=\\?|$|/)"
       )
     }
-    if (verbose) cli::cli_progress_step(msg = "Getting user {u}",
-                                        msg_done = "Got user {u}")
+    if (verbose) {
+      cli::cli_progress_step(
+        msg = "Getting user {u}",
+        msg_done = "Got user {u}"
+      )
+    }
     the$result <- TRUE
-    if (is.null(token)) token <- get_token()
+    if (is.null(token)) {
+      token <- get_token()
+    }
 
     if (fields == "all") {
       fields <- c(
@@ -508,11 +572,13 @@ tt_user_pinned_videos_api <- function(username,
         paste0(collapse = ",")
     }
 
-    res <- tt_user_request(endpoint = "pinned_videos/",
-                           username = u,
-                           fields = fields,
-                           cursor = NULL,
-                           token = token)
+    res <- tt_user_request(
+      endpoint = "pinned_videos/",
+      username = u,
+      fields = fields,
+      cursor = NULL,
+      token = token
+    )
 
     videos <- purrr::pluck(res, "data", "pinned_videos_list") |>
       purrr::map(as_tibble_onerow) |>
@@ -523,9 +589,11 @@ tt_user_pinned_videos_api <- function(username,
       the$videos <- videos
     }
 
-    if (verbose) cli::cli_progress_done(
-      result	= ifelse(length(videos) > 1, "done", "failed")
-    )
+    if (verbose) {
+      cli::cli_progress_done(
+        result = ifelse(length(videos) > 1, "done", "failed")
+      )
+    }
 
     return(videos)
   }) |>
@@ -552,45 +620,52 @@ tt_user_pinned_videos_api <- function(username,
 #' # OR
 #' tt_get_follower("https://www.tiktok.com/@tiktok")
 #' }
-tt_user_follower_api <- function(username,
-                                 max_pages = 1,
-                                 cache = TRUE,
-                                 verbose = TRUE,
-                                 token = NULL) {
-
-  tt_user_follow(endpoint = "followers/",
-                 username = username,
-                 max_pages = max_pages,
-                 cache = cache,
-                 verbose = verbose,
-                 token = token)
+tt_user_follower_api <- function(
+  username,
+  max_pages = 1,
+  cache = TRUE,
+  verbose = TRUE,
+  token = NULL
+) {
+  tt_user_follow(
+    endpoint = "followers/",
+    username = username,
+    max_pages = max_pages,
+    cache = cache,
+    verbose = verbose,
+    token = token
+  )
 }
 
 
 #' @rdname tt_user_follower_api
 #' @export
-tt_user_following_api <- function(username,
-                                  max_pages = 1,
-                                  cache = TRUE,
-                                  verbose = TRUE,
-                                  token = NULL) {
-
-  tt_user_follow(endpoint = "following/",
-                 username = username,
-                 max_pages = max_pages,
-                 cache = cache,
-                 verbose = verbose,
-                 token = token)
+tt_user_following_api <- function(
+  username,
+  max_pages = 1,
+  cache = TRUE,
+  verbose = TRUE,
+  token = NULL
+) {
+  tt_user_follow(
+    endpoint = "following/",
+    username = username,
+    max_pages = max_pages,
+    cache = cache,
+    verbose = verbose,
+    token = token
+  )
 }
 
 
-tt_user_follow <- function(endpoint,
-                           username,
-                           max_pages = 1,
-                           cache = TRUE,
-                           verbose = TRUE,
-                           token = NULL) {
-
+tt_user_follow <- function(
+  endpoint,
+  username,
+  max_pages = 1,
+  cache = TRUE,
+  verbose = TRUE,
+  token = NULL
+) {
   purrr::map(username, function(u) {
     # if username is given as URL
     if (grepl("/", u)) {
@@ -599,29 +674,42 @@ tt_user_follow <- function(endpoint,
         "(?<=.com/@)(.+?)(?=\\?|$|/)"
       )
     }
-    if (verbose) cli::cli_progress_step(msg = "Getting user {u}",
-                                        msg_done = "Got user {u}")
+    if (verbose) {
+      cli::cli_progress_step(
+        msg = "Getting user {u}",
+        msg_done = "Got user {u}"
+      )
+    }
     the$result <- TRUE
-    if (is.null(token)) token <- get_token()
+    if (is.null(token)) {
+      token <- get_token()
+    }
 
     res <- list(data = list(has_more = TRUE, cursor = NULL))
-    the$page <-  0L
+    the$page <- 0L
     followers <- list()
     # iterate over pages
-    while (purrr::pluck(res, "data", "has_more", .default = FALSE) && the$page < max_pages) {
+    while (
+      purrr::pluck(res, "data", "has_more", .default = FALSE) &&
+        the$page < max_pages
+    ) {
       the$page <- the$page + 1
       the$cursor <- purrr::pluck(res, "data", "cursor")
 
-      res <- tt_user_request(endpoint = endpoint,
-                             username = u,
-                             cursor = the$cursor,
-                             token = token)
+      res <- tt_user_request(
+        endpoint = endpoint,
+        username = u,
+        cursor = the$cursor,
+        token = token
+      )
 
-      followers <- c(followers, purrr::pluck(
-        res,
-        "data", ifelse(endpoint == "followers/",
-                       "user_followers",
-                       "user_following"))
+      followers <- c(
+        followers,
+        purrr::pluck(
+          res,
+          "data",
+          ifelse(endpoint == "followers/", "user_followers", "user_following")
+        )
       )
       if (cache) {
         the$videos <- followers
@@ -630,9 +718,11 @@ tt_user_follow <- function(endpoint,
 
     followers <- dplyr::bind_rows(followers)
     followers <- tibble::add_column(followers, following_user = u)
-    if (verbose) cli::cli_progress_done(
-      result	= ifelse(length(followers) > 1, "done", "failed")
-    )
+    if (verbose) {
+      cli::cli_progress_done(
+        result = ifelse(length(followers) > 1, "done", "failed")
+      )
+    }
 
     return(followers)
   }) |>
@@ -640,22 +730,19 @@ tt_user_follow <- function(endpoint,
 }
 
 # used to iterate over search requests
-tt_user_request <- function(endpoint,
-                            username,
-                            fields,
-                            cursor,
-                            token) {
-
+tt_user_request <- function(endpoint, username, fields, cursor, token) {
   req <- httr2::request("https://open.tiktokapis.com/v2/research/user/") |>
     httr2::req_url_path_append(endpoint) |>
     httr2::req_method("POST") |>
     httr2::req_headers("Content-Type" = "application/json") |>
     httr2::req_auth_bearer_token(token$access_token) |>
-    httr2::req_body_json(data = list(username = username,
-                                     max_count = 100L,
-                                     cursor = cursor)) |>
-    httr2::req_error(is_error = api_user_error_checker,
-                     body = api_error_handler) |>
+    httr2::req_body_json(
+      data = list(username = username, max_count = 100L, cursor = cursor)
+    ) |>
+    httr2::req_error(
+      is_error = api_user_error_checker,
+      body = api_error_handler
+    ) |>
     httr2::req_retry(max_tries = 5)
 
   if (!missing(fields)) {
@@ -666,7 +753,6 @@ tt_user_request <- function(endpoint,
   req |>
     httr2::req_perform() |>
     httr2::resp_body_json(bigint_as_char = TRUE)
-
 }
 
 
@@ -688,11 +774,12 @@ tt_user_request <- function(endpoint,
 #' # OR
 #' tt_user_info("https://www.tiktok.com/@tiktok")
 #' }
-tt_user_info_api <- function(username,
-                             fields = "all",
-                             verbose = TRUE,
-                             token = NULL) {
-
+tt_user_info_api <- function(
+  username,
+  fields = "all",
+  verbose = TRUE,
+  token = NULL
+) {
   out <- purrr::map(username, function(u) {
     # if username is given as URL
     if (grepl("/", u)) {
@@ -701,10 +788,16 @@ tt_user_info_api <- function(username,
         "(?<=.com/@)(.+?)(?=\\?|$|/)"
       )
     }
-    if (verbose) cli::cli_progress_step(msg = "Getting user {u}",
-                                        msg_done = "Got user {u}")
+    if (verbose) {
+      cli::cli_progress_step(
+        msg = "Getting user {u}",
+        msg_done = "Got user {u}"
+      )
+    }
     the$result <- TRUE
-    if (is.null(token)) token <- get_token()
+    if (is.null(token)) {
+      token <- get_token()
+    }
 
     if (fields == "all") {
       fields <- c(
@@ -721,25 +814,32 @@ tt_user_info_api <- function(username,
     }
 
     # /tests/testthat/example_resp_q_user.json
-    out <- httr2::request("https://open.tiktokapis.com/v2/research/user/info/") |>
+    out <- httr2::request(
+      "https://open.tiktokapis.com/v2/research/user/info/"
+    ) |>
       httr2::req_method("POST") |>
       httr2::req_url_query(fields = fields) |>
       httr2::req_headers("Content-Type" = "application/json") |>
       httr2::req_auth_bearer_token(token$access_token) |>
       httr2::req_body_json(data = list(username = u)) |>
-      httr2::req_error(is_error = api_user_error_checker,
-                       body = api_error_handler) |>
-      httr2::req_retry(max_tries = 5,
-                       backoff = function(t) t ^ 3) |>
+      httr2::req_error(
+        is_error = api_user_error_checker,
+        body = api_error_handler
+      ) |>
+      httr2::req_retry(max_tries = 5, backoff = function(t) t^3) |>
       httr2::req_perform() |>
       httr2::resp_body_json(bigint_as_char = TRUE) |>
       purrr::pluck("data") |>
       tibble::as_tibble()
-    if (verbose & !the$result) cli::cli_progress_done(result = "failed")
+    if (verbose & !the$result) {
+      cli::cli_progress_done(result = "failed")
+    }
     return(out)
   }) |>
     dplyr::bind_rows()
-  if (verbose) cli::cli_progress_done()
+  if (verbose) {
+    cli::cli_progress_done()
+  }
   return(out)
 }
 
@@ -763,14 +863,15 @@ tt_user_info_api <- function(username,
 #' # OR
 #' tt_comments_api("7106594312292453675")
 #' }
-tt_comments_api <- function(video_id,
-                            fields = "all",
-                            start_cursor = 0L,
-                            max_pages = 1L,
-                            cache = TRUE,
-                            verbose = TRUE,
-                            token = NULL) {
-
+tt_comments_api <- function(
+  video_id,
+  fields = "all",
+  start_cursor = 0L,
+  max_pages = 1L,
+  cache = TRUE,
+  verbose = TRUE,
+  token = NULL
+) {
   # if video_id is given as URL
   if (grepl("[^0-9]", video_id)) {
     video_id <- extract_regex(
@@ -779,10 +880,13 @@ tt_comments_api <- function(video_id,
     )
   }
 
-  if (fields == "all")
+  if (fields == "all") {
     fields <- "id,video_id,text,like_count,reply_count,parent_comment_id,create_time"
+  }
 
-  if (verbose) cli::cli_progress_step("Making initial request")
+  if (verbose) {
+    cli::cli_progress_step("Making initial request")
+  }
 
   res <- tt_query_request(
     endpoint = "comment/list/",
@@ -792,18 +896,27 @@ tt_comments_api <- function(video_id,
     token = token
   )
   comments <- purrr::pluck(res, "data", "comments")
-  if (cache) the$comments <- comments
+  if (cache) {
+    the$comments <- comments
+  }
   the$page <- 1
 
-  if (verbose) cli::cli_progress_bar(
-    format = "{cli::pb_spin} Got {page} page{?s} with {length(the$comments)} comment{?s} {cli::col_silver('[', cli::pb_elapsed, ']')}",
-    format_done = "{cli::col_green(cli::symbol$tick)} Got {page} page{?s} with {length(the$comments)} comment{?s}",
-    .envir = the
-  )
+  if (verbose) {
+    cli::cli_progress_bar(
+      format = "{cli::pb_spin} Got {page} page{?s} with {length(the$comments)} comment{?s} {cli::col_silver('[', cli::pb_elapsed, ']')}",
+      format_done = "{cli::col_green(cli::symbol$tick)} Got {page} page{?s} with {length(the$comments)} comment{?s}",
+      .envir = the
+    )
+  }
 
-  while (purrr::pluck(res, "data", "has_more", .default = FALSE) && the$page < max_pages) {
+  while (
+    purrr::pluck(res, "data", "has_more", .default = FALSE) &&
+      the$page < max_pages
+  ) {
     the$page <- the$page + 1
-    if (verbose) cli::cli_progress_update(.envir = the)
+    if (verbose) {
+      cli::cli_progress_update(.envir = the)
+    }
     res <- tt_query_request(
       endpoint = "comment/list/",
       video_id = video_id,
@@ -812,7 +925,9 @@ tt_comments_api <- function(video_id,
       token = token
     )
     comments <- c(comments, purrr::pluck(res, "data", "comments"))
-    if (cache) the$comments <- comments
+    if (cache) {
+      the$comments <- comments
+    }
     if (verbose) cli::cli_progress_done()
   }
 
@@ -836,10 +951,7 @@ tt_comments_api <- function(video_id,
 #'
 #' @return A data.frame video metadata.
 #' @export
-tt_playlist_api <- function(playlist_id,
-                            verbose = TRUE,
-                            token = NULL) {
-
+tt_playlist_api <- function(playlist_id, verbose = TRUE, token = NULL) {
   # the docs mention a cursor, but it's not implemented as far as I can tell
   cursor <- NULL
 
@@ -850,18 +962,26 @@ tt_playlist_api <- function(playlist_id,
     )
   }
 
-  if (is.null(token)) token <- get_token()
+  if (is.null(token)) {
+    token <- get_token()
+  }
 
-  out <- httr2::request("https://open.tiktokapis.com/v2/research/playlist/info/") |>
+  out <- httr2::request(
+    "https://open.tiktokapis.com/v2/research/playlist/info/"
+  ) |>
     httr2::req_method("POST") |>
     httr2::req_headers("Content-Type" = "application/json") |>
     httr2::req_auth_bearer_token(token$access_token) |>
-    httr2::req_body_json(data = list(playlist_id = playlist_id,
-                                     cursor = cursor)) |>
-    httr2::req_error(is_error = function(resp)
-      # API always seems to send 500, even when successful
-      !httr2::resp_status(resp) %in% c(100:399, 500),
-                     body = api_error_handler) |>
+    httr2::req_body_json(
+      data = list(playlist_id = playlist_id, cursor = cursor)
+    ) |>
+    httr2::req_error(
+      is_error = function(resp) {
+        # API always seems to send 500, even when successful
+        !httr2::resp_status(resp) %in% c(100:399, 500)
+      },
+      body = api_error_handler
+    ) |>
     httr2::req_retry(max_tries = 5) |>
     httr2::req_perform() |>
     httr2::resp_body_json(bigint_as_char = TRUE) |>
@@ -873,7 +993,6 @@ tt_playlist_api <- function(playlist_id,
 
 
 api_error_handler <- function(resp) {
-
   # failsafe save already collected videos to disk
   if (purrr::pluck_exists(the, "videos")) {
     q <- the$videos
@@ -904,27 +1023,38 @@ api_error_handler <- function(resp) {
 
 
 api_user_error_checker <- function(resp) {
-  if (httr2::resp_status(resp) < 400L) return(FALSE)
-  if (httr2::resp_status(resp) == 404L) return(TRUE)
+  if (httr2::resp_status(resp) < 400L) {
+    return(FALSE)
+  }
+  if (httr2::resp_status(resp) == 404L) {
+    return(TRUE)
+  }
   # it looks like the API sometimes returns 500 falsely, but in these cases, no
   # error message is present
-  if (httr2::resp_status(resp) == 500L &&
-      !purrr::pluck_exists(httr2::resp_body_json(resp), "error", "message")) {
+  if (
+    httr2::resp_status(resp) == 500L &&
+      !purrr::pluck_exists(httr2::resp_body_json(resp), "error", "message")
+  ) {
     return(FALSE)
   }
   # if likes can't be accessed, which is true for many users, this should
   # not throw an error
-  issue1 <- grepl("information.cannot.be.returned",
-                  httr2::resp_body_json(resp)$error$message)
+  issue1 <- grepl(
+    "information.cannot.be.returned",
+    httr2::resp_body_json(resp)$error$message
+  )
   # if the user can't be found, this should not throw an error, which
   # would break the loop
-  issue2 <- grepl("cannot.find.the.user",
-                  httr2::resp_body_json(resp)$error$message)
+  issue2 <- grepl(
+    "cannot.find.the.user",
+    httr2::resp_body_json(resp)$error$message
+  )
   # if account is private
-  issue3 <- grepl("is.private",
-                  httr2::resp_body_json(resp)$error$message)
-  issue4 <- grepl("API.cannot.return.this.user's.information",
-                  httr2::resp_body_json(resp)$error$message)
+  issue3 <- grepl("is.private", httr2::resp_body_json(resp)$error$message)
+  issue4 <- grepl(
+    "API.cannot.return.this.user's.information",
+    httr2::resp_body_json(resp)$error$message
+  )
 
   if (any(issue1, issue2, issue3, issue4)) {
     cli::cli_alert_warning(httr2::resp_body_json(resp)$error$message)

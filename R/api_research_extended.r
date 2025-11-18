@@ -29,15 +29,14 @@
 #'
 #' }
 #' @export
-tt_user_videos_api <- function(username,
-                               since = "2020-01-01",
-                               to = Sys.Date(),
-                               verbose = TRUE,
-                               ...) {
-
-  dates_from <- seq.Date(from = as.Date(since),
-                         to = as.Date(to),
-                         by = "31 day")
+tt_user_videos_api <- function(
+  username,
+  since = "2020-01-01",
+  to = Sys.Date(),
+  verbose = TRUE,
+  ...
+) {
+  dates_from <- seq.Date(from = as.Date(since), to = as.Date(to), by = "31 day")
   dates_to <- dates_from + 30
   # we want the last window to end today
   dates_to[length(dates_to)] <- as.Date(to)
@@ -49,17 +48,20 @@ tt_user_videos_api <- function(username,
     )
   }
 
-  purrr::map2(dates_from, dates_to, function(from, to) {
-    out <- query() |>
-      query_or(field_name = "username",
-               operation = "IN",
-               field_values = username) |>
-      tt_search_api(start_date = from,
-                    end_date = to,
-                    verbose = FALSE,
-                    ...)
-    if (nrow(out) > 0) return(out)
-  }, .progress = pb) |>
+  purrr::map2(
+    dates_from,
+    dates_to,
+    function(from, to) {
+      out <- query() |>
+        query_or(
+          field_name = "username",
+          operation = "IN",
+          field_values = username
+        ) |>
+        tt_search_api(start_date = from, end_date = to, verbose = FALSE, ...)
+      if (nrow(out) > 0) return(out)
+    },
+    .progress = pb
+  ) |>
     dplyr::bind_rows()
-
 }

@@ -68,13 +68,16 @@ query <- function(and = NULL, or = NULL, not = NULL) {
 #' @export
 query_and <- function(q, field_name, operation, field_values) {
   ield_values <- unname(field_values)
-  if (!is_query(q))
+  if (!is_query(q)) {
     cli::cli_abort("{.fn query_and} needs a query as input")
+  }
 
   # TODO: is this really the best way to append the list?
-  q$and[[length(q$and) + 1]] <- list(field_name = field_name,
-                                     operation = operation,
-                                     field_values = as.list(field_values))
+  q$and[[length(q$and) + 1]] <- list(
+    field_name = field_name,
+    operation = operation,
+    field_values = as.list(field_values)
+  )
 
   return(clean_query(q))
 }
@@ -84,12 +87,15 @@ query_and <- function(q, field_name, operation, field_values) {
 #' @export
 query_or <- function(q, field_name, operation, field_values) {
   field_values <- unname(field_values)
-  if (!is_query(q))
+  if (!is_query(q)) {
     cli::cli_abort("{.fn query_or} needs a query as input")
+  }
 
-  q$or[[length(q$or) + 1]] <- list(field_name = field_name,
-                                   operation = operation,
-                                   field_values = as.list(field_values))
+  q$or[[length(q$or) + 1]] <- list(
+    field_name = field_name,
+    operation = operation,
+    field_values = as.list(field_values)
+  )
 
   return(clean_query(q))
 }
@@ -99,12 +105,15 @@ query_or <- function(q, field_name, operation, field_values) {
 #' @export
 query_not <- function(q, field_name, operation, field_values) {
   ield_values <- unname(field_values)
-  if (!is_query(q))
+  if (!is_query(q)) {
     cli::cli_abort("{.fn query_not} needs a query as input")
+  }
 
-  q$not[[length(q$not) + 1]] <- list(field_name = field_name,
-                                     operation = operation,
-                                     field_values = as.list(field_values))
+  q$not[[length(q$not) + 1]] <- list(
+    field_name = field_name,
+    operation = operation,
+    field_values = as.list(field_values)
+  )
 
   return(clean_query(q))
 }
@@ -117,10 +126,9 @@ is_query <- function(q) {
 
 # make sure query only consists of valid entries
 clean_query <- function(q) {
-
   for (o in names(q)) {
     q[[o]][purrr::map_int(q[[o]], length) != 3] <- NULL
-    q[!purrr::map_int(q, length) > 0]  <- NULL
+    q[!purrr::map_int(q, length) > 0] <- NULL
   }
 
   return(q)
@@ -131,7 +139,7 @@ clean_query <- function(q) {
 #' @description Print a traktok query as a tree
 #' @param x An object of class \code{traktok_query}
 #' @param ... Additional arguments passed to \code{lobstr::tree}
-#' 
+#'
 #' @return nothing. Prints traktok query.
 #' @export
 #' @examples

@@ -10,7 +10,9 @@
 last_query <- function() {
   q <- the$videos
   # for searches from
-  if (isTRUE(is.character(q))) return(q)
+  if (isTRUE(is.character(q))) {
+    return(q)
+  }
   out <- try(parse_api_search(q), silent = TRUE)
   if (methods::is(out, "try-error")) {
     attr(q, "search_id") <- the$search_id
@@ -26,4 +28,3 @@ last_query <- function() {
 last_comments <- function() {
   the$comments
 }
-

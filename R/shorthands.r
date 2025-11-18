@@ -15,17 +15,17 @@
 #' @return a data.frame of video metadata
 #' @export
 tt_search <- function(...) {
-
   params <- list(...)
   token <- params$token
   params$token <- NULL
-  if (is.null(token)) token <- get_token(auth = FALSE)
+  if (is.null(token)) {
+    token <- get_token(auth = FALSE)
+  }
   if (isFALSE(token)) {
     tt_search_hidden(...)
   } else {
     tt_search_api(..., token)
   }
-
 }
 
 
@@ -55,7 +55,9 @@ tt_user_videos <- function(username, ...) {
   params <- list(...)
   token <- params$token
   params$token <- NULL
-  if (is.null(token)) token <- get_token(auth = FALSE)
+  if (is.null(token)) {
+    token <- get_token(auth = FALSE)
+  }
   if (isFALSE(token)) {
     tt_search_hidden(username, ...)
   } else {
@@ -117,32 +119,32 @@ tt_comments <- tt_comments_api
 #' @return a data.frame of followers and following of users
 #' @export
 tt_get_follower <- function(...) {
-
   params <- list(...)
   token <- params$token
   params$token <- NULL
-  if (is.null(token)) token <- get_token(auth = FALSE)
+  if (is.null(token)) {
+    token <- get_token(auth = FALSE)
+  }
   if (isFALSE(token)) {
     tt_get_follower_hidden(...)
   } else {
     tt_user_follower_api(..., token)
   }
-
 }
 
 
 #' @rdname tt_get_follower
 #' @export
 tt_get_following <- function(...) {
-
   params <- list(...)
   token <- params$token
   params$token <- NULL
-  if (is.null(token)) token <- get_token(auth = FALSE)
+  if (is.null(token)) {
+    token <- get_token(auth = FALSE)
+  }
   if (isFALSE(token)) {
     tt_get_following_hidden(...)
   } else {
     tt_user_following_api(..., token)
   }
-
 }
