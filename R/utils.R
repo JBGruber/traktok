@@ -57,7 +57,7 @@ check_live_setup <- function(needs_auth = TRUE) {
 
 
 #' @noRd
-wait <- function(sleep_pool, verbose = TRUE) {
+wait <- function(sleep_pool, verbose = interactive()) {
   sleep <- stats::runif(1) * sample(sleep_pool, 1L)
   if (verbose) {
     cli::cli_progress_message(

@@ -46,7 +46,7 @@ tt_videos_hidden <- function(
   sleep_pool = 1:10,
   max_tries = 5L,
   cookiefile = NULL,
-  verbose = TRUE,
+  verbose = interactive(),
   ...
 ) {
   video_urls <- unique(video_urls)
@@ -390,7 +390,7 @@ tt_search_hidden <- function(
   scroll = "5m",
   return_urls = FALSE,
   save_video = FALSE,
-  verbose = TRUE,
+  verbose = interactive(),
   headless = TRUE,
   ...
 ) {
@@ -541,7 +541,7 @@ tt_get_following_hidden <- function(
   sleep_pool = 1:10,
   max_tries = 5L,
   cookiefile = NULL,
-  verbose = TRUE
+  verbose = interactive()
 ) {
   if (!is.null(cookiefile)) {
     cookiemonster::add_cookies(cookiefile)
@@ -609,7 +609,7 @@ tt_get_follower_hidden <- function(
   sleep_pool = 1:10,
   max_tries = 5L,
   cookiefile = NULL,
-  verbose = TRUE
+  verbose = interactive()
 ) {
   if (!is.null(cookiefile)) {
     cookiemonster::add_cookies(cookiefile)
@@ -712,7 +712,7 @@ tt_user_videos_hidden <- function(
   save_video = FALSE,
   timeout = 5L,
   scroll = "5m",
-  verbose = TRUE,
+  verbose = interactive(),
   ...
 ) {
   check_live_setup(needs_auth = FALSE)

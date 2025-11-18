@@ -14,7 +14,7 @@ tt_videos_hidden(
   sleep_pool = 1:10,
   max_tries = 5L,
   cookiefile = NULL,
-  verbose = TRUE,
+  verbose = interactive(),
   ...
 )
 

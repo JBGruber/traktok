@@ -11,7 +11,7 @@ tt_search_hidden(
   scroll = "5m",
   return_urls = FALSE,
   save_video = FALSE,
-  verbose = TRUE,
+  verbose = interactive(),
   headless = TRUE,
   ...
 )

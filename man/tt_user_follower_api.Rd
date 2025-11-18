@@ -9,7 +9,7 @@ tt_user_follower_api(
   username,
   max_pages = 1,
   cache = TRUE,
-  verbose = TRUE,
+  verbose = interactive(),
   token = NULL
 )
 
@@ -17,7 +17,7 @@ tt_user_following_api(
   username,
   max_pages = 1,
   cache = TRUE,
-  verbose = TRUE,
+  verbose = interactive(),
   token = NULL
 )
 }

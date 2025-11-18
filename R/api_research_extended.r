@@ -33,7 +33,7 @@ tt_user_videos_api <- function(
   username,
   since = "2020-01-01",
   to = Sys.Date(),
-  verbose = TRUE,
+  verbose = interactive(),
   ...
 ) {
   dates_from <- seq.Date(from = as.Date(since), to = as.Date(to), by = "31 day")

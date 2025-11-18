@@ -5,9 +5,9 @@
 \alias{tt_playlist}
 \title{Lookup TikTok playlist using the research API}
 \usage{
-tt_playlist_api(playlist_id, verbose = TRUE, token = NULL)
+tt_playlist_api(playlist_id, verbose = interactive(), token = NULL)
 
-tt_playlist(playlist_id, verbose = TRUE, token = NULL)
+tt_playlist(playlist_id, verbose = interactive(), token = NULL)
 }
 \arguments{
 \item{playlist_id}{playlist ID or URL to a playlist.}

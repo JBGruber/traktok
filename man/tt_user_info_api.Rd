@@ -5,9 +5,14 @@
 \alias{tt_user_info}
 \title{Lookup TikTok information about a user using the research API}
 \usage{
-tt_user_info_api(username, fields = "all", verbose = TRUE, token = NULL)
+tt_user_info_api(
+  username,
+  fields = "all",
+  verbose = interactive(),
+  token = NULL
+)
 
-tt_user_info(username, fields = "all", verbose = TRUE, token = NULL)
+tt_user_info(username, fields = "all", verbose = interactive(), token = NULL)
 }
 \arguments{
 \item{username}{name(s) of the user(s) to be queried}

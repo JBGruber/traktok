@@ -10,7 +10,7 @@ tt_get_following_hidden(
   sleep_pool = 1:10,
   max_tries = 5L,
   cookiefile = NULL,
-  verbose = TRUE
+  verbose = interactive()
 )
 
 tt_get_follower_hidden(
@@ -18,7 +18,7 @@ tt_get_follower_hidden(
   sleep_pool = 1:10,
   max_tries = 5L,
   cookiefile = NULL,
-  verbose = TRUE
+  verbose = interactive()
 )
 }
 \arguments{

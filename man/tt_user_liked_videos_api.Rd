@@ -10,7 +10,7 @@ tt_user_liked_videos_api(
   fields = "all",
   max_pages = 1,
   cache = TRUE,
-  verbose = TRUE,
+  verbose = interactive(),
   token = NULL
 )
 
@@ -19,7 +19,7 @@ tt_get_liked(
   fields = "all",
   max_pages = 1,
   cache = TRUE,
-  verbose = TRUE,
+  verbose = interactive(),
   token = NULL
 )
 }

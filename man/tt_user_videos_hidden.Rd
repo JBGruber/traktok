@@ -11,7 +11,7 @@ tt_user_videos_hidden(
   save_video = FALSE,
   timeout = 5L,
   scroll = "5m",
-  verbose = TRUE,
+  verbose = interactive(),
   ...
 )
 }

@@ -78,7 +78,7 @@ tt_search_api <- function(
   max_pages = 1,
   parse = TRUE,
   cache = TRUE,
-  verbose = TRUE,
+  verbose = interactive(),
   token = NULL
 ) {
   if (is.character(query)) {
@@ -281,7 +281,7 @@ tt_user_liked_videos_api <- function(
   fields = "all",
   max_pages = 1,
   cache = TRUE,
-  verbose = TRUE,
+  verbose = interactive(),
   token = NULL
 ) {
   purrr::map(username, function(u) {
@@ -408,7 +408,7 @@ tt_user_reposted_api <- function(
   fields = "all",
   max_pages = 1,
   cache = TRUE,
-  verbose = TRUE,
+  verbose = interactive(),
   token = NULL
 ) {
   purrr::map(username, function(u) {
@@ -529,7 +529,7 @@ tt_user_pinned_videos_api <- function(
   username,
   fields = "all",
   cache = TRUE,
-  verbose = TRUE,
+  verbose = interactive(),
   token = NULL
 ) {
   purrr::map(username, function(u) {
@@ -624,7 +624,7 @@ tt_user_follower_api <- function(
   username,
   max_pages = 1,
   cache = TRUE,
-  verbose = TRUE,
+  verbose = interactive(),
   token = NULL
 ) {
   tt_user_follow(
@@ -644,7 +644,7 @@ tt_user_following_api <- function(
   username,
   max_pages = 1,
   cache = TRUE,
-  verbose = TRUE,
+  verbose = interactive(),
   token = NULL
 ) {
   tt_user_follow(
@@ -663,7 +663,7 @@ tt_user_follow <- function(
   username,
   max_pages = 1,
   cache = TRUE,
-  verbose = TRUE,
+  verbose = interactive(),
   token = NULL
 ) {
   purrr::map(username, function(u) {
@@ -777,7 +777,7 @@ tt_user_request <- function(endpoint, username, fields, cursor, token) {
 tt_user_info_api <- function(
   username,
   fields = "all",
-  verbose = TRUE,
+  verbose = interactive(),
   token = NULL
 ) {
   out <- purrr::map(username, function(u) {
@@ -869,7 +869,7 @@ tt_comments_api <- function(
   start_cursor = 0L,
   max_pages = 1L,
   cache = TRUE,
-  verbose = TRUE,
+  verbose = interactive(),
   token = NULL
 ) {
   # if video_id is given as URL
@@ -951,7 +951,7 @@ tt_comments_api <- function(
 #'
 #' @return A data.frame video metadata.
 #' @export
-tt_playlist_api <- function(playlist_id, verbose = TRUE, token = NULL) {
+tt_playlist_api <- function(playlist_id, verbose = interactive(), token = NULL) {
   # the docs mention a cursor, but it's not implemented as far as I can tell
   cursor <- NULL
 
