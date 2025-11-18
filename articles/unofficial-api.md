@@ -99,7 +99,7 @@ rstats_df
 ```
 
 [video of a captcha being
-solved](https://jbgruber.github.io/traktok/articles/captchas.webm)
+solved](https://jbgruber.github.io/traktok/articles/captchas.mp4)
 
 video of a captcha being solved
 
