@@ -345,9 +345,6 @@ tt_request_hidden <- function(url, max_tries = 5L, cookiefile = NULL) {
 #'
 #' @param query query as one string.
 #' @param headless open the browser to show the scrolling.
-#' @param scroll how long to keep scrolling before returning results. Can be a
-#'   numeric value of seconds or a string with seconds, minutes, hours or days
-#'   (see examples).
 #' @param ... Additional arguments to be passed to the
 #'   \code{\link{tt_videos_hidden}} function.
 #'
@@ -397,16 +394,7 @@ tt_search_hidden <- function(
   headless = TRUE,
   ...
 ) {
-  rlang::check_installed(
-    "rvest",
-    reason = "to use this function",
-    version = "1.0.4"
-  )
-  rlang::check_installed(
-    "cookiemonster",
-    reason = "to use this function",
-    version = "0.0.4"
-  )
+
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "list")
   if (!isTRUE(auth_check(research = FALSE, hidden = TRUE, silent = TRUE))) {
     cli::cli_abort(
@@ -439,12 +427,14 @@ tt_search_hidden <- function(
   last_y <- -1
   if (verbose) {
     cli::cli_progress_bar(
-      format = "{cli::pb_spin} Scrolling down (y={last_y}; waiting {round(wait, 1)} s)",
+      format = "{cli::pb_spin} Scrolling down ({last_y}px scrolled; waiting {round(wait, 1)} s)",
       clear = FALSE
     )
   }
 
-  while (sess$get_scroll_position()$y > last_y) {
+  solve_captcha(sess, solve = solve_captchas)
+  while (sess$get_scroll_position()$y > last_y &&
+         Sys.time() < max_time) {
     last_y <- sess$get_scroll_position()$y
     sess$scroll_to(top = 10^5)
     wait <- timeout * stats::runif(1, 1, 3)
@@ -455,7 +445,9 @@ tt_search_hidden <- function(
     sess$scroll_to(top = 10^5)
     solve_captcha(sess, solve = solve_captchas)
     the$videos <- extract_urls_sess(sess)
-    if (Sys.time() > max_time) break
+  }
+  if (verbose) {
+    cli::cli_progress_step("Collecting discovered URLs")
   }
   urls <- extract_urls_sess(sess)
   if (return_urls) {
@@ -691,8 +683,13 @@ tt_get_follower_hidden <- function(
 #'   to retrieve.
 #' @param solve_captchas open browser to solve appearing captchas manually.
 #' @param return_urls return video URLs instead of downloading the vidoes.
+#' @param save_video passed to \code{\link{tt_videos_hidden}} if `return_urls =
+#'   FALSE`.
 #' @param timeout time (in seconds) to wait between scrolling and solving
 #'   captchas.
+#' @param scroll how long to keep scrolling before returning results. Can be a
+#'   numeric value of seconds or a string with seconds, minutes, hours or days
+#'   (see examples).
 #' @param verbose should the function print status updates to the screen?
 #' @param ... Additional arguments to be passed to the
 #'   \code{\link{tt_videos_hidden}} function.
@@ -714,14 +711,11 @@ tt_user_videos_hidden <- function(
   return_urls = FALSE,
   save_video = FALSE,
   timeout = 5L,
+  scroll = "5m",
   verbose = TRUE,
   ...
 ) {
-  rlang::check_installed(
-    "rvest",
-    reason = "to use this function",
-    version = "1.0.4"
-  )
+  check_live_setup(needs_auth = FALSE)
 
   if (!grepl("^http[s]*://", username)) {
     username <- paste0("https://www.tiktok.com/@", username)
@@ -741,13 +735,16 @@ tt_user_videos_hidden <- function(
   sess <- rvest::read_html_live(username)
   last_y <- -1
   #scroll as far as possible
+  max_time <- scroll2timestamp(scroll)
   if (verbose) {
-    cli::cli_progress_bar(format = "{cli::pb_spin} Scrolling down (y={last_y})")
+    cli::cli_progress_bar(format = "{cli::pb_spin} Scrolling down ({last_y} px scrolled)")
   }
-  while (sess$get_scroll_position()$y > last_y) {
-    solve_captcha(sess, solve = solve_captchas)
+  solve_captcha(sess, solve = solve_captchas)
+  while (sess$get_scroll_position()$y > last_y &&
+         Sys.time() < max_time) {
     last_y <- sess$get_scroll_position()$y
     sess$scroll_to(top = 10^5)
+    solve_captcha(sess, solve = solve_captchas)
     if (verbose) {
       cli::cli_progress_update()
     }
@@ -756,11 +753,7 @@ tt_user_videos_hidden <- function(
   if (verbose) {
     cli::cli_progress_step("Collecting discovered URLs")
   }
-  urls <- sess |>
-    rvest::html_elements("a") |>
-    rvest::html_attr("href")
-  urls <- grep(username, x = urls, value = TRUE) |>
-    unique()
+  urls <- extract_urls_sess(sess)
   if (verbose) {
     cli::cli_progress_done()
     cli::cli_alert_success("{length(urls)} URLs discovered")

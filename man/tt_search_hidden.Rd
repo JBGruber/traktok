@@ -30,6 +30,8 @@ numeric value of seconds or a string with seconds, minutes, hours or days
 
 \item{return_urls}{return video URLs instead of downloading the vidoes.}
 
+\item{save_video}{passed to \code{\link{tt_videos_hidden}} if \code{return_urls = FALSE}.}
+
 \item{verbose}{should the function print status updates to the screen?}
 
 \item{headless}{open the browser to show the scrolling.}

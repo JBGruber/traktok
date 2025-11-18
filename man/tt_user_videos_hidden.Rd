@@ -10,6 +10,7 @@ tt_user_videos_hidden(
   return_urls = FALSE,
   save_video = FALSE,
   timeout = 5L,
+  scroll = "5m",
   verbose = TRUE,
   ...
 )
@@ -22,8 +23,14 @@ to retrieve.}
 
 \item{return_urls}{return video URLs instead of downloading the vidoes.}
 
+\item{save_video}{passed to \code{\link{tt_videos_hidden}} if \code{return_urls = FALSE}.}
+
 \item{timeout}{time (in seconds) to wait between scrolling and solving
 captchas.}
+
+\item{scroll}{how long to keep scrolling before returning results. Can be a
+numeric value of seconds or a string with seconds, minutes, hours or days
+(see examples).}
 
 \item{verbose}{should the function print status updates to the screen?}
 

@@ -27,6 +27,36 @@ check_dir <- function(dir, name) {
 
 
 #' @noRd
+check_live_setup <- function(needs_auth = TRUE) {
+  if (interactive()) {
+    rlang::check_installed(
+      "rvest",
+      reason = "to use this function",
+      version = "1.0.4"
+    )
+    rlang::check_installed(
+      "cookiemonster",
+      reason = "to use this function",
+      version = "0.0.4"
+    )
+  } else {
+    out <- !rlang::is_installed(
+      "rvest",
+      version = "1.0.4"
+    )
+    if (needs_auth) {
+      out <- out +
+        !rlang::is_installed(
+          "cookiemonster",
+          version = "0.0.4"
+        )
+    }
+    return(out)
+  }
+}
+
+
+#' @noRd
 wait <- function(sleep_pool, verbose = TRUE) {
   sleep <- stats::runif(1) * sample(sleep_pool, 1L)
   if (verbose) {
@@ -132,7 +162,12 @@ id2url <- function(x) {
 # base R function to get clean column names
 #' @noRd
 clean_names <- function(x) {
-  gsub(pattern = "([A-Z])", replacement = "_\\L\\1", x = x, perl = TRUE)
+  tolower(gsub(
+    pattern = "(?<=.)([A-Z])",
+    replacement = "_\\L\\1",
+    x = x,
+    perl = TRUE
+  ))
 }
 
 
@@ -143,7 +178,7 @@ extract_urls_sess <- function(sess) {
   # TODO: also extract slideshows
   rvest::html_elements(sess, "[id*='column-item-video-container'] a") |>
     rvest::html_attr("href") |>
-    grep(pattern = "/video/", x = _, value = TRUE, fixed = TRUE)
+    grep(pattern = "/video/|/photo/", x = _, value = TRUE)
 }
 
 
