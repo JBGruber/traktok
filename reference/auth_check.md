@@ -17,7 +17,7 @@ and
 ## Usage
 
 ``` r
-auth_check(research = TRUE, hidden = TRUE, silent = FALSE)
+auth_check(research = TRUE, hidden = TRUE, silent = FALSE, fail = TRUE)
 ```
 
 ## Arguments
@@ -29,6 +29,10 @@ auth_check(research = TRUE, hidden = TRUE, silent = FALSE)
 - silent:
 
   only return if check(s) were successful, no status on the screen
+
+- fail:
+
+  fail if even basic authentication for the hidden API is missing
 
 ## Value
 
