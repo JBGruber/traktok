@@ -41,7 +41,7 @@ drawn.}
 
 \item{cookiefile}{path to your cookiefile. Usually not needed after running
 \link{auth_hidden} once. See \code{vignette("unofficial-api", package =
-"traktok")} for more information on authentication.}
+  "traktok")} for more information on authentication.}
 
 \item{verbose}{should the function print status updates to the screen?}
 
@@ -52,17 +52,17 @@ drawn.}
 a data.frame containing post metadata.
 }
 \description{
-\ifelse{html}{\figure{api-unofficial}{options: alt='[Works on:
+\ifelse{html}{\figure{api-unofficial.svg}{options: alt='[Works on:
   Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
 }
 \details{
 The function will wait between scraping two videos to make it less
-  obvious that a scraper is accessing the site. The period is drawn randomly
-  from the `sleep_pool` and multiplied by a random fraction.
+obvious that a scraper is accessing the site. The period is drawn randomly
+from the \code{sleep_pool} and multiplied by a random fraction.
 
 Note that the video file has to be requested in the same session as
-  the metadata. So while the URL to the video file is included in the
-  metadata, this link will not work in most cases.
+the metadata. So while the URL to the video file is included in the
+metadata, this link will not work in most cases.
 }
 \examples{
 \dontrun{

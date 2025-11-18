@@ -16,16 +16,24 @@ screen}
 logical vector (invisible)
 }
 \description{
-\ifelse{html}{\figure{api-both.svg}{options:
-  alt='[Works on: Both]'}}{\strong{[Works on: Both]}}
+\ifelse{html}{\figure{api-both.svg}{options: alt='[Works on:
+  Both]'}}{\strong{[Works on: Both]}}
 
-  Check if the necessary token or cookies are stored on your computer
-  already. By default, the function checks for the authentication of the
-  research and hidden API. To learn how you can authenticate, look at the
-  vignette for the research (\code{vignette("research-api", package =
-  "traktok")}) or hidden (\code{vignette("unofficial-api", package =
-  "traktok")}) API.
+Check if the necessary token or cookies are stored on your computer
+already. By default, the function checks for the authentication of the
+research and hidden API. To learn how you can authenticate, see the
+\href{https://jbgruber.github.io/traktok/articles/research-api.html#authentication}{research API vignette}
+or \href{https://jbgruber.github.io/traktok/articles/unofficial-api.html#authentication}{hidden API vignette}.
+You can also view these locally with \code{vignette("research-api", package = "traktok")} and \code{vignette("unofficial-api", package = "traktok")}.
 }
 \examples{
 auth_check()
+
+au <- auth_check()
+if (isTRUE(au["research"])) {
+  message("Ready to use the research API!")
+}
+if (isTRUE(au["hidden"])) {
+  message("Ready to use all function of unofficial the API!")
+}
 }

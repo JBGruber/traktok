@@ -32,7 +32,7 @@ drawn.}
 
 \item{cookiefile}{path to your cookiefile. Usually not needed after running
 \link{auth_hidden} once. See \code{vignette("unofficial-api", package =
-"traktok")} for more information on authentication.}
+  "traktok")} for more information on authentication.}
 
 \item{verbose}{should the function print status updates to the screen?}
 }
@@ -40,10 +40,10 @@ drawn.}
 a data.frame of followers
 }
 \description{
-\ifelse{html}{\figure{api-unofficial}{options: alt='[Works on:
+\ifelse{html}{\figure{api-unofficial.svg}{options: alt='[Works on:
   Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
 
-  Get up to 5,000 accounts who follow a user or accounts a user follows.
+Get up to 5,000 accounts who follow a user or accounts a user follows.
 }
 \examples{
 \dontrun{

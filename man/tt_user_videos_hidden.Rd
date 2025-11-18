@@ -32,10 +32,10 @@ A list of video data or URLs, depending on the value of \code{return_urls}.
 a data.frame containing metadata of user posts.
 }
 \description{
-\ifelse{html}{\figure{api-unofficial}{options: alt='[Works on:
+\ifelse{html}{\figure{api-unofficial.svg}{options: alt='[Works on:
   Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
 
-  Get all videos posted by a TikTok user.
+Get all videos posted by a TikTok user.
 }
 \details{
 This function uses rvest to scrape a TikTok user's profile and retrieve any hidden videos.

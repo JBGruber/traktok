@@ -19,11 +19,11 @@ a data.frame containing metadata of user posts.
 \ifelse{html}{\figure{api-both.svg}{options:
   alt='[Works on: Both]'}}{\strong{[Works on: Both]}}
 
-  Get all videos posted by a user (or multiple user's for the Research API).
-  Searches videos using either the Research API (if an authentication token
-  is present, see \link{auth_research}) or otherwise the unofficial hidden
-  API. See \link{tt_user_videos_api} or \link{tt_user_videos_hidden} respectively for
-  information about these functions.
+Get all videos posted by a user (or multiple user's for the Research API).
+Searches videos using either the Research API (if an authentication token
+is present, see \link{auth_research}) or otherwise the unofficial hidden
+API. See \link{tt_user_videos_api} or \link{tt_user_videos_hidden} respectively for
+information about these functions.
 }
 \examples{
 \dontrun{

@@ -29,11 +29,11 @@ a data.frame containing metadata of user posts.
 \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:
   Research API]'}}{\strong{[Works on: Research API]}}
 
-  Get all videos posted by a user or multiple user's. This is a convenience
-  wrapper around \code{\link{tt_search_api}} that takes care of moving time
-  windows (search is limited to 30 days). This is the version of
-  \link{tt_user_videos} that explicitly uses Research API. Use
-  \link{tt_user_videos_hidden} for the unofficial API version.
+Get all videos posted by a user or multiple user's. This is a convenience
+wrapper around \code{\link{tt_search_api}} that takes care of moving time
+windows (search is limited to 30 days). This is the version of
+\link{tt_user_videos} that explicitly uses Research API. Use
+\link{tt_user_videos_hidden} for the unofficial API version.
 }
 \examples{
 \dontrun{

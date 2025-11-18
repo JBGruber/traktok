@@ -1,6 +1,9 @@
 #' Authenticate for the hidden/unofficial API
 #'
-#' @description Guides you through authentication for the hidden/unofficial API
+#' @description Guides you through authentication for the hidden/unofficial API.
+#'   To learn more, see the [hidden API
+#'   vignette](https://jbgruber.github.io/traktok/articles/unofficial-api.html#authentication)
+#'   or view it locally with `vignette("unofficial-api", package = "traktok")`.
 #'
 #' @param cookiefile path to your cookiefile. Usually not needed after running
 #'   \link{auth_hidden} once. See \code{vignette("unofficial-api", package =
@@ -19,7 +22,6 @@
 #' auth_hidden("www.tiktok.com_cookies.txt")
 #' }
 auth_hidden <- function(cookiefile, live = interactive()) {
-
   if (!missing(cookiefile)) {
     cookiemonster::add_cookies(cookiefile)
     return(invisible(TRUE))
@@ -28,9 +30,17 @@ auth_hidden <- function(cookiefile, live = interactive()) {
     "Supply either a cookiefile (see {.url https://jbgruber.github.io/traktok/",
     "articles/unofficial-api.html#authentication})"
   )
-  if (live && isTRUE(utils::askYesNo("Do you want to try live authentication using Chrome? (experimental)"))) {
-
-    rlang::check_installed("rvest", reason = "to use this function", version = "1.0.4")
+  if (
+    live &&
+      isTRUE(utils::askYesNo(
+        "Do you want to try live authentication using Chrome? (experimental)"
+      ))
+  ) {
+    rlang::check_installed(
+      "rvest",
+      reason = "to use this function",
+      version = "1.0.4"
+    )
 
     sess <- rvest::read_html_live("https://www.tiktok.com/")
     # TODO: find way to click cookie banner
@@ -40,8 +50,10 @@ auth_hidden <- function(cookiefile, live = interactive()) {
       sess$click("#header-login-button")
       sess$view()
     }
-    cli::cli_progress_bar(format = "{cli::pb_spin} Waiting for login",
-                          format_done = "Got cookies!")
+    cli::cli_progress_bar(
+      format = "{cli::pb_spin} Waiting for login",
+      format_done = "Got cookies!"
+    )
     Sys.sleep(5) # give time to load login
     while (check_element_exists(sess, "#loginContainer")) {
       Sys.sleep(1 / 30)
@@ -53,7 +65,10 @@ auth_hidden <- function(cookiefile, live = interactive()) {
     cookiemonster::add_cookies(session = sess)
     return(invisible(TRUE))
   } else {
-    msg <- paste0(msg, " or set {.code live = TRUE} to use interactive authentication")
+    msg <- paste0(
+      msg,
+      " or set {.code live = TRUE} to use interactive authentication"
+    )
   }
   cli::cli_abort(msg)
 }
@@ -61,7 +76,8 @@ auth_hidden <- function(cookiefile, live = interactive()) {
 
 check_element_exists <- function(sess, css) {
   res <- try(rvest::html_element(sess, css), silent = TRUE)
-  if (methods::is(res, "try-error")) return(TRUE)
+  if (methods::is(res, "try-error")) {
+    return(TRUE)
+  }
   return(length(rvest::html_element(sess, css)) > 0L)
 }
-

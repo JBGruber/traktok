@@ -13,10 +13,13 @@ tt_user_info_hidden(username, parse = TRUE)
 the full list).}
 }
 \value{
-A data.frame of user info.
+A data.frame or list of user info.
 }
 \description{
-Get infos about a user from the hidden API
+\ifelse{html}{\figure{api-unofficial.svg}{options:
+  alt='[Works on: Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
+
+Access the publicly available information about a user.
 }
 \examples{
 \dontrun{

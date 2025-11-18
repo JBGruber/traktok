@@ -72,8 +72,8 @@ A data.frame of parsed TikTok videos (or a nested list).
 \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:
   Research API]'}}{\strong{[Works on: Research API]}}
 
-  This is the version of \link{tt_search} that explicitly uses Research API.
-  Use \link{tt_search_hidden} for the unofficial API version.
+This is the version of \link{tt_search} that explicitly uses Research API.
+Use \link{tt_search_hidden} for the unofficial API version.
 }
 \examples{
 \dontrun{

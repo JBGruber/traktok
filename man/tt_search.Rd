@@ -18,8 +18,8 @@ a data.frame of video metadata
 \ifelse{html}{\figure{api-both.svg}{options:
   alt='[Works on: Both]'}}{\strong{[Works on: Both]}}
 
-  Searches videos using either the Research API (if an authentication token
-  is present, see \link{auth_research}) or otherwise the unofficial hidden
-  API. See \link{tt_search_api} or \link{tt_search_hidden} respectively for
-  information about these functions.
+Searches videos using either the Research API (if an authentication token
+is present, see \link{auth_research}) or otherwise the unofficial hidden
+API. See \link{tt_search_api} or \link{tt_search_hidden} respectively for
+information about these functions.
 }

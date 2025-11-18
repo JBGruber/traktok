@@ -1,6 +1,6 @@
 #' Get video metadata and video files from URLs
 #'
-#' @description \ifelse{html}{\figure{api-unofficial}{options: alt='[Works on:
+#' @description \ifelse{html}{\figure{api-unofficial.svg}{options: alt='[Works on:
 #'   Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
 #'
 #' @param video_urls vector of URLs or IDs to TikTok videos.
@@ -59,7 +59,13 @@ tt_videos_hidden <- function(
   if (!is.null(cookiefile)) {
     cookiemonster::add_cookies(cookiefile)
   }
+  # auth not neccesary at the moment, here to check if cookiemonster is set up
+  auth_check(research = FALSE, hidden = TRUE, silent = TRUE)
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
+  if (nchar(cookies) <= 1L) {
+    cli::cli_alert_danger("No TikTok cookies found. This will likely fail. See {.help auth_check}.")
+  }
+
   f_name <- ""
 
   check_dir(dir, "dir")
@@ -257,7 +263,7 @@ save_video <- function(video_dat, video_fn, overwrite, max_tries, cookies) {
 
 #' Get json string from a TikTok URL using the hidden API
 #'
-#' @description \ifelse{html}{\figure{api-unofficial}{options:
+#' @description \ifelse{html}{\figure{api-unofficial.svg}{options:
 #'   alt='[Works on: Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
 #'
 #'   Use this function in case you want to check the full data for a given
@@ -274,7 +280,12 @@ tt_request_hidden <- function(url, max_tries = 5L, cookiefile = NULL) {
   if (!is.null(cookiefile)) {
     cookiemonster::add_cookies(cookiefile)
   }
+  # auth not neccesary at the moment, here to check if cookiemonster is set up
+  auth_check(research = FALSE, hidden = TRUE, silent = TRUE)
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
+  if (nchar(cookies) <= 1L) {
+    cli::cli_alert_danger("No TikTok cookies found. This will likely fail. See {.help auth_check}.")
+  }
 
   req <- httr2::request(url) |>
     httr2::req_headers(
@@ -322,7 +333,7 @@ tt_request_hidden <- function(url, max_tries = 5L, cookiefile = NULL) {
 
 #' Search videos
 #'
-#' @description \ifelse{html}{\figure{api-unofficial}{options: alt='[Works on:
+#' @description \ifelse{html}{\figure{api-unofficial.svg}{options: alt='[Works on:
 #'   Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
 #'
 #'   This is the version of \link{tt_search} that explicitly uses the unofficial
@@ -333,7 +344,7 @@ tt_request_hidden <- function(url, max_tries = 5L, cookiefile = NULL) {
 #' @param scroll how long to keep scrolling before returning results. Can be a
 #'   numeric value of seconds or a string with seconds, minutes, hours or days
 #'   (see examples).
-#' @param ... here to absorb parameters of the old function.
+#' @param ... Additional arguments to be passed to the \code{\link{tt_videos_hidden}} function.
 #'
 #' @inheritParams tt_user_videos_hidden
 #'
@@ -374,6 +385,7 @@ tt_search_hidden <- function(
   solve_captchas = FALSE,
   timeout = 5L,
   scroll = "5m",
+  return_urls = FALSE,
   verbose = TRUE,
   headless = TRUE,
   ...
@@ -389,18 +401,21 @@ tt_search_hidden <- function(
     version = "0.0.4"
   )
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "list")
+  if (!isTRUE(auth_check(research = FALSE, hidden = TRUE, silent = TRUE))) {
+    cli::cli_abort("This function needs authentication. See {.help auth_hidden}.")
+  }
+
   # add leading . where it's missing
   cookies <- lapply(cookies, function(el) {
     el$domain <- sub("^tiktok.com$", ".tiktok.com", el$domain)
     return(el)
   })
-  # TODO check if login cookies are there
 
   search_url <- httr2::request("https://www.tiktok.com/search") |>
     httr2::req_url_query(q = query) |>
     purrr::pluck("url")
   if (verbose) {
-    cli::cli_progress_step("Opening {.url {search_url}}")
+    cli::cli_progress_step("Opening {.url {search_url}} at {Sys.time()}")
   }
   # create a session to fill it with the cookies
   sess <- rvest::read_html_live("http://localhost")
@@ -433,17 +448,27 @@ tt_search_hidden <- function(
     the$videos <- extract_urls_sess(sess)
     if (Sys.time() > max_time) break
   }
-  return(extract_urls_sess(sess))
+  urls <- extract_urls_sess(sess)
+  # TODO: collect video instead or offer option
+  if (return_urls) {
+    return(urls)
+  }
+  tt_videos_hidden(urls, ...)
 }
 
 
 #' Get infos about a user from the hidden API
 #'
+#' @description \ifelse{html}{\figure{api-unofficial.svg}{options:
+#'   alt='[Works on: Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
+#'
+#' Access the publicly available information about a user.
+#'
 #' @param username A URL to a video or username.
 #' @param parse Whether to parse the data into a data.frame (set to FALSE to get
 #'   the full list).
 #'
-#' @return A data.frame of user info.
+#' @return A data.frame or list of user info.
 #' @export
 #'
 #' @examples
@@ -491,7 +516,7 @@ tt_user_info_hidden <- function(username, parse = TRUE) {
 
 #' @title Get followers and following of a user from the hidden API
 #'
-#' @description \ifelse{html}{\figure{api-unofficial}{options: alt='[Works on:
+#' @description \ifelse{html}{\figure{api-unofficial.svg}{options: alt='[Works on:
 #'   Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
 #'
 #'   Get up to 5,000 accounts who follow a user or accounts a user follows.
@@ -517,6 +542,9 @@ tt_get_following_hidden <- function(
 ) {
   if (!is.null(cookiefile)) {
     cookiemonster::add_cookies(cookiefile)
+  }
+  if (!isTRUE(auth_check(research = FALSE, hidden = TRUE, silent = TRUE))) {
+    cli::cli_abort("This function needs authentication. See {.help auth_hidden}.")
   }
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
 
@@ -581,6 +609,9 @@ tt_get_follower_hidden <- function(
   if (!is.null(cookiefile)) {
     cookiemonster::add_cookies(cookiefile)
   }
+  if (!isTRUE(auth_check(research = FALSE, hidden = TRUE, silent = TRUE))) {
+    cli::cli_abort("This function needs authentication. See {.help auth_hidden}.")
+  }
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
 
   new_data <- list(minCursor = 0, total = Inf, hasMore = TRUE)
@@ -635,7 +666,7 @@ tt_get_follower_hidden <- function(
 #' Get videos from a TikTok user's profile
 #'
 #' This function uses rvest to scrape a TikTok user's profile and retrieve any hidden videos.
-#' @description \ifelse{html}{\figure{api-unofficial}{options: alt='[Works on:
+#' @description \ifelse{html}{\figure{api-unofficial.svg}{options: alt='[Works on:
 #'   Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
 #'
 #'   Get all videos posted by a TikTok user.
@@ -715,10 +746,14 @@ tt_user_videos_hidden <- function(
   if (return_urls) {
     return(urls)
   }
+  # TODO: add status
   tt_videos_hidden(urls, ...)
 }
 
 
+#' Check if captcha is shown on screen and open the browser for the user to
+#' solve it
+#' @noRd
 solve_captcha <- function(sess, solve) {
   captcha <- rvest::html_element(
     sess,

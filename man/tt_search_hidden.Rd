@@ -9,6 +9,7 @@ tt_search_hidden(
   solve_captchas = FALSE,
   timeout = 5L,
   scroll = "5m",
+  return_urls = FALSE,
   verbose = TRUE,
   headless = TRUE,
   ...
@@ -25,26 +26,28 @@ tt_search_hidden(
 numeric value of seconds or a string with seconds, minutes, hours or days
 (see examples).}
 
+\item{return_urls}{return video URLs instead of downloading the vidoes.}
+
 \item{verbose}{should the function print status updates to the screen?}
 
 \item{headless}{open the browser to show the scrolling.}
 
-\item{...}{here to absorb parameters of the old function.}
+\item{...}{Additional arguments to be passed to the \code{\link{tt_videos_hidden}} function.}
 }
 \value{
 a character vector of URLs.
 }
 \description{
-\ifelse{html}{\figure{api-unofficial}{options: alt='[Works on:
+\ifelse{html}{\figure{api-unofficial.svg}{options: alt='[Works on:
   Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
 
-  This is the version of \link{tt_search} that explicitly uses the unofficial
-  API. Use \link{tt_search_api} for the Research API version.
+This is the version of \link{tt_search} that explicitly uses the unofficial
+API. Use \link{tt_search_api} for the Research API version.
 }
 \details{
 The function will wait between scraping search results. To get more
-  than 6 videos, you need to provide cookies of a logged in account. For more
-  details see the unofficial-api vignette: \code{vignette("unofficial-api",
+than 6 videos, you need to provide cookies of a logged in account. For more
+details see the unofficial-api vignette: \code{vignette("unofficial-api",
   package = "traktok")}
 }
 \examples{
