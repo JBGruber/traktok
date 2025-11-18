@@ -79,7 +79,7 @@ rstats_df <- tt_search_hidden("#rstats", solve_captchas = TRUE, scroll = "1m")
 rstats_df
 ```
 
-![video of a captcha being solved](captchas.mp4)
+![video of a captcha being solved](captcha.mp4)
 
 This already gives you pretty much all information you could want about the videos that were found.
 

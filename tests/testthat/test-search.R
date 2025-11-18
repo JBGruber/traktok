@@ -1,6 +1,11 @@
 test_that("search keywords", {
   skip_if(
-    !isTRUE(auth_check(research = FALSE, hidden = TRUE, silent = TRUE)[
+    !isTRUE(auth_check(
+      research = FALSE,
+      hidden = TRUE,
+      silent = TRUE,
+      fail = FALSE
+    )[
       "hidden"
     ])
   )
@@ -23,7 +28,12 @@ test_that("search keywords", {
 
 test_that("search user videos", {
   skip_if(
-    !isTRUE(auth_check(research = FALSE, hidden = TRUE, silent = TRUE)[
+    !isTRUE(auth_check(
+      research = FALSE,
+      hidden = TRUE,
+      silent = TRUE,
+      fail = FALSE
+    )[
       "hidden"
     ])
   )
