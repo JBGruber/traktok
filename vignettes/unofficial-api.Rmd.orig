@@ -16,12 +16,14 @@ knitr::opts_chunk$set(
 ```
 
 The unofficial or hidden API is essentially what the TikTok website uses to display you content.
-Partly based on [Deen Freelon's `Pyktok` Python module](https://github.com/dfreelon/pyktok), `traktok` contains functions to simulate a browser accessing some of these API endpoints.
+Originally based on a translation of [Deen Freelon's `Pyktok` Python module](https://github.com/dfreelon/pyktok), `traktok` contains functions to simulate a browser accessing some of these API endpoints.
 How these endpoints work was discovered through reverse engineering and TikTok might change how these endpoints operate at any moment.
-As of writing this (2023-11-28), there are functions that can:
+As of writing this (2025-11-18), there are functions that can:
 
 - search videos using a search term
 - get video details and the video files from a given video URL
+- get user videos
+- get user info
 - get who follows a user
 - get who a user is following
 
@@ -59,24 +61,31 @@ cookiemonster::add_cookies("tiktok.com_cookies.txt")
 
 And that's it!
 `traktok` will access these cookies whenever necessary.
+To check if authentication was succesful, you can use:
 
+```{r}
+auth_check()
+```
 
 # Usage
 ## Search videos
 
 To search for videos, you can use either `tt_search` or `tt_search_hidden`, which do the same, as long as you do not have a token for the Research API.
-To get the first two pages of search results (one page has 12 videos), you can use this command:
+The function opens a browser in the background (or you can see what is happening with `headless = TRUE`) and scrolls down.
+Below, we let it scroll for up to one minute and solve captchas if they appear:
 
-```{r}
-rstats_df <- tt_search_hidden("#rstats", max_pages = 2)
+```{r tt_search_hidden}
+rstats_df <- tt_search_hidden("#rstats", solve_captchas = TRUE, scroll = "1m")
 rstats_df
 ```
+
+![video of a captcha being solved](captchas.webm)
 
 This already gives you pretty much all information you could want about the videos that were found.
 
 ## Get metadata and download videos
 
-However, you can obtain some more information, and importantly the video file, using `tt_videos`:
+If you already have URLs, you can obtain some more information, including the video files, using `tt_videos`:
 
 ```{r}
 rstats_df2 <- tt_videos(rstats_df$video_url[1:2], save_video = TRUE)
@@ -87,7 +96,11 @@ Per default, the function waits between one and ten seconds (chosen at random) b
 You can speed up the process (at your own risk), by changing the `sleep_pool` argument, which controls the minimum and maximum number of seconds to wait:
 
 ```{r}
-rstats_df3 <- tt_videos(rstats_df$video_url[3:4], save_video = TRUE, sleep_pool = 0.1)
+rstats_df3 <- tt_videos(
+  rstats_df$video_url[3:4],
+  save_video = TRUE,
+  sleep_pool = 0.1
+)
 rstats_df3
 ```
 
@@ -113,35 +126,34 @@ You can look through this and see for yourself if the data you are interested in
 
 ## Get followers and who a user is following
 
-Getting followers and who a user is following is (at the moment?) a little tricky to use, since TikTok blocks requests to a users profile page with anti-scraping measures.
-To circumvent that, you can open a users page in your browser and then right-click to show the source code:^[
-You can of course also use tools like [Playwright](https://playwright.dev/), [Selenium](https://www.selenium.dev/), or [](https://pptr.dev/) to automate this process.
-But that is beyond the scope of this vignette and package.
-]
-
-
-![](source-code.png)
-
-You can then search for and copy the `authorSecId` value:
-
-![](secuid.png)
-
-Once you have this `authorSecId` you can look up a maximum of 5,000 followers per account:
+To get followers and who a user is following, we need to first look up their SecID, which is a special ID for users.
+We can do so using the `tt_user_info_hidden` function:
 
 ```{r}
-tt_get_follower(secuid = "MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi",
-                verbose = FALSE)
+user_info <- tt_user_info_hidden("tiktok")
+user_info$secUid
+```
+
+Once you have the `secUid` you can look up a maximum of 5,000 followers per account:
+
+```{r}
+tt_get_follower_hidden(
+  secuid = "MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi",
+  verbose = FALSE
+)
 ```
 
 Likewise, you can also check who this account follows:
 
 ```{r}
-tt_get_following(secuid = "MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi",
-                 verbose = FALSE)
+tt_get_following_hidden(
+  secuid = "MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi",
+  verbose = FALSE
+)
 ```
 
 
-```{r}
+```{r include=FALSE}
 list.files(pattern = ".mp4") |>
   unlink()
 unlink("rstats", recursive = TRUE)
