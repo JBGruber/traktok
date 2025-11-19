@@ -42,10 +42,12 @@ logical vector (invisible)
 
 ``` r
 auth_check()
-#> ✖ It looks like you are using traktok for the first time. You need to add some basic authentication for this function to work. See `?auth_check()`.
+#> Warning: It looks like you are using traktok for the first time. You need to add some
+#> basic authentication for this function to work. See `?auth_check()`.
 
 au <- auth_check()
-#> ✖ It looks like you are using traktok for the first time. You need to add some basic authentication for this function to work. See `?auth_check()`.
+#> Warning: It looks like you are using traktok for the first time. You need to add some
+#> basic authentication for this function to work. See `?auth_check()`.
 if (isTRUE(au["research"])) {
   message("Ready to use the research API!")
 }

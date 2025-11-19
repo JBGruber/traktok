@@ -89,10 +89,12 @@ screen</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">auth_check</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> It looks like you are using traktok for the first time. You need to add some basic authentication for this function to work. See `?auth_check()`.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>It looks like you are using traktok for the first time. You need to add some</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> basic authentication for this function to work. See `?auth_check()`.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">au</span> <span class="op">&lt;-</span> <span class="fu">auth_check</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> It looks like you are using traktok for the first time. You need to add some basic authentication for this function to work. See `?auth_check()`.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>It looks like you are using traktok for the first time. You need to add some</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> basic authentication for this function to work. See `?auth_check()`.</span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Logic.html" class="external-link">isTRUE</a></span><span class="op">(</span><span class="va">au</span><span class="op">[</span><span class="st">"research"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Ready to use the research API!"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
