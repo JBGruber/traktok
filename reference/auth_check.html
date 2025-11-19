@@ -61,7 +61,7 @@ You can also view these locally with <code><a href="../articles/research-api.htm
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">auth_check</span><span class="op">(</span>research <span class="op">=</span> <span class="cn">TRUE</span>, hidden <span class="op">=</span> <span class="cn">TRUE</span>, silent <span class="op">=</span> <span class="cn">FALSE</span>, fail <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">auth_check</span><span class="op">(</span>research <span class="op">=</span> <span class="cn">TRUE</span>, hidden <span class="op">=</span> <span class="cn">TRUE</span>, silent <span class="op">=</span> <span class="cn">FALSE</span>, fail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -78,7 +78,7 @@ screen</p></dd>
 
 
 <dt id="arg-fail">fail<a class="anchor" aria-label="anchor" href="#arg-fail"></a></dt>
-<dd><p>fail if even basic authentication for the hidden API is missing</p></dd>
+<dd><p>fail if even basic authentication for the hidden API is missing.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -89,20 +89,16 @@ screen</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">auth_check</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in auth_check():</span> It looks like you are using traktok for the first time. You need to add</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> some basic authentication for this function to work. See `?auth_check()`.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> It looks like you are using traktok for the first time. You need to add some basic authentication for this function to work. See `?auth_check()`.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">au</span> <span class="op">&lt;-</span> <span class="fu">auth_check</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in auth_check():</span> It looks like you are using traktok for the first time. You need to add</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> some basic authentication for this function to work. See `?auth_check()`.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> It looks like you are using traktok for the first time. You need to add some basic authentication for this function to work. See `?auth_check()`.</span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Logic.html" class="external-link">isTRUE</a></span><span class="op">(</span><span class="va">au</span><span class="op">[</span><span class="st">"research"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Ready to use the research API!"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'au' not found</span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Logic.html" class="external-link">isTRUE</a></span><span class="op">(</span><span class="va">au</span><span class="op">[</span><span class="st">"hidden"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Ready to use all function of unofficial the API!"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'au' not found</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

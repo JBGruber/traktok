@@ -17,7 +17,7 @@ and
 ## Usage
 
 ``` r
-auth_check(research = TRUE, hidden = TRUE, silent = FALSE, fail = TRUE)
+auth_check(research = TRUE, hidden = TRUE, silent = FALSE, fail = FALSE)
 ```
 
 ## Arguments
@@ -32,7 +32,7 @@ auth_check(research = TRUE, hidden = TRUE, silent = FALSE, fail = TRUE)
 
 - fail:
 
-  fail if even basic authentication for the hidden API is missing
+  fail if even basic authentication for the hidden API is missing.
 
 ## Value
 
@@ -42,18 +42,14 @@ logical vector (invisible)
 
 ``` r
 auth_check()
-#> Error in auth_check(): It looks like you are using traktok for the first time. You need to add
-#> some basic authentication for this function to work. See `?auth_check()`.
+#> ✖ It looks like you are using traktok for the first time. You need to add some basic authentication for this function to work. See `?auth_check()`.
 
 au <- auth_check()
-#> Error in auth_check(): It looks like you are using traktok for the first time. You need to add
-#> some basic authentication for this function to work. See `?auth_check()`.
+#> ✖ It looks like you are using traktok for the first time. You need to add some basic authentication for this function to work. See `?auth_check()`.
 if (isTRUE(au["research"])) {
   message("Ready to use the research API!")
 }
-#> Error: object 'au' not found
 if (isTRUE(au["hidden"])) {
   message("Ready to use all function of unofficial the API!")
 }
-#> Error: object 'au' not found
 ```
