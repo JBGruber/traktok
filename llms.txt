@@ -30,7 +30,7 @@ API](https://developers.tiktok.com/products/research-api/). To learn
 about both access pathways, you should check out the [Research
 API](https://jbgruber.github.io/traktok/articles/research-api.html) and
 [Unofficial
-API](https://jbgruber.github.io/traktok/articles/unofficial-api.htmlc)
+API](https://jbgruber.github.io/traktok/articles/unofficial-api.html)
 vignettes. Since the Research API misses some important features (and
 since not everyone has access to it) it can often make sense to still
 use the hidden API that mocks requests from a browser. However, an

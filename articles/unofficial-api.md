@@ -24,7 +24,7 @@ then give `R` the cookies the browser uses to identify itself.
 The easiest way to get the cookies needed for authentication is to
 export the necessary cookies from your browser using a browser extension
 (after logging in at TikTok.com at least once). I can recommend [“Get
-cookies.txt”](https://chrome.google.com/webstore/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc)
+cookies.txt”](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc)
 for Chromium based browsers or
 [“cookies.txt”](https://addons.mozilla.org/en-US/firefox/addon/cookies-txt/)
 for Firefox (note that almost all browsers used today are based on one
