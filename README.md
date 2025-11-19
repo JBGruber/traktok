@@ -10,6 +10,7 @@ stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecy
 [![R-CMD-check](https://github.com/JBGruber/traktok/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JBGruber/traktok/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/JBGruber/traktok/branch/main/graph/badge.svg)](https://codecov.io/gh/JBGruber/traktok?branch=main)
+[![arXiv:10.48550/arXiv.2404.07654](https://img.shields.io/badge/DOI-arXiv.2404.07654-B31B1B?logo=arxiv)](https://doi.org/10.48550/arXiv.2404.07654)
 [![say-thanks](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/JBGruber)
 <!-- badges: end -->
 
@@ -34,16 +35,20 @@ coverage](https://codecov.io/gh/JBGruber/traktok/branch/main/graph/badge.svg)](h
 | authenticate a session | \- | [auth_research](https://jbgruber.github.io/traktok/reference/auth_research.html) | [auth_hidden](https://jbgruber.github.io/traktok/reference/auth_hidden.html) |
 
 The goal of traktok is to provide easy access to TikTok data. This
-package one started as an R port of Deen Freelon’s
+package once started as an R port of Deen Freelon’s
 [Pyktok](https://github.com/dfreelon/pyktok) Python module (though it is
 a complete rewrite without Python dependencies). It now covers functions
 from the secret hidden API that TikTok is using to show/search/play
 videos on their Website and the official [Research
-API](https://developers.tiktok.com/products/research-api/). Since the
-Research API misses some important features (and since not everyone has
-access to it) it can often make sense to still use the hidden API that
-mocks requests from a browser. However, an important disclaimer for the
-hidden API applies:
+API](https://developers.tiktok.com/products/research-api/). To learn
+about both access pathways, you should check out the [Research
+API](https://jbgruber.github.io/traktok/articles/research-api.html) and
+[Unofficial
+API](https://jbgruber.github.io/traktok/articles/unofficial-api.htmlc)
+vignettes. Since the Research API misses some important features (and
+since not everyone has access to it) it can often make sense to still
+use the hidden API that mocks requests from a browser. However, an
+important disclaimer for the hidden API applies:
 
 > This program may stop working suddenly if TikTok changes how it stores
 > its data ([see Freelon,
@@ -70,37 +75,52 @@ data:
     Visuals at Scale: How Far-Right Groups Mobilize on TikTok. Journal
     of Digital Social Research, 6(1), 10–30.
     <https://doi.org/10.33621/jdsr.v6i1.200>
-2.  Bach, P., Gitomer, A., Devries, M., Walker, C., Deyoe, D.,
-    Atienza-Bathelemy, J., Foucault Welles, B., Freelon, D., & Zulli, D.
-    (2023, October). Stitching Politics and Identity on TikTok. Panel
-    presented at AoIR2023: The 24th Annual Conference of the Association
-    of Internet Researchers. Philadelphia, PA, USA: AoIR. Retrieved from
-    <http://spir.aoir.org>
-3.  Wirz, D. S., Zai, F., Vogler, D., Urman, A., & Eisenegger, M.
+2.  Wirz, D. S., Zai, F., Vogler, D., Urman, A., & Eisenegger, M.
     (2023). Die Qualität von Schweizer Medien auf Instagram und TikTok.
     <https://doi.org/10.5167/UZH-238605>
-4.  Giglietto, F. (2024). Dashboard: TikTok Coordinated Sharing Network.
+3.  Giglietto, F. (2024). Dashboard: TikTok Coordinated Sharing Network.
     <https://fabiogiglietto.github.io/tiktok_csbn/tt_viz.html>
-5.  Widholm, A., Ekman, M., & Larsson, A. O. (2024). A Right-Wing Wave
+4.  Widholm, A., Ekman, M., & Larsson, A. O. (2024). A Right-Wing Wave
     on TikTok? Ideological Orientations, Platform Features, and User
     Engagement During the Early 2022 Election Campaign in Sweden. Social
     Media + Society, 10(3). <https://doi.org/10.1177/20563051241269266>
-6.  Blakeman, J. R., Carpenter, N., & Calderon, S. J. (2025). Describing
+5.  Blakeman, J. R., Carpenter, N., & Calderon, S. J. (2025). Describing
     acute coronary syndrome symptom information on social media
     platforms. Heart & Lung, 70, 112–121.
     <https://doi.org/10.1016/j.hrtlng.2024.11.021>
-7.  Donaldson, S. I., La Capria, K., DeJesus, A., Ganz, O., Delnevo, C.
+6.  Donaldson, S. I., La Capria, K., DeJesus, A., Ganz, O., Delnevo, C.
     D., & Allem, J.-P. (2025). Describing ZYN-Related Content on TikTok:
     Content Analysis. Nicotine and Tobacco Research, ntaf016.
     <https://doi.org/10.1093/ntr/ntaf016>
-8.  Peterson-Salahuddin, C. (2025). Teachable moments: TikTok social
+7.  Peterson-Salahuddin, C. (2025). Teachable moments: TikTok social
     drama as a site of Black feminist intellectual production.
     Information, Communication & Society, 28(3), 417–434.
     <https://doi.org/10.1080/1369118X.2024.2388093>
-9.  Wirz, D. S., & Zai, F. (2025). Infotainment on Social Media: How
+8.  Wirz, D. S., & Zai, F. (2025). Infotainment on Social Media: How
     News Companies Combine Information and Entertainment in News Stories
     on Instagram and TikTok. Digital Journalism, 13(7), 1249–1270.
     <https://doi.org/10.1080/21670811.2025.2464062>
 
 If you have used traktok in your research paper or project, please
-extend this list through a Pull Request or create an issue
+extend this list through a Pull Request or create an issue And ideally,
+also cite the package/paper:
+
+``` bib
+To cite traktok in publications use:
+
+  Gruber, Johannes B. (2025). traktok — Making TikTok Data
+  Accessible for Research. SocArXiv.
+  https://doi.org/10.31235/osf.io/xrgc6_v1
+
+A BibTeX entry for LaTeX users is
+
+  @Article{,
+    title = {traktok — Making TikTok Data Accessible for Research},
+    author = {Johannes B. Gruber},
+    year = {2025},
+    month = {jun},
+    journal = {SocArXiv},
+    doi = {10.31235/osf.io/xrgc6_v1},
+    url = {https://osf.io/xrgc6_v1},
+  }
+```
