@@ -16,7 +16,7 @@
 #' @param research,hidden turn check on/off for the research or hidden API.
 #' @param silent only return if check(s) were successful, no status on the
 #'   screen
-#' @param fail fail if even basic authentication for the hidden API is missing
+#' @param fail fail if even basic authentication for the hidden API is missing.
 #'
 #' @return logical vector (invisible)
 #' @export
@@ -35,7 +35,7 @@ auth_check <- function(
   research = TRUE,
   hidden = TRUE,
   silent = FALSE,
-  fail = TRUE
+  fail = FALSE
 ) {
   auth <- vector()
   if (research) {
@@ -50,12 +50,17 @@ auth_check <- function(
       silent = TRUE
     )
     if (methods::is(cookies, "try-error")) {
-      if (grepl("any.cookies.yet", cookies) && fail) {
-        cli::cli_abort(paste(
+      if (grepl("any.cookies.yet", cookies)) {
+        msg <- paste(
           "It looks like you are using traktok for the first time. You",
           "need to add some basic authentication for this function to work.",
           "See {.help auth_check}."
-        ))
+        )
+        if (fail) {
+          cli::cli_abort(msg)
+        } else {
+          cli::cli_alert_danger(msg)
+        }
       }
     }
     if (

@@ -60,7 +60,7 @@ tt_videos_hidden <- function(
     cookiemonster::add_cookies(cookiefile)
   }
   # auth not neccesary at the moment, here to check if cookiemonster is set up
-  auth_check(research = FALSE, hidden = TRUE, silent = TRUE)
+  auth_check(research = FALSE, hidden = TRUE, silent = TRUE, fail = TRUE)
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
   if (nchar(cookies) <= 1L) {
     cli::cli_alert_danger(
@@ -283,7 +283,7 @@ tt_request_hidden <- function(url, max_tries = 5L, cookiefile = NULL) {
     cookiemonster::add_cookies(cookiefile)
   }
   # auth not neccesary at the moment, here to check if cookiemonster is set up
-  auth_check(research = FALSE, hidden = TRUE, silent = TRUE)
+  auth_check(research = FALSE, hidden = TRUE, silent = TRUE, fail = TRUE)
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "string")
   if (nchar(cookies) <= 1L) {
     cli::cli_alert_danger(
@@ -394,9 +394,15 @@ tt_search_hidden <- function(
   headless = TRUE,
   ...
 ) {
-
   cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "list")
-  if (!isTRUE(auth_check(research = FALSE, hidden = TRUE, silent = TRUE))) {
+  if (
+    !isTRUE(auth_check(
+      research = FALSE,
+      hidden = TRUE,
+      silent = TRUE,
+      fail = TRUE
+    ))
+  ) {
     cli::cli_abort(
       "This function needs authentication. See {.help auth_hidden}."
     )
@@ -433,8 +439,10 @@ tt_search_hidden <- function(
   }
 
   solve_captcha(sess, solve = solve_captchas)
-  while (sess$get_scroll_position()$y > last_y &&
-         Sys.time() < max_time) {
+  while (
+    sess$get_scroll_position()$y > last_y &&
+      Sys.time() < max_time
+  ) {
     last_y <- sess$get_scroll_position()$y
     sess$scroll_to(top = 10^5)
     wait <- timeout * stats::runif(1, 1, 3)
@@ -546,7 +554,14 @@ tt_get_following_hidden <- function(
   if (!is.null(cookiefile)) {
     cookiemonster::add_cookies(cookiefile)
   }
-  if (!isTRUE(auth_check(research = FALSE, hidden = TRUE, silent = TRUE))) {
+  if (
+    !isTRUE(auth_check(
+      research = FALSE,
+      hidden = TRUE,
+      silent = TRUE,
+      fail = TRUE
+    ))
+  ) {
     cli::cli_abort(
       "This function needs authentication. See {.help auth_hidden}."
     )
@@ -614,7 +629,14 @@ tt_get_follower_hidden <- function(
   if (!is.null(cookiefile)) {
     cookiemonster::add_cookies(cookiefile)
   }
-  if (!isTRUE(auth_check(research = FALSE, hidden = TRUE, silent = TRUE))) {
+  if (
+    !isTRUE(auth_check(
+      research = FALSE,
+      hidden = TRUE,
+      silent = TRUE,
+      fail = TRUE
+    ))
+  ) {
     cli::cli_abort(
       "This function needs authentication. See {.help auth_hidden}."
     )
@@ -737,11 +759,15 @@ tt_user_videos_hidden <- function(
   #scroll as far as possible
   max_time <- scroll2timestamp(scroll)
   if (verbose) {
-    cli::cli_progress_bar(format = "{cli::pb_spin} Scrolling down ({last_y} px scrolled)")
+    cli::cli_progress_bar(
+      format = "{cli::pb_spin} Scrolling down ({last_y} px scrolled)"
+    )
   }
   solve_captcha(sess, solve = solve_captchas)
-  while (sess$get_scroll_position()$y > last_y &&
-         Sys.time() < max_time) {
+  while (
+    sess$get_scroll_position()$y > last_y &&
+      Sys.time() < max_time
+  ) {
     last_y <- sess$get_scroll_position()$y
     sess$scroll_to(top = 10^5)
     solve_captcha(sess, solve = solve_captchas)

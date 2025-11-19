@@ -4,7 +4,7 @@
 \alias{auth_check}
 \title{Check whether you are authenticated}
 \usage{
-auth_check(research = TRUE, hidden = TRUE, silent = FALSE, fail = TRUE)
+auth_check(research = TRUE, hidden = TRUE, silent = FALSE, fail = FALSE)
 }
 \arguments{
 \item{research, hidden}{turn check on/off for the research or hidden API.}
@@ -12,7 +12,7 @@ auth_check(research = TRUE, hidden = TRUE, silent = FALSE, fail = TRUE)
 \item{silent}{only return if check(s) were successful, no status on the
 screen}
 
-\item{fail}{fail if even basic authentication for the hidden API is missing}
+\item{fail}{fail if even basic authentication for the hidden API is missing.}
 }
 \value{
 logical vector (invisible)
