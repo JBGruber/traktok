@@ -1,4 +1,5 @@
 test_that("authentication works", {
+  skip_on_cran()
   mock_success <- function(req) {
     httr2::response(
       status_code = 200,

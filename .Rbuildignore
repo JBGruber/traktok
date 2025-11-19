@@ -10,3 +10,4 @@ tiktok.com_cookies.txt
 ^docs$
 ^pkgdown$
 ^LICENSE\.md$
+^cran-comments\.md$

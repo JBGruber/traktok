@@ -47,7 +47,7 @@ knitr::opts_chunk$set(
 
 The goal of traktok is to provide easy access to TikTok data. This package once started as an R port of Deen Freelon's [Pyktok](https://github.com/dfreelon/pyktok) Python module (though it is a complete rewrite without Python dependencies).
 It now covers functions from the secret hidden API that TikTok is using to show/search/play videos on their Website and the official [Research API](https://developers.tiktok.com/products/research-api/).
-To learn about both access pathways, you should check out the [Research API](https://jbgruber.github.io/traktok/articles/research-api.html) and [Unofficial API](https://jbgruber.github.io/traktok/articles/unofficial-api.htmlc) vignettes.
+To learn about both access pathways, you should check out the [Research API](https://jbgruber.github.io/traktok/articles/research-api.html) and [Unofficial API](https://jbgruber.github.io/traktok/articles/unofficial-api.html) vignettes.
 Since the Research API misses some important features (and since not everyone has access to it) it can often make sense to still use the hidden API that mocks requests from a browser.
 However, an important disclaimer for the hidden API applies: 
 

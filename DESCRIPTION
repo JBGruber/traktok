@@ -8,7 +8,7 @@ Authors@R:
            email = "JohannesB.Gruber@gmail.com", 
            role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-9177-1772"))
-Description: Getting TikTok data (<https://tiktok.com/>) through the official 
+Description: Getting TikTok data (< https://www.tiktok.com/>) through the official 
   and unofficial APIs—in other words, you can track TikTok. Originally a port
   of Deen Freelon's Pyktok (<https://github.com/dfreelon/pyktok>) Python module.
 License: GPL (>= 3)
