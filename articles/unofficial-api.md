@@ -54,7 +54,7 @@ cookiemonster::add_cookies("tiktok.com_cookies.txt")
 ```
 
 And that’s it! `traktok` will access these cookies whenever necessary.
-To check if authentication was succesful, you can use:
+To check if authentication was successful, you can use:
 
 ``` r
 auth_check()
