@@ -59,7 +59,7 @@ auth_check <- function(
         if (fail) {
           cli::cli_abort(msg)
         } else {
-          cli::cli_alert_danger(msg)
+          cli::cli_warn(msg)
         }
       }
     }

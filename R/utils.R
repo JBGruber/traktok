@@ -40,13 +40,13 @@ check_live_setup <- function(needs_auth = TRUE) {
       version = "0.0.4"
     )
   } else {
-    out <- !rlang::is_installed(
+    out <- rlang::is_installed(
       "rvest",
       version = "1.0.4"
     )
     if (needs_auth) {
       out <- out +
-        !rlang::is_installed(
+        rlang::is_installed(
           "cookiemonster",
           version = "0.0.4"
         )
