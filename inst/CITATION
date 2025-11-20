@@ -1,6 +1,6 @@
 citHeader("To cite traktok in publications use:")
 
-citEntry(
+bibentry(
   entry    = "Article",
   title    = "traktok — Making TikTok Data Accessible for Research",
   author   = "Johannes B. Gruber",

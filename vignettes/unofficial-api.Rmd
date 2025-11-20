@@ -98,7 +98,9 @@ rstats_df
 #> #   html_status <int>, music <list>, challenges <list>, …
 ```
 
-![video of a captcha being solved](captcha.mp4)
+```{r, eval = !is.null(knitr::opts_knit$get("rmarkdown.pandoc.to")) && knitr::opts_knit$get("rmarkdown.pandoc.to") == "html", echo = FALSE, results = 'asis'}
+cat("![video of a captcha being solved](captcha.mp4)")
+```
 
 This already gives you pretty much all information you could want about the videos that were found.
 

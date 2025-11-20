@@ -1,5 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^.vscode$
 tiktok.com_cookies.txt
 ^README\.Rmd$
 ^codecov\.yml$
@@ -11,3 +12,4 @@ tiktok.com_cookies.txt
 ^pkgdown$
 ^LICENSE\.md$
 ^cran-comments\.md$
+^CRAN-SUBMISSION$
