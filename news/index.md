@@ -1,5 +1,11 @@
 # Changelog
 
+## traktok 0.1.0
+
+CRAN release: 2025-11-24
+
+- first CRAN release
+
 ## traktok 0.0.8.9000
 
 - revive tt_search_hidden

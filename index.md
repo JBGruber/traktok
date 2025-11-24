@@ -96,7 +96,7 @@ To cite traktok in publications use:
 
   Gruber, Johannes B. (2025). traktok — Making TikTok Data
   Accessible for Research. SocArXiv.
-  https://doi.org/10.31235/osf.io/xrgc6_v1
+  https://doi.org/10.31235/osf.io/xrgc6_v2
 
 A BibTeX entry for LaTeX users is
 
@@ -106,7 +106,7 @@ A BibTeX entry for LaTeX users is
     year = {2025},
     month = {jun},
     journal = {SocArXiv},
-    doi = {10.31235/osf.io/xrgc6_v1},
-    url = {https://osf.io/xrgc6_v1},
+    doi = {10.31235/osf.io/xrgc6_v2},
+    url = {https://osf.io/xrgc6_v2},
   }
 ```

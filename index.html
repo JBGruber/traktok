@@ -11,8 +11,8 @@
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Collecting TikTok Data">
-<meta name="description" content="Getting TikTok data (&lt; https://www.tiktok.com/&gt;) through the official and unofficial APIs—in other words, you can track TikTok. Originally a port of Deen Freelon's Pyktok (&lt;https://github.com/dfreelon/pyktok&gt;) Python module.">
-<meta property="og:description" content="Getting TikTok data (&lt; https://www.tiktok.com/&gt;) through the official and unofficial APIs—in other words, you can track TikTok. Originally a port of Deen Freelon's Pyktok (&lt;https://github.com/dfreelon/pyktok&gt;) Python module.">
+<meta name="description" content="Getting TikTok data (&lt;https://www.tiktok.com/&gt;) through the official and unofficial APIs—in other words, you can track TikTok.">
+<meta property="og:description" content="Getting TikTok data (&lt;https://www.tiktok.com/&gt;) through the official and unofficial APIs—in other words, you can track TikTok.">
 <meta property="og:image" content="https://jbgruber.github.io/traktok/logo.png">
 </head>
 <body>
@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="index.html">traktok</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.8.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -213,7 +213,7 @@
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co">  Gruber, Johannes B. (2025). traktok — Making TikTok Data</span></span>
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">  Accessible for Research. SocArXiv.</span></span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">  https://doi.org/10.31235/osf.io/xrgc6_v1</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">  https://doi.org/10.31235/osf.io/xrgc6_v2</span></span>
 <span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a></span>
 <span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">A BibTeX entry for LaTeX users is</span></span>
 <span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a></span>
@@ -223,14 +223,15 @@
 <span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>    <span class="dt">year</span> = {2025},</span>
 <span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>    <span class="dt">month</span> = {jun},</span>
 <span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>    <span class="dt">journal</span> = {SocArXiv},</span>
-<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>    <span class="dt">doi</span> = {10.31235/osf.io/xrgc6_v1},</span>
-<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>    <span class="dt">url</span> = {https://osf.io/xrgc6_v1},</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>    <span class="dt">doi</span> = {10.31235/osf.io/xrgc6_v2},</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>    <span class="dt">url</span> = {https://osf.io/xrgc6_v2},</span>
 <span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>  }</span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=traktok" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/JBGruber/traktok/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/JBGruber/traktok/issues" class="external-link">Report a bug</a></li>
 </ul>
@@ -264,9 +265,10 @@
 <ul class="list-unstyled">
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-green.svg" alt="Lifecycle: stable"></a></li>
 <li><a href="https://github.com/JBGruber/traktok/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/JBGruber/traktok/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://codecov.io/gh/JBGruber/traktok?branch=main" class="external-link"><img src="https://codecov.io/gh/JBGruber/traktok/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
-<li><a href="https://doi.org/10.48550/arXiv.2404.07654" class="external-link"><img src="https://img.shields.io/badge/DOI-arXiv.2404.07654-B31B1B?logo=arxiv" alt="arXiv:10.48550/arXiv.2404.07654"></a></li>
+<li><a href="https://app.codecov.io/gh/JBGruber/traktok?branch=main" class="external-link"><img src="https://codecov.io/gh/JBGruber/traktok/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://doi.org/10.31235/osf.io/xrgc6_v2" class="external-link"><img src="https://img.shields.io/badge/DOI-10.31235%2Fosf.io%2Fxrgc6__v2-blue" alt="osf:10.31235/osf.io/xrgc6_v2"></a></li>
 <li><a href="https://saythanks.io/to/JBGruber" class="external-link"><img src="https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg" alt="say-thanks"></a></li>
+<li><a href="https://CRAN.R-project.org/package=traktok" class="external-link"><img src="https://www.r-pkg.org/badges/version/traktok" alt="CRAN status"></a></li>
 </ul>
 </div>
 
