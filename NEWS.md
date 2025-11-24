@@ -1,3 +1,7 @@
+# traktok 0.1.0
+
+* first CRAN release
+
 # traktok 0.0.8.9000
 
 * revive tt_search_hidden (#14; thanks for th hint @michaelgoodier!)

@@ -1,15 +1,15 @@
 Package: traktok
 Type: Package
-Title: Collecting TikTok Data
-Version: 0.0.8.9000
+Title: Collecting 'TikTok' Data
+Version: 0.1.0
 Authors@R:
     person(given = "Johannes B.",
            family = "Gruber",
            email = "JohannesB.Gruber@gmail.com", 
            role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-9177-1772"))
-Description: Getting TikTok data (<https://www.tiktok.com/>) through the official 
-  and unofficial APIs—in other words, you can track TikTok.
+Description: Getting 'TikTok' data (<https://www.tiktok.com/>) through the official 
+  and unofficial APIs—in other words, you can track 'TikTok'.
 License: GPL (>= 3)
 Depends:
     R (>= 4.2.0)

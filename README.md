@@ -10,8 +10,10 @@ stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecy
 [![R-CMD-check](https://github.com/JBGruber/traktok/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JBGruber/traktok/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/JBGruber/traktok/branch/main/graph/badge.svg)](https://app.codecov.io/gh/JBGruber/traktok?branch=main)
-[![arXiv:10.48550/arXiv.2404.07654](https://img.shields.io/badge/DOI-arXiv.2404.07654-B31B1B?logo=arxiv)](https://doi.org/10.48550/arXiv.2404.07654)
+[![osf:10.31235/osf.io/xrgc6_v2](https://img.shields.io/badge/DOI-10.31235%2Fosf.io%2Fxrgc6__v2-blue)](https://doi.org/10.31235/osf.io/xrgc6_v2)
 [![say-thanks](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/JBGruber)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/traktok)](https://CRAN.R-project.org/package=traktok)
 <!-- badges: end -->
 
 ## Feature overview
@@ -110,7 +112,7 @@ To cite traktok in publications use:
 
   Gruber, Johannes B. (2025). traktok — Making TikTok Data
   Accessible for Research. SocArXiv.
-  https://doi.org/10.31235/osf.io/xrgc6_v1
+  https://doi.org/10.31235/osf.io/xrgc6_v2
 
 A BibTeX entry for LaTeX users is
 
@@ -120,7 +122,7 @@ A BibTeX entry for LaTeX users is
     year = {2025},
     month = {jun},
     journal = {SocArXiv},
-    doi = {10.31235/osf.io/xrgc6_v1},
-    url = {https://osf.io/xrgc6_v1},
+    doi = {10.31235/osf.io/xrgc6_v2},
+    url = {https://osf.io/xrgc6_v2},
   }
 ```
