@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   research-api: research-api.html
   unofficial-api: unofficial-api.html
-last_built: 2025-11-24T20:42Z
+last_built: 2025-11-25T10:37Z
 urls:
   reference: https://jbgruber.github.io/traktok/reference
   article: https://jbgruber.github.io/traktok/articles
