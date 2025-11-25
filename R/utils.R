@@ -176,8 +176,9 @@ clean_names <- function(x) {
 #' @noRd
 extract_urls_sess <- function(sess) {
   # TODO: also extract slideshows
-  rvest::html_elements(sess, "[id*='column-item-video-container'] a") |>
+  rvest::html_elements(sess, "[id*='grid-item-container'] a, [id*='column-item-video-container'] a") |>
     rvest::html_attr("href") |>
+    unique() |>
     grep(pattern = "/video/|/photo/", x = _, value = TRUE)
 }
 
