@@ -13,3 +13,4 @@ tiktok.com_cookies.txt
 ^LICENSE\.md$
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$
+^before-cran-release.r$

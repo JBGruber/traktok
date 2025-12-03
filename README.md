@@ -60,7 +60,13 @@ However, the last times, it was fixed rather quickly (e.g., \#12).
 
 ## Installation
 
-You can install the development version of traktok from
+You can install the package from CRAN:
+
+``` r
+install.packages("traktok")
+```
+
+Or install the development version of traktok from
 [GitHub](https://github.com/) with:
 
 ``` r
