@@ -8,7 +8,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/JBGruber/traktok/blob/main/inst/CITATION)
+[`inst/CITATION`](https://github.com/JBGruber/traktok/blob/v0.1.1/inst/CITATION)
 
 Gruber, Johannes B. (2025). traktok — Making TikTok Data Accessible for
 Research. SocArXiv. https://doi.org/10.31235/osf.io/xrgc6_v2
