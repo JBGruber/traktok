@@ -113,13 +113,8 @@ spluck <- function(.x, ...) {
 # makes sure list can be turned into tibble
 #' @noRd
 as_tibble_onerow <- function(l, ...) {
-  l <- purrr::map(l, function(c) {
-    if (length(c) != 1) {
-      return(list(c))
-    }
-    return(c)
-  })
-  tibble::as_tibble(l, ...)
+  l <- purrr::map(l, \(x) if (length(x) != 1) list(x) else x)
+  tibble::as_tibble_row(l, ...)
 }
 
 
@@ -176,7 +171,10 @@ clean_names <- function(x) {
 #' @noRd
 extract_urls_sess <- function(sess) {
   # TODO: also extract slideshows
-  rvest::html_elements(sess, "[id*='grid-item-container'] a, [id*='column-item-video-container'] a") |>
+  rvest::html_elements(
+    sess,
+    "[id*='grid-item-container'] a, [id*='column-item-video-container'] a"
+  ) |>
     rvest::html_attr("href") |>
     unique() |>
     grep(pattern = "/video/|/photo/", x = _, value = TRUE)

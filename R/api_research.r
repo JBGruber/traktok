@@ -951,7 +951,11 @@ tt_comments_api <- function(
 #'
 #' @return A data.frame video metadata.
 #' @export
-tt_playlist_api <- function(playlist_id, verbose = interactive(), token = NULL) {
+tt_playlist_api <- function(
+  playlist_id,
+  verbose = interactive(),
+  token = NULL
+) {
   # the docs mention a cursor, but it's not implemented as far as I can tell
   cursor <- NULL
 
