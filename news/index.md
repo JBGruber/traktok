@@ -2,6 +2,24 @@
 
 ## traktok (development version)
 
+- [`tt_search_api()`](https://jbgruber.github.io/traktok/reference/tt_search_api.md)
+  no longer limits searches to 30 days: longer time spans are
+  automatically split into consecutive 30 day windows (the maximum the
+  API allows per request) and the results are combined. `max_pages`
+  applies per window. The returned object (and
+  [`last_query()`](https://jbgruber.github.io/traktok/reference/last_query.md))
+  now also carries `start_date` and `end_date` attributes of the last
+  queried window, so that interrupted searches can be picked back up.
+  [`tt_user_videos_api()`](https://jbgruber.github.io/traktok/reference/tt_user_videos_api.md)
+  uses this internally now.
+- [`last_query()`](https://jbgruber.github.io/traktok/reference/last_query.md)
+  now always attaches the `search_id` and `cursor` attributes
+  (previously they were dropped when the cached videos could be parsed).
+- the `cursor` attribute of
+  [`tt_search_api()`](https://jbgruber.github.io/traktok/reference/tt_search_api.md)
+  results now reflects the last page received (it was one page behind
+  when `max_pages > 1`).
+
 ## traktok 0.1.0
 
 CRAN release: 2025-11-24

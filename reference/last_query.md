@@ -18,3 +18,11 @@ last_comments()
 ## Value
 
 a list of unparsed videos or comments.
+
+## Details
+
+For `tt_search_api`, the returned object carries the `search_id`,
+`cursor`, `start_date` and `end_date` of the time window that was being
+queried when the error occurred as attributes, so the search can be
+picked back up (see
+[`tt_search_api`](https://jbgruber.github.io/traktok/reference/tt_search_api.md)).

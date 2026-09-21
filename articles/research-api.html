@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Research API • traktok</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Research API">
 </head>
@@ -159,8 +159,12 @@ search with a key phrase directly:</p>
 and return up to 200 results (each page has 100 results and 2 pages are
 requested by default) from today and yesterday. Every whitespace is
 treated as an AND operator. To extend the data range, you can set a
-start and end (which can be a maximum of 30 days apart, but there is no
-limit how far you can go back):</p>
+start and end date (there is no limit how far you can go back). The API
+itself only accepts start and end dates that are a maximum of 30 days
+apart, but <code>tt_search_api</code> takes care of this for you: longer
+time spans are automatically split into consecutive 30 day windows,
+which are queried one after the other (note that <code>max_pages</code>
+then applies to each window separately):</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">tt_query_videos</span>(<span class="st">"#rstats"</span>,</span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>                <span class="at">max_pages =</span> <span class="dv">2</span><span class="dt">L</span>,</span>
 <span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>                <span class="at">start_date =</span> <span class="fu">as.Date</span>(<span class="st">"2023-11-01"</span>),</span>
@@ -592,7 +596,12 @@ or because you decided you want more results, you can do so by providing
 limit or another issue, you can retrieve the results already received
 with <code>search_df &lt;- last_query()</code>. <code>search_df</code>
 will in both cases contain the relevant <code>search_id</code> and
-<code>cursor</code> in the attributes:</p>
+<code>cursor</code> in the attributes. If your search spanned more than
+30 days, the attributes refer to the last 30 day window that was
+queried, and <code>attr(search_df, "start_date")</code> tells you where
+to pick the search back up (use it as <code>start_date</code> and keep
+your original <code>end_date</code> to also get the remaining
+windows):</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>search_df2 <span class="ot">&lt;-</span> <span class="fu">query</span>() <span class="sc">|&gt;</span></span>
 <span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="fu">query_and</span>(<span class="at">field_name =</span> <span class="st">"region_code"</span>,</span>
 <span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>            <span class="at">operation =</span> <span class="st">"IN"</span>,</span>
@@ -634,7 +643,7 @@ Videos</a>].</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

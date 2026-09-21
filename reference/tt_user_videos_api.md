@@ -4,9 +4,9 @@
 
 Get all videos posted by a user or multiple user's. This is a
 convenience wrapper around
-[`tt_search_api`](https://jbgruber.github.io/traktok/reference/tt_search_api.md)
-that takes care of moving time windows (search is limited to 30 days).
-This is the version of
+[`tt_search_api`](https://jbgruber.github.io/traktok/reference/tt_search_api.md),
+which queries the account in 30 day windows (the maximum the API allows
+per request). This is the version of
 [tt_user_videos](https://jbgruber.github.io/traktok/reference/tt_user_videos.md)
 that explicitly uses Research API. Use
 [tt_user_videos_hidden](https://jbgruber.github.io/traktok/reference/tt_user_videos_hidden.md)
@@ -42,7 +42,8 @@ tt_user_videos_api(
 
   Additional arguments to be passed to the
   [`tt_search_api`](https://jbgruber.github.io/traktok/reference/tt_search_api.md)
-  function.
+  function (e.g., `max_pages`, which applies to each 30 day window
+  separately).
 
 ## Value
 

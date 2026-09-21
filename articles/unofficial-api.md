@@ -50,6 +50,7 @@ specific to TikTok**, as we use the `cookiemonster` package to deal with
 that. To read the cookies into a specific encrypted file, simply use:
 
 ``` r
+
 cookiemonster::add_cookies("tiktok.com_cookies.txt")
 ```
 
@@ -57,6 +58,7 @@ And that’s it! `traktok` will access these cookies whenever necessary.
 To check if authentication was successful, you can use:
 
 ``` r
+
 auth_check()
 #> ✔ Research API authenticated
 #> ✔ Hidden API authenticated
@@ -74,6 +76,7 @@ scrolls down. Below, we let it scroll for up to one minute and solve
 captchas if they appear:
 
 ``` r
+
 rstats_df <- tt_search_hidden("#rstats", solve_captchas = TRUE, scroll = "1m")
 rstats_df
 #> # A tibble: 111 × 25
@@ -112,6 +115,7 @@ If you already have URLs, you can obtain some more information,
 including the video files, using `tt_videos`:
 
 ``` r
+
 rstats_df2 <- tt_videos(rstats_df$video_url[1:2], save_video = TRUE)
 rstats_df2
 #> # A tibble: 2 × 26
@@ -135,6 +139,7 @@ by changing the `sleep_pool` argument, which controls the minimum and
 maximum number of seconds to wait:
 
 ``` r
+
 rstats_df3 <- tt_videos(
   rstats_df$video_url[3:4],
   save_video = TRUE,
@@ -161,6 +166,7 @@ therefore usually makes sense to save your progress in a cache
 directory:
 
 ``` r
+
 rstats_df3 <- tt_videos(rstats_df$video_url[5:6], cache_dir = "rstats")
 list.files("rstats")
 #> [1] "7171033929175026949.json" "7528429314807696673.json"
@@ -173,6 +179,7 @@ If there are information that you feel are missing from the `data.frame`
 `tt_videos` returns, you can look at the raw, unparsed json data using:
 
 ``` r
+
 rstats_list1 <- tt_request_hidden(rstats_df$video_url[1]) |>
   jsonlite::fromJSON()
 ```
@@ -188,6 +195,7 @@ their SecID, which is a special ID for users. We can do so using the
 `tt_user_info_hidden` function:
 
 ``` r
+
 user_info <- tt_user_info_hidden("tiktok")
 user_info$secUid
 #> [1] "MS4wLjABAAAAv7iSuuXDJGDvJkmH_vz1qkDZYo1apxgzaxdBSeIuPiM"
@@ -197,6 +205,7 @@ Once you have the `secUid` you can look up a maximum of 5,000 followers
 per account:
 
 ``` r
+
 tt_get_follower_hidden(secuid = "MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi",
                 verbose = FALSE)
 #> 
@@ -225,6 +234,7 @@ tt_get_follower_hidden(secuid = "MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtO
 Likewise, you can also check who this account follows:
 
 ``` r
+
 tt_get_following_hidden(
   secuid = "MS4wLjABAAAAwiH32UMb5RenqEN7duyfLIeGQgSIx9WtgtOILt55q6ueUXgz4gHqZC5HFx4nabPi",
   verbose = FALSE

@@ -43,6 +43,7 @@ Once you have been approved and have your client key and client secret,
 you can authenticate with:
 
 ``` r
+
 library(traktok)
 auth_research()
 ```
@@ -88,8 +89,12 @@ This will match your keyword or phrase against keywords and hashtags and
 return up to 200 results (each page has 100 results and 2 pages are
 requested by default) from today and yesterday. Every whitespace is
 treated as an AND operator. To extend the data range, you can set a
-start and end (which can be a maximum of 30 days apart, but there is no
-limit how far you can go back):
+start and end date (there is no limit how far you can go back). The API
+itself only accepts start and end dates that are a maximum of 30 days
+apart, but `tt_search_api` takes care of this for you: longer time spans
+are automatically split into consecutive 30 day windows, which are
+queried one after the other (note that `max_pages` then applies to each
+window separately):
 
 ``` r
 tt_query_videos("#rstats",
@@ -152,6 +157,7 @@ building queries. For example, to get to the same query that matches
 this:
 
 ``` r
+
 query() |>                                # start by using query()
   query_or(field_name = "hashtag_name",   # add an OR condition on the hashtag field
            operation = "IN",              # the value should be IN the list of hashtags
@@ -229,7 +235,7 @@ search_df
 
 This will return videos posted in the US or Japan, that have rstats as
 the only hashtag or as one of the keywords and have a length of `"MID"`,
-`"LONG"`, or `"EXTRA_LONG"`.[¹](#fn1)
+`"LONG"`, or `"EXTRA_LONG"`.[^1]
 
 ### Get User Information
 
@@ -528,7 +534,11 @@ because you decided you want more results, you can do so by providing
 short by the rate limit or another issue, you can retrieve the results
 already received with `search_df <- last_query()`. `search_df` will in
 both cases contain the relevant `search_id` and `cursor` in the
-attributes:
+attributes. If your search spanned more than 30 days, the attributes
+refer to the last 30 day window that was queried, and
+`attr(search_df, "start_date")` tells you where to pick the search back
+up (use it as `start_date` and keep your original `end_date` to also get
+the remaining windows):
 
 ``` r
 search_df2 <- query() |>
@@ -562,8 +572,6 @@ the API also counts videos that are “deleted/marked as private by users
 etc.” \[See `max_count` in [Query
 Videos](https://developers.tiktok.com/doc/research-api-specs-query-videos)\].
 
-------------------------------------------------------------------------
-
-1.  See
+[^1]: See
     <https://developers.tiktok.com/doc/research-api-specs-query-videos#condition_fields>
     for possible values of each field.
