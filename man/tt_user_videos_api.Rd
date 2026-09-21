@@ -20,7 +20,8 @@ tt_user_videos_api(
 \item{verbose}{should the function print status updates to the screen?}
 
 \item{...}{Additional arguments to be passed to the
-\code{\link{tt_search_api}} function.}
+\code{\link{tt_search_api}} function (e.g., \code{max_pages}, which
+applies to each 30 day window separately).}
 }
 \value{
 a data.frame containing metadata of user posts.
@@ -30,9 +31,9 @@ a data.frame containing metadata of user posts.
   Research API]'}}{\strong{[Works on: Research API]}}
 
 Get all videos posted by a user or multiple user's. This is a convenience
-wrapper around \code{\link{tt_search_api}} that takes care of moving time
-windows (search is limited to 30 days). This is the version of
-\link{tt_user_videos} that explicitly uses Research API. Use
+wrapper around \code{\link{tt_search_api}}, which queries the account in
+30 day windows (the maximum the API allows per request). This is the
+version of \link{tt_user_videos} that explicitly uses Research API. Use
 \link{tt_user_videos_hidden} for the unofficial API version.
 }
 \examples{

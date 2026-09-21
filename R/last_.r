@@ -5,21 +5,25 @@
 #' retrieved so far from memory. Does not work when the session has crashed. In
 #' that case, look in \code{tempdir()} for an RDS file as a last resort.
 #'
+#' For \code{tt_search_api}, the returned object carries the
+#' \code{search_id}, \code{cursor}, \code{start_date} and \code{end_date} of
+#' the time window that was being queried when the error occurred as
+#' attributes, so the search can be picked back up (see
+#' \code{\link{tt_search_api}}).
+#'
 #' @return a list of unparsed videos or comments.
 #' @export
 last_query <- function() {
   q <- the$videos
-  # for searches from
+  # for searches from the hidden API, only URLs are cached
   if (isTRUE(is.character(q))) {
     return(q)
   }
   out <- try(parse_api_search(q), silent = TRUE)
   if (methods::is(out, "try-error")) {
-    attr(q, "search_id") <- the$search_id
-    attr(out, "cursor") <- the$cursor
-    return(q)
+    return(add_search_attrs(q))
   }
-  return(out)
+  return(add_search_attrs(out))
 }
 
 

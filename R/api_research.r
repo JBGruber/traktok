@@ -6,9 +6,27 @@
 #'   This is the version of \link{tt_search} that explicitly uses Research API.
 #'   Use \link{tt_search_hidden} for the unofficial API version.
 #'
+#' @details The Research API only accepts a \code{start_date} and
+#'   \code{end_date} that are at most 30 days apart. If you request a longer
+#'   time span, the function splits it into consecutive windows of at most 30
+#'   days, queries them one after the other and combines the results. Note
+#'   that \code{max_pages} then applies to each window separately (i.e., you
+#'   get up to \code{max_pages} pages per window) and that
+#'   \code{start_cursor} and \code{search_id} are only used for the first
+#'   window.
+#'
+#'   To pick a search back up, use the \code{search_id}, \code{cursor},
+#'   \code{start_date} and \code{end_date} attributes of the returned object
+#'   (or of \code{\link{last_query}} if the search failed). They always refer
+#'   to the last window that was queried, so that you can resume with
+#'   \code{start_date = attr(x, "start_date")} and the original
+#'   \code{end_date}.
+#'
 #' @param query A query string or object (see \link{query}).
 #' @param start_date,end_date A start and end date to narrow the search
-#'   (required; can be a maximum of 30 days apart).
+#'   (required). Can be \code{Date} objects or strings like \code{"20210102"}.
+#'   If they are more than 30 days apart, the search is split into 30 day
+#'   windows (see Details).
 #' @param fields The fields to be returned (defaults to all)
 #' @param start_cursor The starting cursor, i.e., how many results to skip (for
 #'   picking up an old search).
@@ -32,6 +50,23 @@
 #' # look for a keyword or hashtag by default
 #' tt_search_api("rstats")
 #'
+#' # longer time spans are automatically split into 30 day windows
+#' rstats <- tt_search_api("rstats",
+#'                         start_date = "20240101",
+#'                         end_date = "20240630",
+#'                         max_pages = 10)
+#'
+#' # when a search fails after a while, get the results and pick it back up
+#' # (only works with the same parameters). The attributes tell you where the
+#' # search stopped
+#' last_pull <- last_query()
+#' rstats2 <- tt_search_api("rstats",
+#'                          start_date = attr(last_pull, "start_date"),
+#'                          end_date = "20240630", # the original end date
+#'                          start_cursor = attr(last_pull, "cursor"),
+#'                          search_id = attr(last_pull, "search_id"),
+#'                          max_pages = 10)
+#'
 #' # or build a more elaborate query
 #' query() |>
 #'   query_and(field_name = "region_code",
@@ -47,25 +82,6 @@
 #'             field_name = "video_length",
 #'             field_values = "SHORT") |>
 #'   tt_search_api()
-#'
-#' # when a search fails after a while, get the results and pick it back up
-#' # (only work with same parameters)
-#' last_pull <- last_query()
-#' query() |>
-#'   query_and(field_name = "region_code",
-#'             operation = "IN",
-#'             field_values = c("JP", "US")) |>
-#'   query_or(field_name = "hashtag_name",
-#'             operation = "EQ", # rstats is the only hashtag
-#'             field_values = "rstats") |>
-#'   query_or(field_name = "keyword",
-#'            operation = "IN", # rstats is one of the keywords
-#'            field_values = "rstats") |>
-#'   query_not(operation = "EQ",
-#'             field_name = "video_length",
-#'             field_values = "SHORT") |>
-#'   tt_search_api(start_cursor = length(last_pull) + 1,
-#'                 search_id = attr(last_pull, "search_id"))
 #' }
 tt_search_api <- function(
   query,
@@ -106,97 +122,135 @@ tt_search_api <- function(
     fields <- "id,video_description,create_time,region_code,share_count,view_count,like_count,comment_count,music_id,hashtag_names,username,effect_ids,playlist_id,voice_to_text"
   }
 
-  if (is_datetime(start_date)) {
-    start_date <- format(start_date, "%Y%m%d")
-  } else if (!grepl("\\d{8}", start_date)) {
-    cli::cli_abort(
-      "{.code start_date} needs to be a valid date or a string like, e.g., \"20210102\""
+  # the API only allows 30 days per request, so longer time spans are split
+  # into windows which are queried one after the other
+  windows <- date_windows(start_date, end_date)
+  n_windows <- length(windows$from)
+
+  if (verbose && n_windows > 1) {
+    cli::cli_alert_info(
+      "Splitting search into {n_windows} time windows of at most 30 days"
     )
-  }
-
-  if (is_datetime(end_date)) {
-    end_date <- format(end_date, "%Y%m%d")
-  } else if (!grepl("\\d{8}", end_date)) {
-    cli::cli_abort(
-      "{.code start_date} needs to be a valid date or a string like, e.g., \"20210102\""
-    )
-  }
-
-  if (verbose) {
-    cli::cli_progress_step("Making initial request")
-  }
-
-  res <- tt_query_request(
-    endpoint = "query/",
-    query = query,
-    start_date = start_date,
-    end_date = end_date,
-    fields = fields,
-    cursor = start_cursor,
-    search_id = search_id,
-    is_random = is_random,
-    token = token
-  )
-  videos <- purrr::pluck(res, "data", "videos")
-  the$search_id <- spluck(res, "data", "search_id")
-  the$cursor <- spluck(res, "data", "cursor")
-  the$videos <- videos
-
-  the$page <- 1
-
-  if (verbose) {
-    cli::cli_progress_bar(
-      format = "{cli::pb_spin} Got {page} page{?s} with {length(videos)} video{?s} {cli::col_silver('[', cli::pb_elapsed, ']')}",
-      format_done = "{cli::col_green(cli::symbol$tick)} Got {page} page{?s} with {length(videos)} video{?s}",
-      .envir = the
-    )
-  }
-
-  while (
-    purrr::pluck(res, "data", "has_more", .default = FALSE) &&
-      the$page < max_pages
-  ) {
-    the$page <- the$page + 1
-    the$cursor <- spluck(res, "data", "cursor")
-    if (verbose) {
-      cli::cli_progress_update(force = TRUE, .envir = the)
+    if (!is.null(search_id) || start_cursor > 0) {
+      cli::cli_alert_info(
+        "{.code search_id} and {.code start_cursor} are only used for the first window"
+      )
     }
-    res <- tt_query_request(
-      endpoint = "query/",
-      query = query,
-      start_date = start_date,
-      end_date = end_date,
-      fields = fields,
-      cursor = the$cursor,
-      search_id = the$search_id,
-      is_random = is_random,
-      token = token
-    )
-    videos <- c(videos, purrr::pluck(res, "data", "videos"))
-    if (cache) {
-      the$videos <- videos
+  }
+
+  # reset cache so last_query() only returns videos from this search
+  the$videos <- list()
+  videos <- list()
+
+  for (i in seq_len(n_windows)) {
+    the$window_lbl <- if (n_windows > 1) {
+      sprintf("[%d/%d] ", i, n_windows)
+    } else {
+      ""
     }
-    if (verbose) cli::cli_progress_done()
+    videos <- c(
+      videos,
+      tt_search_window(
+        query = query,
+        start_date = windows$from[i],
+        end_date = windows$to[i],
+        fields = fields,
+        start_cursor = if (i == 1L) start_cursor else 0L,
+        search_id = if (i == 1L) search_id else NULL,
+        is_random = is_random,
+        max_pages = max_pages,
+        cache = cache,
+        verbose = verbose,
+        token = token
+      )
+    )
   }
 
   if (parse) {
     if (verbose) {
-      cli::cli_progress_done()
       cli::cli_progress_step("Parsing data")
     }
     videos <- parse_api_search(videos)
     if (verbose) cli::cli_progress_done()
   }
   class(videos) <- c("tt_results", class(videos))
-  attr(videos, "search_id") <- the$search_id
-  attr(videos, "cursor") <- the$cursor
-  return(videos)
+  return(add_search_attrs(videos))
 }
 
 
 #' @export
 #' @rdname tt_search_api
 tt_query_videos <- tt_search_api
+
+
+# queries a single time window (max 30 days) and iterates over its pages
+tt_search_window <- function(
+  query,
+  start_date,
+  end_date,
+  fields,
+  start_cursor,
+  search_id,
+  is_random,
+  max_pages,
+  cache,
+  verbose,
+  token
+) {
+  # state is kept in `the` so last_query() can pick up where this window
+  # stopped if an error occurs
+  the$start_date <- start_date
+  the$end_date <- end_date
+  the$search_id <- search_id
+  the$cursor <- start_cursor
+  the$page <- 0L
+  the$n_videos <- 0L
+
+  if (verbose) {
+    id <- cli::cli_progress_step(
+      msg = "{window_lbl}Searching {start_date} to {end_date}: {page} page{?s}, {n_videos} video{?s}",
+      msg_done = "{window_lbl}Searched {start_date} to {end_date}: got {page} page{?s} with {n_videos} video{?s}",
+      spinner = TRUE,
+      .envir = the
+    )
+  }
+
+  videos <- list()
+  res <- list(data = list(has_more = TRUE))
+  # iterate over pages
+  while (
+    purrr::pluck(res, "data", "has_more", .default = FALSE) &&
+      the$page < max_pages
+  ) {
+    the$page <- the$page + 1L
+    if (verbose) {
+      cli::cli_progress_update(id = id, .envir = the)
+    }
+    res <- tt_query_request(
+      endpoint = "query/",
+      query = query,
+      start_date = format(start_date, "%Y%m%d"),
+      end_date = format(end_date, "%Y%m%d"),
+      fields = fields,
+      cursor = the$cursor,
+      search_id = the$search_id,
+      is_random = is_random,
+      token = token
+    )
+    new_videos <- purrr::pluck(res, "data", "videos", .default = list())
+    videos <- c(videos, new_videos)
+    the$n_videos <- length(videos)
+    the$search_id <- spluck(res, "data", "search_id")
+    the$cursor <- spluck(res, "data", "cursor")
+    if (cache) {
+      the$videos <- c(the$videos, new_videos)
+    }
+  }
+  if (verbose) {
+    cli::cli_progress_done(id = id, .envir = the)
+  }
+  return(videos)
+}
 
 
 # used to iterate over search requests
@@ -999,9 +1053,7 @@ tt_playlist_api <- function(
 api_error_handler <- function(resp) {
   # failsafe save already collected videos to disk
   if (purrr::pluck_exists(the, "videos")) {
-    q <- the$videos
-    attr(q, "search_id") <- the$search_id
-    saveRDS(q, tempfile(fileext = ".rds"))
+    saveRDS(add_search_attrs(the$videos), tempfile(fileext = ".rds"))
   }
 
   if (httr2::resp_content_type(resp) == "application/json") {

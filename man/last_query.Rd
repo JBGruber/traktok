@@ -18,3 +18,10 @@ several pages, you can use this function to get all videos that have been
 retrieved so far from memory. Does not work when the session has crashed. In
 that case, look in \code{tempdir()} for an RDS file as a last resort.
 }
+\details{
+For \code{tt_search_api}, the returned object carries the
+\code{search_id}, \code{cursor}, \code{start_date} and \code{end_date} of
+the time window that was being queried when the error occurred as
+attributes, so the search can be picked back up (see
+\code{\link{tt_search_api}}).
+}

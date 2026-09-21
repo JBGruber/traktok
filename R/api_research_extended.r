@@ -4,15 +4,16 @@
 #'   Research API]'}}{\strong{[Works on: Research API]}}
 #'
 #'   Get all videos posted by a user or multiple user's. This is a convenience
-#'   wrapper around \code{\link{tt_search_api}} that takes care of moving time
-#'   windows (search is limited to 30 days). This is the version of
-#'   \link{tt_user_videos} that explicitly uses Research API. Use
+#'   wrapper around \code{\link{tt_search_api}}, which queries the account in
+#'   30 day windows (the maximum the API allows per request). This is the
+#'   version of \link{tt_user_videos} that explicitly uses Research API. Use
 #'   \link{tt_user_videos_hidden} for the unofficial API version.
 #'
 #' @param username The username or usernames whose videos you want to retrieve.
 #' @param since,to limits from/to when to go through the account in 30 day windows.
 #' @param ... Additional arguments to be passed to the
-#'   \code{\link{tt_search_api}} function.
+#'   \code{\link{tt_search_api}} function (e.g., \code{max_pages}, which
+#'   applies to each 30 day window separately).
 #'
 #' @inheritParams tt_search_api
 #'
@@ -36,32 +37,11 @@ tt_user_videos_api <- function(
   verbose = interactive(),
   ...
 ) {
-  dates_from <- seq.Date(from = as.Date(since), to = as.Date(to), by = "31 day")
-  dates_to <- dates_from + 30
-  # we want the last window to end today
-  dates_to[length(dates_to)] <- as.Date(to)
-
-  pb <- FALSE
-  if (verbose) {
-    pb <- list(
-      format = "{cli::pb_spin} searching time window {cli::pb_current} of {cli::pb_total} | {cli::pb_percent} done | ETA: {cli::pb_eta}"
-    )
-  }
-
-  purrr::map2(
-    dates_from,
-    dates_to,
-    function(from, to) {
-      out <- query() |>
-        query_or(
-          field_name = "username",
-          operation = "IN",
-          field_values = username
-        ) |>
-        tt_search_api(start_date = from, end_date = to, verbose = FALSE, ...)
-      if (nrow(out) > 0) return(out)
-    },
-    .progress = pb
-  ) |>
-    dplyr::bind_rows()
+  query() |>
+    query_or(
+      field_name = "username",
+      operation = "IN",
+      field_values = username
+    ) |>
+    tt_search_api(start_date = since, end_date = to, verbose = verbose, ...)
 }

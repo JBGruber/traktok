@@ -32,7 +32,7 @@ drawn.}
 
 \item{cookiefile}{path to your cookiefile. Usually not needed after running
 \link{auth_hidden} once. See \code{vignette("unofficial-api", package =
-  "traktok")} for more information on authentication.}
+"traktok")} for more information on authentication.}
 
 \item{verbose}{should the function print status updates to the screen?}
 }

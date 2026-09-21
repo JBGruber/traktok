@@ -39,7 +39,9 @@ tt_query_videos(
 \item{query}{A query string or object (see \link{query}).}
 
 \item{start_date, end_date}{A start and end date to narrow the search
-(required; can be a maximum of 30 days apart).}
+(required). Can be \code{Date} objects or strings like \code{"20210102"}.
+If they are more than 30 days apart, the search is split into 30 day
+windows (see Details).}
 
 \item{fields}{The fields to be returned (defaults to all)}
 
@@ -75,10 +77,44 @@ A data.frame of parsed TikTok videos (or a nested list).
 This is the version of \link{tt_search} that explicitly uses Research API.
 Use \link{tt_search_hidden} for the unofficial API version.
 }
+\details{
+The Research API only accepts a \code{start_date} and
+\code{end_date} that are at most 30 days apart. If you request a longer
+time span, the function splits it into consecutive windows of at most 30
+days, queries them one after the other and combines the results. Note
+that \code{max_pages} then applies to each window separately (i.e., you
+get up to \code{max_pages} pages per window) and that
+\code{start_cursor} and \code{search_id} are only used for the first
+window.
+
+To pick a search back up, use the \code{search_id}, \code{cursor},
+\code{start_date} and \code{end_date} attributes of the returned object
+(or of \code{\link{last_query}} if the search failed). They always refer
+to the last window that was queried, so that you can resume with
+\code{start_date = attr(x, "start_date")} and the original
+\code{end_date}.
+}
 \examples{
 \dontrun{
 # look for a keyword or hashtag by default
 tt_search_api("rstats")
+
+# longer time spans are automatically split into 30 day windows
+rstats <- tt_search_api("rstats",
+                        start_date = "20240101",
+                        end_date = "20240630",
+                        max_pages = 10)
+
+# when a search fails after a while, get the results and pick it back up
+# (only works with the same parameters). The attributes tell you where the
+# search stopped
+last_pull <- last_query()
+rstats2 <- tt_search_api("rstats",
+                         start_date = attr(last_pull, "start_date"),
+                         end_date = "20240630", # the original end date
+                         start_cursor = attr(last_pull, "cursor"),
+                         search_id = attr(last_pull, "search_id"),
+                         max_pages = 10)
 
 # or build a more elaborate query
 query() |>
@@ -95,24 +131,5 @@ query() |>
             field_name = "video_length",
             field_values = "SHORT") |>
   tt_search_api()
-
-# when a search fails after a while, get the results and pick it back up
-# (only work with same parameters)
-last_pull <- last_query()
-query() |>
-  query_and(field_name = "region_code",
-            operation = "IN",
-            field_values = c("JP", "US")) |>
-  query_or(field_name = "hashtag_name",
-            operation = "EQ", # rstats is the only hashtag
-            field_values = "rstats") |>
-  query_or(field_name = "keyword",
-           operation = "IN", # rstats is one of the keywords
-           field_values = "rstats") |>
-  query_not(operation = "EQ",
-            field_name = "video_length",
-            field_values = "SHORT") |>
-  tt_search_api(start_cursor = length(last_pull) + 1,
-                search_id = attr(last_pull, "search_id"))
 }
 }

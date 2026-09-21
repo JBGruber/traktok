@@ -13,7 +13,7 @@ tt_request_hidden(url, max_tries = 5L, cookiefile = NULL)
 
 \item{cookiefile}{path to your cookiefile. Usually not needed after running
 \link{auth_hidden} once. See \code{vignette("unofficial-api", package =
-  "traktok")} for more information on authentication.}
+"traktok")} for more information on authentication.}
 }
 \value{
 a json string containing post or account data.

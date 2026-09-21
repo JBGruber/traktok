@@ -1,5 +1,9 @@
 # traktok (development version)
 
+* `tt_search_api()` no longer limits searches to 30 days: longer time spans are automatically split into consecutive 30 day windows (the maximum the API allows per request) and the results are combined. `max_pages` applies per window. The returned object (and `last_query()`) now also carries `start_date` and `end_date` attributes of the last queried window, so that interrupted searches can be picked back up. `tt_user_videos_api()` uses this internally now.
+* `last_query()` now always attaches the `search_id` and `cursor` attributes (previously they were dropped when the cached videos could be parsed).
+* the `cursor` attribute of `tt_search_api()` results now reflects the last page received (it was one page behind when `max_pages > 1`).
+
 # traktok 0.1.0
 
 * first CRAN release

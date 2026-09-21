@@ -215,3 +215,53 @@ scroll2timestamp <- function(scroll) {
   )
   Sys.time() + seconds
 }
+
+
+# converts user input (Date, POSIXt, "YYYYMMDD" or ISO string) to a Date
+#' @noRd
+as_api_date <- function(x, arg = "start_date") {
+  if (inherits(x, "Date")) {
+    out <- x
+  } else if (inherits(x, "POSIXt")) {
+    # the API works in UTC
+    out <- as.Date(x, tz = "UTC")
+  } else if (is.character(x) && grepl("^\\d{8}$", x)) {
+    out <- as.Date(x, format = "%Y%m%d")
+  } else if (is.character(x)) {
+    out <- tryCatch(as.Date(x), error = function(e) NA)
+  } else {
+    out <- NA
+  }
+  if (length(out) != 1L || is.na(out)) {
+    cli::cli_abort(
+      "{.code {arg}} needs to be a valid date or a string like, e.g., \"20210102\""
+    )
+  }
+  return(out)
+}
+
+
+# splits a date range into consecutive windows of at most `max_days` days, as
+# the research API only accepts a start and end date up to 30 days apart
+#' @noRd
+date_windows <- function(start_date, end_date, max_days = 30L) {
+  from <- as_api_date(start_date, "start_date")
+  to <- as_api_date(end_date, "end_date")
+  if (from > to) {
+    cli::cli_abort("{.code start_date} must not be after {.code end_date}")
+  }
+  starts <- seq.Date(from = from, to = to, by = paste(max_days + 1L, "day"))
+  ends <- pmin(starts + max_days, to)
+  list(from = starts, to = ends)
+}
+
+
+# attaches the information needed to resume a search to a result object
+#' @noRd
+add_search_attrs <- function(x) {
+  attr(x, "search_id") <- the$search_id
+  attr(x, "cursor") <- the$cursor
+  attr(x, "start_date") <- the$start_date
+  attr(x, "end_date") <- the$end_date
+  return(x)
+}
