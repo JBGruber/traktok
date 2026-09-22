@@ -265,3 +265,51 @@ add_search_attrs <- function(x) {
   attr(x, "end_date") <- the$end_date
   return(x)
 }
+
+
+# prepares the stored TikTok cookies for a chromote/rvest live session
+#' @noRd
+live_cookies <- function() {
+  cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "list")
+  lapply(cookies, function(el) {
+    # add leading . where it's missing
+    el$domain <- sub("^tiktok.com$", ".tiktok.com", el$domain)
+    # cookiemonster stores flags as 0/1, Chrome insists on booleans
+    el$secure <- as.logical(el$secure)
+    el$httpOnly <- as.logical(el$httpOnly)
+    return(el)
+  })
+}
+
+
+# opens an empty live session with cookies set, ready to navigate
+#' @noRd
+live_session <- function(cookies = NULL) {
+  rlang::check_installed("chromote", reason = "to use this function")
+  sess <- rvest::read_html_live("about:blank")
+  if (length(cookies)) {
+    sess$session$Network$setCookies(cookies = cookies)
+  }
+  # rvest sets an outdated user agent, which makes TikTok refuse to serve some
+  # data. Use the real one of the browser, minus the headless marker
+  ua <- sess$session$Browser$getVersion()$userAgent
+  sess$session$Network$setUserAgentOverride(
+    userAgent = sub("HeadlessChrome", "Chrome", ua, fixed = TRUE)
+  )
+  return(sess)
+}
+
+
+# downloads files unless they exist already, returns paths of existing files
+#' @noRd
+download_files <- function(urls, fns, overwrite = FALSE) {
+  purrr::walk2(urls, fns, function(u, f) {
+    if (overwrite || !file.exists(f)) {
+      res <- try(curl::curl_download(u, f, quiet = TRUE), silent = TRUE)
+      if (methods::is(res, "try-error")) {
+        cli::cli_warn("Download of {.url {u}} failed.")
+      }
+    }
+  })
+  fns[file.exists(fns)]
+}

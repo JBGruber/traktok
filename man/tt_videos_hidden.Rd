@@ -15,6 +15,7 @@ tt_videos_hidden(
   max_tries = 5L,
   cookiefile = NULL,
   verbose = interactive(),
+  slideshows = "ask",
   ...
 )
 
@@ -45,6 +46,14 @@ drawn.}
 
 \item{verbose}{should the function print status updates to the screen?}
 
+\item{slideshows}{what to do when a URL turns out to be a slideshow (photo
+post). TikTok does not include data for these in the page source, so they
+have to be opened in a (headless) browser, which is slower and needs the
+\code{chromote} package. \code{"ask"} (the default) asks whether to do that
+once all other posts are collected (treated as \code{FALSE} in
+non-interactive sessions), \code{TRUE} does it without asking, and
+\code{FALSE} leaves the rows empty. See \link{tt_slideshow_hidden}.}
+
 \item{...}{handed to \code{tt_videos_hidden} (for tt_videos) and (further) to
 \link{tt_request_hidden}.}
 }
@@ -63,6 +72,10 @@ from the \code{sleep_pool} and multiplied by a random fraction.
 Note that the video file has to be requested in the same session as
 the metadata. So while the URL to the video file is included in the
 metadata, this link will not work in most cases.
+
+Slideshows (photo posts) are collected differently, see
+\code{slideshows} and \link{tt_slideshow_hidden}. Their images are
+downloaded instead of a video file if \code{save_video = TRUE}.
 }
 \examples{
 \dontrun{

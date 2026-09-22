@@ -114,6 +114,21 @@ list.files("rstats")
 
 Note that the video files are downloaded into the `dir` directory (your working directory by default), independently from your cache directory.
 
+### Slideshows
+
+TikTok does not include data for slideshows (photo posts) in the page source `tt_videos` relies on.
+To collect these, the post has to be opened in a (headless) browser, which needs the `chromote` package and is slower.
+`tt_videos` recognises slideshows among your URLs and, once it has collected everything else, asks whether you want to get them this way (set `slideshows = TRUE` or `FALSE` to skip the question).
+You can also collect slideshows directly, which downloads the images and the music of each post:
+
+```{r eval=FALSE}
+slideshow_df <- tt_slideshow_hidden(
+  "https://www.tiktok.com/@chriskuvacyt/photo/7560013468020034848"
+)
+slideshow_df$video_fn # paths to the images
+slideshow_df$music_fn # path to the music
+```
+
 If there are information that you feel are missing from the `data.frame` `tt_videos` returns, you can look at the raw, unparsed json data using:
 
 ```{r eval=FALSE}

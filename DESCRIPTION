@@ -29,8 +29,10 @@ Imports:
     rlang,
     rvest,
     stats,
-    tibble
+    tibble,
+    utils
 Suggests:
+    chromote,
     covr,
     knitr,
     rmarkdown,
