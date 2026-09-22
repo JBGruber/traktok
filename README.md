@@ -109,6 +109,12 @@ data:
     News Companies Combine Information and Entertainment in News Stories
     on Instagram and TikTok. Digital Journalism, 13(7), 1249–1270.
     <https://doi.org/10.1080/21670811.2025.2464062>
+9.  Díaz Andrade, A. P. (2025). The Online Poisoning of the Minds:
+    Misogynistic Radicalization through Social Media. SocArXiv.
+    <https://doi.org/10.31235/osf.io/khbaj_v2>
+10. Burnley, B. R., & McSweeney, P. (2026). TikToking To Voters? Policy
+    Attention on TikTok During the 2024 U.S. Presidential Election. APSA
+    Preprints. <https://doi.org/10.33774/apsa-2026-494b6>
 
 If you have used traktok in your research paper or project, please
 extend this list through a Pull Request or create an issue And ideally,
