@@ -51,8 +51,9 @@ This is the version of \link{tt_search} that explicitly uses the unofficial
 API. Use \link{tt_search_api} for the Research API version.
 }
 \details{
-The function will wait between scraping search results. To get more
-than 6 videos, you need to provide cookies of a logged in account. For more
+The function will wait between scraping search results. Tiktok will
+prompt a login after 6-60 results if you are not logged in. With a logged
+in account, you will get more until you encounter a captcha. For more
 details see the unofficial-api vignette: \code{vignette("unofficial-api",
   package = "traktok")}
 }

@@ -676,8 +676,9 @@ tt_request_hidden <- function(url, max_tries = 5L, cookiefile = NULL) {
 #'
 #' @inheritParams tt_user_videos_hidden
 #'
-#' @details The function will wait between scraping search results. To get more
-#'   than 6 videos, you need to provide cookies of a logged in account. For more
+#' @details The function will wait between scraping search results. Tiktok will
+#'   prompt a login after 6-60 results if you are not logged in. With a logged
+#'   in account, you will get more until you encounter a captcha. For more
 #'   details see the unofficial-api vignette: \code{vignette("unofficial-api",
 #'   package = "traktok")}
 #'
