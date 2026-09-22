@@ -68,6 +68,47 @@ parse_video <- function(json_string, video_id) {
     "itemStruct"
   )
 
+  out <- parse_item(
+    video_data = video_data,
+    video_id = video_id,
+    video_url = video_url,
+    html_status = html_status,
+    video_status = spluck(
+      tt_data,
+      "__DEFAULT_SCOPE__",
+      "webapp.video-detail",
+      "statusMsg"
+    ),
+    video_status_code = spluck(
+      tt_data,
+      "__DEFAULT_SCOPE__",
+      "webapp.video-detail",
+      "statusCode"
+    )
+  )
+  if (is.null(video_data)) {
+    if (isTRUE(grepl("/photo/", video_url, fixed = TRUE))) {
+      # TikTok does not include data of slideshows in the page source
+      out$is_slides <- TRUE
+    } else {
+      cli::cli_warn("No video data found")
+    }
+  }
+  return(out)
+}
+
+
+# turns an itemStruct object (from the page data or the item/detail API) into
+# one row of post metadata. video_data = NULL gives a row of NAs
+#' @noRd
+parse_item <- function(
+  video_data,
+  video_id,
+  video_url,
+  html_status,
+  video_status = NA,
+  video_status_code = NA
+) {
   if (!is.null(video_data)) {
     video_timestamp <- purrr::pluck(
       video_data,
@@ -100,18 +141,8 @@ parse_video <- function(json_string, video_id) {
       is_secret = isTRUE(spluck(video_data, "secret")),
       is_for_friend = isTRUE(spluck(video_data, "forFriend")),
       is_slides = FALSE,
-      video_status = spluck(
-        tt_data,
-        "__DEFAULT_SCOPE__",
-        "webapp.video-detail",
-        "statusMsg"
-      ),
-      video_status_code = spluck(
-        tt_data,
-        "__DEFAULT_SCOPE__",
-        "webapp.video-detail",
-        "statusCode"
-      ),
+      video_status = video_status,
+      video_status_code = video_status_code,
       content_classified = purrr::pluck(
         video_data,
         "isContentClassified",
@@ -119,60 +150,51 @@ parse_video <- function(json_string, video_id) {
       )
     )
 
-    if (identical(out$download_url, "")) {
+    if (is.na(out$download_url) || out$download_url == "") {
       out$download_url <- spluck(video_data, "video", "playAddr")
     }
 
-    if (identical(out$download_url, "")) {
-      out$download_url <- purrr::pluck(
+    if (is.na(out$download_url) || out$download_url == "") {
+      image_urls <- purrr::pluck(
         video_data,
         "imagePost",
         "images",
         "imageURL",
         "urlList"
-      ) |>
-        purrr::map_chr(1L) |>
-        toString()
-      out$is_slides <- TRUE
+      )
+      if (length(image_urls) > 0L) {
+        out$download_url <- toString(purrr::map_chr(image_urls, 1L))
+        out$is_slides <- TRUE
+      }
     }
   } else {
+    # same column classes as above, so rows can be combined
     out <- tibble::tibble(
       video_id = video_id,
       video_url = video_url,
-      video_timestamp = NA,
-      video_length = NA,
-      video_title = NA,
-      video_locationcreated = NA,
-      video_diggcount = NA,
-      video_sharecount = NA,
-      video_commentcount = NA,
-      video_playcount = NA,
-      author_id = NA,
-      author_secuid = NA,
-      author_username = NA,
-      author_nickname = NA,
-      author_bio = NA,
-      download_url = NA,
+      video_timestamp = as.POSIXct(NA_real_, tz = "UTC", origin = "1970-01-01"),
+      video_length = NA_integer_,
+      video_title = NA_character_,
+      video_locationcreated = NA_character_,
+      video_diggcount = NA_integer_,
+      video_sharecount = NA_integer_,
+      video_commentcount = NA_integer_,
+      video_playcount = NA_integer_,
+      author_id = NA_character_,
+      author_secuid = NA_character_,
+      author_username = NA_character_,
+      author_nickname = NA_character_,
+      author_bio = NA_character_,
+      download_url = NA_character_,
       html_status = html_status,
-      music = NA,
-      challenges = NA,
+      music = list(NULL),
+      challenges = list(NULL),
       is_secret = NA,
       is_for_friend = NA,
       is_slides = NA,
-      video_status = spluck(
-        tt_data,
-        "__DEFAULT_SCOPE__",
-        "webapp.video-detail",
-        "statusMsg"
-      ),
-      video_status_code = spluck(
-        tt_data,
-        "__DEFAULT_SCOPE__",
-        "webapp.video-detail",
-        "statusCode"
-      )
+      video_status = video_status,
+      video_status_code = video_status_code
     )
-    cli::cli_warn("No video data found")
   }
   return(out)
 }

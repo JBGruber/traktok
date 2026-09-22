@@ -18,6 +18,13 @@
 #'   \link{auth_hidden} once. See \code{vignette("unofficial-api", package =
 #'   "traktok")} for more information on authentication.
 #' @param verbose should the function print status updates to the screen?
+#' @param slideshows what to do when a URL turns out to be a slideshow (photo
+#'   post). TikTok does not include data for these in the page source, so they
+#'   have to be opened in a (headless) browser, which is slower and needs the
+#'   \code{chromote} package. \code{"ask"} (the default) asks whether to do that
+#'   once all other posts are collected (treated as \code{FALSE} in
+#'   non-interactive sessions), \code{TRUE} does it without asking, and
+#'   \code{FALSE} leaves the rows empty. See \link{tt_slideshow_hidden}.
 #' @param ... handed to \code{tt_videos_hidden} (for tt_videos) and (further) to
 #'   \link{tt_request_hidden}.
 #'
@@ -29,6 +36,9 @@
 #'   the metadata. So while the URL to the video file is included in the
 #'   metadata, this link will not work in most cases.
 #'
+#' @details Slideshows (photo posts) are collected differently, see
+#'   \code{slideshows} and \link{tt_slideshow_hidden}. Their images are
+#'   downloaded instead of a video file if \code{save_video = TRUE}.
 #'
 #' @return a data.frame containing post metadata.
 #' @export
@@ -47,8 +57,14 @@ tt_videos_hidden <- function(
   max_tries = 5L,
   cookiefile = NULL,
   verbose = interactive(),
+  slideshows = "ask",
   ...
 ) {
+  if (!identical(slideshows, "ask") && !rlang::is_bool(slideshows)) {
+    cli::cli_abort(
+      "{.arg slideshows} must be {.val ask}, {.code TRUE} or {.code FALSE}."
+    )
+  }
   video_urls <- unique(video_urls)
   n_urls <- length(video_urls)
   video_urls <- id2url(video_urls)
@@ -73,7 +89,7 @@ tt_videos_hidden <- function(
   check_dir(dir, "dir")
   check_dir(cache_dir, "cache_dir")
 
-  dplyr::bind_rows(purrr::map(video_urls, function(u) {
+  out <- dplyr::bind_rows(purrr::map(video_urls, function(u) {
     video_id <- extract_regex(
       u,
       "(?<=/video/)(.+?)(?=\\?|$)|(?<=/photo/)(.+?)(?=\\?|$)|(?<=https://vm.tiktok.com/).+?(?=/|$)"
@@ -97,6 +113,10 @@ tt_videos_hidden <- function(
       cookies = cookies,
       verbose = verbose
     )
+
+    if (isTRUE(video_dat$is_slides) && is.na(video_dat$download_url)) {
+      done_msg <- "Slideshow, no data in page source."
+    }
 
     if (isTRUE(video_dat$video_status_code == 0L)) {
       if (save_video) {
@@ -149,9 +169,11 @@ tt_videos_hidden <- function(
               ".jpeg"
             )
           )
-          purrr::walk2(download_urls, video_fns, function(u, f) {
-            curl::curl_download(url = u, destfile = f, quiet = TRUE)
-          })
+          video_dat$video_fn <- toString(download_files(
+            download_urls,
+            video_fns,
+            overwrite = overwrite
+          ))
         }
       }
     }
@@ -163,6 +185,310 @@ tt_videos_hidden <- function(
 
     return(video_dat)
   }))
+
+  # slideshows without data need the browser
+  slides <- which(out$is_slides %in% TRUE & is.na(out$download_url))
+  if (length(slides) > 0L) {
+    out <- add_slideshows(
+      out = out,
+      idx = slides,
+      slideshows = slideshows,
+      save_video = save_video,
+      overwrite = overwrite,
+      dir = dir,
+      sleep_pool = sleep_pool,
+      verbose = verbose
+    )
+  }
+  return(out)
+}
+
+
+#' Get slideshow metadata, images and music from URLs
+#'
+#' @description \ifelse{html}{\figure{api-unofficial.svg}{options: alt='[Works on:
+#'   Unofficial API]'}}{\strong{[Works on: Unofficial API]}}
+#'
+#'   TikTok does not include the data of slideshows (photo posts) in the page
+#'   source that \link{tt_videos_hidden} relies on. This function instead opens
+#'   each post in a (headless) browser, waits until the site has requested the
+#'   post data itself and collects metadata, images and music from there. This
+#'   is considerably slower than \link{tt_videos_hidden} and needs the
+#'   \code{chromote} package (and a Chrome or Chromium browser) installed.
+#'
+#' @param slideshow_urls vector of URLs or IDs to TikTok slideshows (photo
+#'   posts).
+#' @param save_images logical. Should the images be downloaded.
+#' @param save_music logical. Should the music of the slideshows be downloaded
+#'   (as mp3).
+#' @param solve_captchas open browser to solve appearing captchas manually.
+#' @param timeout maximum time (in seconds) to wait for a post to load.
+#' @param headless should the browser window stay hidden?
+#' @inheritParams tt_videos_hidden
+#'
+#' @details Images are saved as \code{<author>_video_<id>_<n>.jpeg} and the
+#'   music as \code{<author>_video_<id>.mp3} in \code{dir}. The paths are
+#'   returned in the columns \code{video_fn} (comma-separated) and
+#'   \code{music_fn}. Metadata about the music is in the \code{music} column.
+#'
+#' @return a data.frame with the same columns as \link{tt_videos_hidden}.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' tt_slideshow_hidden(
+#'   "https://www.tiktok.com/@chriskuvacyt/photo/7560013468020034848"
+#' )
+#' }
+tt_slideshow_hidden <- function(
+  slideshow_urls,
+  save_images = TRUE,
+  save_music = TRUE,
+  overwrite = FALSE,
+  dir = ".",
+  solve_captchas = FALSE,
+  timeout = 30L,
+  sleep_pool = 1:10,
+  cookiefile = NULL,
+  verbose = interactive(),
+  headless = TRUE
+) {
+  check_live_setup(needs_auth = FALSE)
+  slideshow_urls <- unique(slideshow_urls)
+  n_urls <- length(slideshow_urls)
+  slideshow_urls <- id2url(slideshow_urls)
+
+  if (verbose) {
+    cli::cli_alert_info("Getting {n_urls} unique slideshow link{?s}")
+  }
+  if (!is.null(cookiefile)) {
+    cookiemonster::add_cookies(cookiefile)
+  }
+  auth_check(research = FALSE, hidden = TRUE, silent = TRUE, fail = TRUE)
+  check_dir(dir, "dir")
+
+  sess <- live_session(cookies = live_cookies())
+  on.exit(try(sess$session$close(), silent = TRUE), add = TRUE)
+  if (!headless) {
+    sess$view()
+  }
+  # the page requests the post data from the item/detail endpoint (which can
+  # only be called with tokens the site generates). Watch for that response
+  state <- new.env()
+  sess$session$Network$enable()
+  sess$session$Network$responseReceived(callback = function(msg) {
+    # first document after navigating is the page itself (later ones iframes)
+    if (identical(msg$type, "Document") && is.null(state$url)) {
+      state$html_status <- msg$response$status
+      state$url <- msg$response$url
+    } else if (grepl("/api/item/detail/", msg$response$url, fixed = TRUE)) {
+      state$request_id <- msg$requestId
+    }
+  })
+  sess$session$Network$loadingFinished(callback = function(msg) {
+    if (identical(msg$requestId, state$request_id)) {
+      state$finished <- TRUE
+    }
+  })
+  # reset captcha warning
+  the$captcha <- NULL
+
+  dplyr::bind_rows(purrr::map(slideshow_urls, function(u) {
+    video_id <- extract_regex(
+      u,
+      "(?<=/video/)(.+?)(?=\\?|$)|(?<=/photo/)(.+?)(?=\\?|$)|(?<=https://vm.tiktok.com/).+?(?=/|$)"
+    )
+    i <- which(u == slideshow_urls)
+    done_msg <- ""
+    if (verbose) {
+      cli::cli_progress_step(
+        "Getting slideshow {video_id}",
+        msg_done = "Got slideshow {video_id} ({i}/{n_urls}). {done_msg}"
+      )
+    }
+
+    rm(list = ls(state), envir = state)
+    item <- get_slideshow(
+      sess = sess,
+      url = u,
+      state = state,
+      timeout = timeout,
+      solve_captchas = solve_captchas
+    )
+    video_data <- purrr::pluck(item, "itemInfo", "itemStruct")
+    if (!is.null(state$url)) {
+      # resolved URL, e.g., for short links
+      u <- state$url
+      id <- extract_regex(
+        u,
+        "(?<=/video/)(.+?)(?=\\?|$)|(?<=/photo/)(.+?)(?=\\?|$)"
+      )
+      if (length(id) == 1L) {
+        video_id <- id
+      }
+    }
+
+    video_dat <- parse_item(
+      video_data = video_data,
+      video_id = video_id,
+      video_url = u,
+      html_status = if (is.null(state$html_status)) NA else state$html_status,
+      video_status = spluck(item, "statusMsg"),
+      video_status_code = spluck(item, "statusCode")
+    )
+    video_dat$is_slides <- TRUE
+
+    if (is.null(video_data)) {
+      # fall back to the rendered page for at least the image links
+      image_urls <- rvest::html_elements(sess, ".swiper-slide img") |>
+        rvest::html_attr("src") |>
+        unique()
+      if (length(image_urls) > 0L) {
+        video_dat$download_url <- toString(image_urls)
+        done_msg <- "Only images found."
+      } else {
+        cli::cli_warn("No data found for slideshow {video_id}")
+      }
+    }
+
+    if (!is.na(video_dat$download_url)) {
+      author <- video_dat$author_username
+      if (is.na(author)) {
+        author <- "unknown"
+      }
+      fn_stem <- file.path(dir, paste0(author, "_video_", video_dat$video_id))
+      if (save_images) {
+        image_urls <- strsplit(video_dat$download_url, ", ", fixed = TRUE) |>
+          unlist()
+        image_fns <- download_files(
+          image_urls,
+          paste0(fn_stem, "_", seq_along(image_urls), ".jpeg"),
+          overwrite = overwrite
+        )
+        video_dat$video_fn <- if (length(image_fns) > 0L) {
+          toString(image_fns)
+        } else {
+          NA_character_
+        }
+        done_msg <- paste(
+          length(image_fns),
+          if (length(image_fns) == 1L) "image" else "images",
+          "saved."
+        )
+      }
+      music_url <- spluck(video_data, "music", "playUrl")
+      if (save_music && is.character(music_url) && isTRUE(nzchar(music_url))) {
+        music_fn <- download_files(
+          music_url,
+          paste0(fn_stem, ".mp3"),
+          overwrite = overwrite
+        )
+        video_dat$music_fn <- if (length(music_fn)) music_fn else NA_character_
+      }
+    }
+
+    if (i != n_urls) {
+      wait(sleep_pool, verbose)
+    }
+    return(video_dat)
+  }))
+}
+
+
+# navigates the session to a slideshow and waits until the site has loaded the
+# post data. Returns the parsed item/detail response (or NULL)
+#' @noRd
+get_slideshow <- function(sess, url, state, timeout, solve_captchas) {
+  loaded <- sess$session$Page$loadEventFired(wait_ = FALSE, timeout_ = timeout)
+  sess$session$Page$navigate(url, wait_ = FALSE)
+  # continue on timeout, the data might still arrive
+  try(sess$session$wait_for(loaded), silent = TRUE)
+
+  deadline <- Sys.time() + timeout
+  while (Sys.time() < deadline) {
+    # also processes pending browser events, which triggers the callbacks
+    solve_captcha(sess, solve = solve_captchas)
+    if (isTRUE(state$finished)) {
+      body <- sess$session$Network$getResponseBody(
+        requestId = state$request_id
+      )$body
+      # TikTok answers with an empty body when it refuses the request
+      if (nzchar(body)) {
+        return(jsonlite::fromJSON(body))
+      }
+      state$finished <- FALSE
+    }
+    Sys.sleep(0.5)
+  }
+  return(NULL)
+}
+
+
+# decides whether to collect slideshows found by tt_videos_hidden and replaces
+# their empty rows
+#' @noRd
+add_slideshows <- function(
+  out,
+  idx,
+  slideshows,
+  save_video,
+  overwrite,
+  dir,
+  sleep_pool,
+  verbose
+) {
+  n <- length(idx)
+  if (identical(slideshows, "ask")) {
+    slideshows <- FALSE
+    if (rlang::is_interactive()) {
+      slideshows <- isTRUE({
+        cli::cli_alert_info(
+          c(
+            "{n} of the URLs {?is a/are} slideshow{?s}, which must be opened in a (headless) browser to get their data. This is generally",
+            " slow and you might need to install some additional packages (see {.help tt_slideshow_hidden}). Do it now?"
+          )
+        )
+        askYesNo(NULL, default = FALSE)
+      })
+      cli::cli_alert_info(
+        "To turn the dialogue off, set {.code slideshows = TRUE} (or {.code FALSE})"
+      )
+      if (!slideshows) {
+        if (verbose) {
+          cli::cli_alert_info(
+            "You can collect them later with {.fn tt_slideshow_hidden}."
+          )
+        }
+        return(out)
+      }
+    }
+  }
+  if (!isTRUE(slideshows)) {
+    cli::cli_warn(c(
+      "{n} URL{?s} {?is a slideshow/are slideshows}, for which TikTok does not include data in the page source.",
+      "i" = "Use {.code slideshows = TRUE} or {.fn tt_slideshow_hidden} to collect {cli::qty(n)}{?it/them} with a (headless) browser."
+    ))
+    return(out)
+  }
+
+  urls <- out$video_url[idx]
+  idx <- idx[!duplicated(urls)]
+  slides <- tt_slideshow_hidden(
+    slideshow_urls = unique(urls),
+    save_images = save_video,
+    save_music = save_video,
+    overwrite = overwrite,
+    dir = dir,
+    sleep_pool = sleep_pool,
+    verbose = verbose
+  )
+  # replace the empty rows, keeping the original order
+  slides$.order <- idx
+  out$.order <- seq_len(nrow(out))
+  out <- dplyr::bind_rows(out[-idx, ], slides)
+  out <- out[order(out$.order), ]
+  out$.order <- NULL
+  return(out)
 }
 
 
@@ -350,8 +676,9 @@ tt_request_hidden <- function(url, max_tries = 5L, cookiefile = NULL) {
 #'
 #' @inheritParams tt_user_videos_hidden
 #'
-#' @details The function will wait between scraping search results. To get more
-#'   than 6 videos, you need to provide cookies of a logged in account. For more
+#' @details The function will wait between scraping search results. Tiktok will
+#'   prompt a login after 6-60 results if you are not logged in. With a logged
+#'   in account, you will get more until you encounter a captcha. For more
 #'   details see the unofficial-api vignette: \code{vignette("unofficial-api",
 #'   package = "traktok")}
 #'
@@ -394,7 +721,6 @@ tt_search_hidden <- function(
   headless = TRUE,
   ...
 ) {
-  cookies <- cookiemonster::get_cookies("^(www.)*tiktok.com", as = "list")
   if (
     !isTRUE(auth_check(
       research = FALSE,
@@ -407,12 +733,7 @@ tt_search_hidden <- function(
       "This function needs authentication. See {.help auth_hidden}."
     )
   }
-
-  # add leading . where it's missing
-  cookies <- lapply(cookies, function(el) {
-    el$domain <- sub("^tiktok.com$", ".tiktok.com", el$domain)
-    return(el)
-  })
+  cookies <- live_cookies()
 
   search_url <- httr2::request("https://www.tiktok.com/search") |>
     httr2::req_url_query(q = query) |>
@@ -798,11 +1119,14 @@ tt_user_videos_hidden <- function(
 #' solve it
 #' @noRd
 solve_captcha <- function(sess, solve) {
-  captcha <- rvest::html_element(
-    sess,
-    "#captcha-verify-image,.captcha-verify-container"
-  )
-  if (length(captcha) == 0L) {
+  captcha_shown <- function() {
+    length(rvest::html_element(
+      sess,
+      "#captcha-verify-image,.captcha-verify-container"
+    )) >
+      0L
+  }
+  if (!captcha_shown()) {
     the$view <- NULL
     the$captcha <- NULL
     return(TRUE)
@@ -812,10 +1136,18 @@ solve_captcha <- function(sess, solve) {
     cli::cli_alert_info("Captcha discovered")
     the$captcha <- TRUE
   }
-  if (solve) {
-    if (is.null(the$view)) {
-      the$view <- sess$view()
-    }
-    solve_captcha(sess, solve = solve)
+  if (!solve) {
+    return(FALSE)
   }
+  if (is.null(the$view)) {
+    the$view <- sess$view()
+  }
+  while (captcha_shown()) {
+    Sys.sleep(1)
+  }
+  cli::cli_alert_success("Captcha solved, updating cookies")
+  cookiemonster::add_cookies(session = sess)
+  the$view <- NULL
+  the$captcha <- NULL
+  return(TRUE)
 }
