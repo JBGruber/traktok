@@ -2,6 +2,7 @@
 
 * new `tt_slideshow_hidden()` collects metadata, images and music of slideshows (photo posts), for which TikTok does not include data in the page source. It opens each post in a headless browser (needs the `chromote` package) and captures the post data the site requests itself (#23).
 * `tt_videos_hidden()` (and `tt_videos()`) now recognise slideshows among the URLs and gained the argument `slideshows`: after all other posts are collected, it asks whether to collect the slideshows with `tt_slideshow_hidden()` (`"ask"`, the default in interactive sessions), does so directly (`TRUE`) or leaves their rows empty with a warning (`FALSE`). Slideshow rows are marked with `is_slides = TRUE` either way.
+* `tt_videos_hidden()` (and `tt_videos()`) now also return the `video_is_ad` column, which `tt_search_hidden()` already had.
 * fixed `tt_search_hidden()` failing to set cookies in the browser session with recent versions of `cookiemonster`.
 * after a captcha is solved manually, the updated cookies are now stored, so that later requests are less likely to hit another captcha.
 * `tt_search_api()` no longer limits searches to 30 days: longer time spans are automatically split into consecutive 30 day windows (the maximum the API allows per request) and the results are combined. `max_pages` applies per window. The returned object (and `last_query()`) now also carries `start_date` and `end_date` attributes of the last queried window, so that interrupted searches can be picked back up. `tt_user_videos_api()` uses this internally now.

@@ -31,7 +31,7 @@ test_that("get meta and download", {
     dir = tempdir()
   )
   expect_equal(nrow(df), 2L)
-  expect_equal(ncol(df), 26L)
+  expect_equal(ncol(df), 27L)
   expect_true(all(file.exists(df[["video_fn"]])))
   expect_equal(
     file.exists(paste0(tempdir(), "/6584647400055377158.json")),
@@ -40,7 +40,7 @@ test_that("get meta and download", {
   expect_lte(sum(is.na(df)), 2L)
   expect_equal(
     ncol(suppressWarnings(tt_videos("https://www.tiktok.com/"))),
-    24L
+    25L
   )
   expect_warning(tt_videos("https://www.tiktok.com/"), "No.video.data.found")
 })
@@ -60,6 +60,6 @@ test_that("parse", {
       '{"__DEFAULT_SCOPE__":{"webapp.video-detail":{"itemInfo":{"itemStruct":{"test":1}}}}}',
       video_id = 1L
     )),
-    c(1L, 23L)
+    c(1L, 24L)
   )
 })
