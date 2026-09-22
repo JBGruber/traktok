@@ -6,6 +6,7 @@
 |:---|:---|:---|:---|
 | search videos | [tt_search](https://jbgruber.github.io/traktok/reference/tt_search.html) | [tt_search_api](https://jbgruber.github.io/traktok/reference/tt_search_api.html) | [tt_search_hidden](https://jbgruber.github.io/traktok/reference/tt_search_hidden.html) |
 | get video detail (+file) | [tt_videos](https://jbgruber.github.io/traktok/reference/tt_videos.html) | \- | [tt_videos_hidden](https://jbgruber.github.io/traktok/reference/tt_videos_hidden.html) |
+| get slideshow detail (+files) | \- | \- | [tt_slideshow_hidden](https://jbgruber.github.io/traktok/reference/tt_slideshow_hidden.html) |
 | get user videos | [tt_user_videos](https://jbgruber.github.io/traktok/reference/tt_user_videos.html) | [tt_user_videos_api](https://jbgruber.github.io/traktok/reference/tt_user_videos_api.html) | [tt_user_videos_hidden](https://jbgruber.github.io/traktok/reference/tt_user_videos_hidden.html) |
 | get user info | [tt_user_info](https://jbgruber.github.io/traktok/reference/tt_user_info.html) | [tt_user_info_api](https://jbgruber.github.io/traktok/reference/tt_user_info_api.html) | [tt_user_info_hidden](https://jbgruber.github.io/traktok/reference/tt_user_info_hidden.html) |
 | get comments under a video | [tt_comments](https://jbgruber.github.io/traktok/reference/tt_comments.html) | [tt_comments_api](https://jbgruber.github.io/traktok/reference/tt_comments_api.html) | \- |
@@ -162,6 +163,8 @@ A BibTeX entry for LaTeX users is
   : Query TikTok videos using the research API
 - [`tt_search_hidden()`](https://jbgruber.github.io/traktok/reference/tt_search_hidden.md)
   : Search videos
+- [`tt_slideshow_hidden()`](https://jbgruber.github.io/traktok/reference/tt_slideshow_hidden.md)
+  : Get slideshow metadata, images and music from URLs
 - [`tt_user_follower_api()`](https://jbgruber.github.io/traktok/reference/tt_user_follower_api.md)
   [`tt_user_following_api()`](https://jbgruber.github.io/traktok/reference/tt_user_follower_api.md)
   : Get followers and following of users from the research API

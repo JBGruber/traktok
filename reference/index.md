@@ -41,6 +41,8 @@
   : Query TikTok videos using the research API
 - [`tt_search_hidden()`](https://jbgruber.github.io/traktok/reference/tt_search_hidden.md)
   : Search videos
+- [`tt_slideshow_hidden()`](https://jbgruber.github.io/traktok/reference/tt_slideshow_hidden.md)
+  : Get slideshow metadata, images and music from URLs
 - [`tt_user_follower_api()`](https://jbgruber.github.io/traktok/reference/tt_user_follower_api.md)
   [`tt_user_following_api()`](https://jbgruber.github.io/traktok/reference/tt_user_follower_api.md)
   : Get followers and following of users from the research API

@@ -15,6 +15,7 @@ tt_videos_hidden(
   max_tries = 5L,
   cookiefile = NULL,
   verbose = interactive(),
+  slideshows = "ask",
   ...
 )
 
@@ -66,6 +67,17 @@ tt_videos(...)
 
   should the function print status updates to the screen?
 
+- slideshows:
+
+  what to do when a URL turns out to be a slideshow (photo post). TikTok
+  does not include data for these in the page source, so they have to be
+  opened in a (headless) browser, which is slower and needs the
+  `chromote` package. `"ask"` (the default) asks whether to do that once
+  all other posts are collected (treated as `FALSE` in non-interactive
+  sessions), `TRUE` does it without asking, and `FALSE` leaves the rows
+  empty. See
+  [tt_slideshow_hidden](https://jbgruber.github.io/traktok/reference/tt_slideshow_hidden.md).
+
 - ...:
 
   handed to `tt_videos_hidden` (for tt_videos) and (further) to
@@ -84,6 +96,11 @@ randomly from the `sleep_pool` and multiplied by a random fraction.
 Note that the video file has to be requested in the same session as the
 metadata. So while the URL to the video file is included in the
 metadata, this link will not work in most cases.
+
+Slideshows (photo posts) are collected differently, see `slideshows` and
+[tt_slideshow_hidden](https://jbgruber.github.io/traktok/reference/tt_slideshow_hidden.md).
+Their images are downloaded instead of a video file if
+`save_video = TRUE`.
 
 ## Examples
 

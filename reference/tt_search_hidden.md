@@ -75,9 +75,10 @@ URLs.
 
 ## Details
 
-The function will wait between scraping search results. To get more than
-6 videos, you need to provide cookies of a logged in account. For more
-details see the unofficial-api vignette:
+The function will wait between scraping search results. Tiktok will
+prompt a login after 6-60 results if you are not logged in. With a
+logged in account, you will get more until you encounter a captcha. For
+more details see the unofficial-api vignette:
 [`vignette("unofficial-api", package = "traktok")`](https://jbgruber.github.io/traktok/articles/unofficial-api.md)
 
 ## Examples

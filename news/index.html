@@ -38,7 +38,12 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="traktok-development-version">traktok (development version)<a class="anchor" aria-label="anchor" href="#traktok-development-version"></a></h2>
-<ul><li>
+<ul><li>new <code><a href="../reference/tt_slideshow_hidden.html">tt_slideshow_hidden()</a></code> collects metadata, images and music of slideshows (photo posts), for which TikTok does not include data in the page source. It opens each post in a headless browser (needs the <code>chromote</code> package) and captures the post data the site requests itself (<a href="https://github.com/JBGruber/traktok/issues/23" class="external-link">#23</a>).</li>
+<li>
+<code><a href="../reference/tt_videos_hidden.html">tt_videos_hidden()</a></code> (and <code><a href="../reference/tt_videos_hidden.html">tt_videos()</a></code>) now recognise slideshows among the URLs and gained the argument <code>slideshows</code>: after all other posts are collected, it asks whether to collect the slideshows with <code><a href="../reference/tt_slideshow_hidden.html">tt_slideshow_hidden()</a></code> (<code>"ask"</code>, the default in interactive sessions), does so directly (<code>TRUE</code>) or leaves their rows empty with a warning (<code>FALSE</code>). Slideshow rows are marked with <code>is_slides = TRUE</code> either way.</li>
+<li>fixed <code><a href="../reference/tt_search_hidden.html">tt_search_hidden()</a></code> failing to set cookies in the browser session with recent versions of <code>cookiemonster</code>.</li>
+<li>after a captcha is solved manually, the updated cookies are now stored, so that later requests are less likely to hit another captcha.</li>
+<li>
 <code><a href="../reference/tt_search_api.html">tt_search_api()</a></code> no longer limits searches to 30 days: longer time spans are automatically split into consecutive 30 day windows (the maximum the API allows per request) and the results are combined. <code>max_pages</code> applies per window. The returned object (and <code><a href="../reference/last_query.html">last_query()</a></code>) now also carries <code>start_date</code> and <code>end_date</code> attributes of the last queried window, so that interrupted searches can be picked back up. <code><a href="../reference/tt_user_videos_api.html">tt_user_videos_api()</a></code> uses this internally now.</li>
 <li>
 <code><a href="../reference/last_query.html">last_query()</a></code> now always attaches the <code>search_id</code> and <code>cursor</code> attributes (previously they were dropped when the cached videos could be parsed).</li>

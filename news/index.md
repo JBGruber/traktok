@@ -2,6 +2,29 @@
 
 ## traktok (development version)
 
+- new
+  [`tt_slideshow_hidden()`](https://jbgruber.github.io/traktok/reference/tt_slideshow_hidden.md)
+  collects metadata, images and music of slideshows (photo posts), for
+  which TikTok does not include data in the page source. It opens each
+  post in a headless browser (needs the `chromote` package) and captures
+  the post data the site requests itself
+  ([\#23](https://github.com/JBGruber/traktok/issues/23)).
+- [`tt_videos_hidden()`](https://jbgruber.github.io/traktok/reference/tt_videos_hidden.md)
+  (and
+  [`tt_videos()`](https://jbgruber.github.io/traktok/reference/tt_videos_hidden.md))
+  now recognise slideshows among the URLs and gained the argument
+  `slideshows`: after all other posts are collected, it asks whether to
+  collect the slideshows with
+  [`tt_slideshow_hidden()`](https://jbgruber.github.io/traktok/reference/tt_slideshow_hidden.md)
+  (`"ask"`, the default in interactive sessions), does so directly
+  (`TRUE`) or leaves their rows empty with a warning (`FALSE`).
+  Slideshow rows are marked with `is_slides = TRUE` either way.
+- fixed
+  [`tt_search_hidden()`](https://jbgruber.github.io/traktok/reference/tt_search_hidden.md)
+  failing to set cookies in the browser session with recent versions of
+  `cookiemonster`.
+- after a captcha is solved manually, the updated cookies are now
+  stored, so that later requests are less likely to hit another captcha.
 - [`tt_search_api()`](https://jbgruber.github.io/traktok/reference/tt_search_api.md)
   no longer limits searches to 30 days: longer time spans are
   automatically split into consecutive 30 day windows (the maximum the

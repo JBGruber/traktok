@@ -53,6 +53,7 @@
 <span>  max_tries <span class="op">=</span> <span class="fl">5L</span>,</span>
 <span>  cookiefile <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  slideshows <span class="op">=</span> <span class="st">"ask"</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -105,6 +106,16 @@ drawn.</p></dd>
 <dd><p>should the function print status updates to the screen?</p></dd>
 
 
+<dt id="arg-slideshows">slideshows<a class="anchor" aria-label="anchor" href="#arg-slideshows"></a></dt>
+<dd><p>what to do when a URL turns out to be a slideshow (photo
+post). TikTok does not include data for these in the page source, so they
+have to be opened in a (headless) browser, which is slower and needs the
+<code>chromote</code> package. <code>"ask"</code> (the default) asks whether to do that
+once all other posts are collected (treated as <code>FALSE</code> in
+non-interactive sessions), <code>TRUE</code> does it without asking, and
+<code>FALSE</code> leaves the rows empty. See <a href="tt_slideshow_hidden.html">tt_slideshow_hidden</a>.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>handed to <code>tt_videos_hidden</code> (for tt_videos) and (further) to
 <a href="tt_request_hidden.html">tt_request_hidden</a>.</p></dd>
@@ -122,6 +133,9 @@ from the <code>sleep_pool</code> and multiplied by a random fraction.</p>
 <p>Note that the video file has to be requested in the same session as
 the metadata. So while the URL to the video file is included in the
 metadata, this link will not work in most cases.</p>
+<p>Slideshows (photo posts) are collected differently, see
+<code>slideshows</code> and <a href="tt_slideshow_hidden.html">tt_slideshow_hidden</a>. Their images are
+downloaded instead of a video file if <code>save_video = TRUE</code>.</p>
     </div>
 
     <div class="section level2">
