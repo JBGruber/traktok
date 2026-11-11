@@ -338,9 +338,10 @@ parse_user <- function(user_data) {
     purrr::keep_at(c("user", "stats")) |>
     purrr::list_flatten(name_spec = "{inner}") |>
     purrr::list_flatten() |>
-    as_tibble_onerow(.name_repair = clean_names) |>
+    as_tibble_onerow() |>
+    dplyr::rename_with(clean_names) |>
     # for minimal backwards compatibility
-    dplyr::rename(user_name = .data$unique_id, secUid = .data$sec_uid) |>
+    dplyr::rename(user_name = "unique_id", secUid = "sec_uid") |>
     dplyr::mutate(
       create_time = as_datetime(.data$create_time),
       nick_name_modify_time = as_datetime(.data$nick_name_modify_time)
