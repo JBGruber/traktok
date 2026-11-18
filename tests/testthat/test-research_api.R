@@ -129,7 +129,7 @@ test_that("parsing", {
         parse_api_search()
       c(out$video_id, nrow(out), ncol(out))
     },
-    c("702874395068494965", "702874395068494965", "2", "13")
+    c("702874395068494965", "702874395068494965", "2", "23")
   )
   # apparently, sometimes the video_id is just called id
   expect_equal(
@@ -140,6 +140,45 @@ test_that("parsing", {
     },
     c("1", "2")
   )
+  # ids come as character, integer or double depending on their size; music_id
+  # and playlist_id are 0 if a video has no music or playlist
+  out <- jsonlite::parse_json(
+    '[{"id": 7705183301014654239, "music_id": 7705183348506905374,
+       "playlist_id": 7631716630275394325, "view_count": 3000000000,
+       "is_stem_verified": false, "video_duration": 136,
+       "hashtag_info_list": [
+         {"hashtag_id": 7199632488082178090, "hashtag_description": ""},
+         {"hashtag_id": 1640784969728006, "hashtag_description": ""},
+         {"hashtag_id": 20898, "hashtag_description": "a"}
+       ],
+       "effect_info_list": [{"effect_id": 2265509909, "effect_name": "x",
+                             "effect_photo_url": "y"}],
+       "video_tag": [{"type": "AIGC Type", "number": 2},
+                     {"type": "Branded Type", "number": 7}],
+       "video_label": {"content": "", "sink": false, "type": 0},
+       "some_new_field": "z"},
+      {"id": 7704309762434796302, "music_id": 0, "playlist_id": 0,
+       "view_count": 1}]',
+    bigint_as_char = TRUE
+  ) |>
+    parse_api_search()
+  expect_equal(out$video_id, c("7705183301014654239", "7704309762434796302"))
+  expect_equal(out$music_id, c("7705183348506905374", NA))
+  expect_equal(out$playlist_id, c("7631716630275394325", NA))
+  expect_equal(out$view_count, c(3e9, 1))
+  expect_equal(out$is_stem_verified, c(FALSE, NA))
+  expect_equal(
+    out$hashtag_info_list[[1]]$hashtag_id,
+    c("7199632488082178090", "1640784969728006", "20898")
+  )
+  expect_equal(nrow(out$hashtag_info_list[[2]]), 0L)
+  expect_equal(out$effect_info_list[[1]]$effect_id, "2265509909")
+  expect_equal(
+    out$video_tag[[1]]$label,
+    c("AI-Generated", "Creator Earns Commission")
+  )
+  expect_equal(ncol(out$video_label[[1]]), 3L)
+  expect_equal(out$some_new_field, c("z", NA))
   expect_equal(
     {
       out <- jsonlite::read_json(
