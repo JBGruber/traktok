@@ -9,6 +9,9 @@
 * `tt_search_api()` no longer limits searches to 30 days: longer time spans are automatically split into consecutive 30 day windows (the maximum the API allows per request) and the results are combined. `max_pages` applies per window. The returned object (and `last_query()`) now also carries `start_date` and `end_date` attributes of the last queried window, so that interrupted searches can be picked back up. `tt_user_videos_api()` uses this internally now.
 * `last_query()` now always attaches the `search_id` and `cursor` attributes (previously they were dropped when the cached videos could be parsed).
 * the `cursor` attribute of `tt_search_api()` results now reflects the last page received (it was one page behind when `max_pages > 1`).
+* `tt_search_api()` (and `tt_user_videos_api()`) now request and parse all fields of the video object listed in the API documentation. New columns are `favorites_count`, `video_duration`, `playlist_id`, `is_stem_verified`, `video_mention_list`, and the list columns `hashtag_info_list`, `sticker_info_list`, `effect_info_list`, `video_label` and `video_tag` (the latter with a `label` column explaining AI-generated and branded content tags). Fields the parser does not know are kept instead of dropped.
+* fixed `tt_search_api()` failing to parse results that contain a video without music. `music_id` (and `playlist_id`) are now `NA` instead of `"0"` when a video has no music (or playlist), and ids that do not fit into an integer are no longer converted to scientific notation.
+* count columns of `tt_search_api()` results (`view_count`, `like_count` etc.) are now doubles instead of integers, as counts above ~2.1 billion previously failed to parse.
 
 # traktok 0.1.0
 

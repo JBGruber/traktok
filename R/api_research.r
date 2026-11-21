@@ -43,7 +43,13 @@
 #' @param token The authentication token (usually supplied automatically after
 #'   running \link{auth_research} once).
 #'
-#' @return A data.frame of parsed TikTok videos (or a nested list).
+#' @return A data.frame of parsed TikTok videos (or a nested list). Fields
+#'   that contain several objects (\code{hashtag_info_list},
+#'   \code{sticker_info_list}, \code{effect_info_list}, \code{video_label}
+#'   and \code{video_tag}) are list columns containing a tibble per video,
+#'   which can be expanded with \code{tidyr::unnest()}. \code{video_tag}
+#'   gains a \code{label} column with the meaning of each tag according to
+#'   the API documentation (e.g., "AI-Generated" or "Paid Partnership").
 #' @export
 #' @examples
 #' \dontrun{
@@ -119,7 +125,7 @@ tt_search_api <- function(
   }
 
   if (fields == "all") {
-    fields <- "id,video_description,create_time,region_code,share_count,view_count,like_count,comment_count,music_id,hashtag_names,username,effect_ids,playlist_id,voice_to_text"
+    fields <- paste(api_video_fields, collapse = ",")
   }
 
   # the API only allows 30 days per request, so longer time spans are split

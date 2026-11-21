@@ -68,7 +68,13 @@ will use extra memory.}
 running \link{auth_research} once).}
 }
 \value{
-A data.frame of parsed TikTok videos (or a nested list).
+A data.frame of parsed TikTok videos (or a nested list). Fields
+that contain several objects (\code{hashtag_info_list},
+\code{sticker_info_list}, \code{effect_info_list}, \code{video_label}
+and \code{video_tag}) are list columns containing a tibble per video,
+which can be expanded with \code{tidyr::unnest()}. \code{video_tag}
+gains a \code{label} column with the meaning of each tag according to
+the API documentation (e.g., "AI-Generated" or "Paid Partnership").
 }
 \description{
 \ifelse{html}{\figure{api-research.svg}{options: alt='[Works on:
