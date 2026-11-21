@@ -63,12 +63,32 @@ auth_check <- function(
         }
       }
     }
+    auth_cookie_names <- c("tt_chain_token", "sessionid", "sid_guard")
     if (
       is.data.frame(cookies) &&
-        "tt_chain_token" %in% purrr::pluck(cookies, "name", .default = "")
+        all(auth_cookie_names %in% purrr::pluck(cookies, "name", .default = ""))
     ) {
       auth <- c(auth, hidden = TRUE)
-      if (!silent) cli::cli_alert_success("Hidden API authenticated")
+
+      if (
+        any(
+          dplyr::filter(cookies, name %in% auth_cookie_names) |>
+            dplyr::pull(expiration) <
+            Sys.time()
+        )
+      ) {
+        cli::cli_warn(c(
+          "Some of your TikTok cookies have expired.",
+          "i" = paste(
+            "Functions that open a browser, like {.fn tt_search_hidden}, discard",
+            "expired cookies and run without your account. Other requests may fail",
+            "too."
+          ),
+          "i" = "Get fresh cookies with {.fn auth_hidden}."
+        ))
+      } else if (!silent) {
+        cli::cli_alert_success("Hidden API authenticated")
+      }
     }
   }
   invisible(auth)
