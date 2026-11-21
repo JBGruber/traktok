@@ -19,6 +19,20 @@
   (`"ask"`, the default in interactive sessions), does so directly
   (`TRUE`) or leaves their rows empty with a warning (`FALSE`).
   Slideshow rows are marked with `is_slides = TRUE` either way.
+- [`tt_videos_hidden()`](https://jbgruber.github.io/traktok/reference/tt_videos_hidden.md)
+  (and
+  [`tt_videos()`](https://jbgruber.github.io/traktok/reference/tt_videos_hidden.md))
+  now also return the `video_is_ad` column, which
+  [`tt_search_hidden()`](https://jbgruber.github.io/traktok/reference/tt_search_hidden.md)
+  already had.
+- [`auth_check()`](https://jbgruber.github.io/traktok/reference/auth_check.md)
+  (and all functions that use it internally) now warns when the
+  authentication cookies (`tt_chain_token`, `sessionid`, `sid_guard`)
+  have expired. Browser-based functions like
+  [`tt_search_hidden()`](https://jbgruber.github.io/traktok/reference/tt_search_hidden.md)
+  silently discard expired cookies and ran logged out, even though
+  [`auth_check()`](https://jbgruber.github.io/traktok/reference/auth_check.md)
+  reported success.
 - fixed
   [`tt_search_hidden()`](https://jbgruber.github.io/traktok/reference/tt_search_hidden.md)
   failing to set cookies in the browser session with recent versions of
@@ -42,6 +56,26 @@
   [`tt_search_api()`](https://jbgruber.github.io/traktok/reference/tt_search_api.md)
   results now reflects the last page received (it was one page behind
   when `max_pages > 1`).
+- [`tt_search_api()`](https://jbgruber.github.io/traktok/reference/tt_search_api.md)
+  (and
+  [`tt_user_videos_api()`](https://jbgruber.github.io/traktok/reference/tt_user_videos_api.md))
+  now request and parse all fields of the video object listed in the API
+  documentation. New columns are `favorites_count`, `video_duration`,
+  `playlist_id`, `is_stem_verified`, `video_mention_list`, and the list
+  columns `hashtag_info_list`, `sticker_info_list`, `effect_info_list`,
+  `video_label` and `video_tag` (the latter with a `label` column
+  explaining AI-generated and branded content tags). Fields the parser
+  does not know are kept instead of dropped.
+- fixed
+  [`tt_search_api()`](https://jbgruber.github.io/traktok/reference/tt_search_api.md)
+  failing to parse results that contain a video without music.
+  `music_id` (and `playlist_id`) are now `NA` instead of `"0"` when a
+  video has no music (or playlist), and ids that do not fit into an
+  integer are no longer converted to scientific notation.
+- count columns of
+  [`tt_search_api()`](https://jbgruber.github.io/traktok/reference/tt_search_api.md)
+  results (`view_count`, `like_count` etc.) are now doubles instead of
+  integers, as counts above ~2.1 billion previously failed to parse.
 
 ## traktok 0.1.0
 

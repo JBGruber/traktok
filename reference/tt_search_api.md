@@ -101,7 +101,13 @@ tt_query_videos(
 
 ## Value
 
-A data.frame of parsed TikTok videos (or a nested list).
+A data.frame of parsed TikTok videos (or a nested list). Fields that
+contain several objects (`hashtag_info_list`, `sticker_info_list`,
+`effect_info_list`, `video_label` and `video_tag`) are list columns
+containing a tibble per video, which can be expanded with
+`tidyr::unnest()`. `video_tag` gains a `label` column with the meaning
+of each tag according to the API documentation (e.g., "AI-Generated" or
+"Paid Partnership").
 
 ## Details
 
