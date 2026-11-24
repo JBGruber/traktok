@@ -138,6 +138,7 @@ parse_item <- function(
       html_status = html_status,
       music = list(spluck(video_data, "music")),
       challenges = list(spluck(video_data, "challenges")),
+      video_is_ad = isTRUE(spluck(video_data, "isAd")),
       is_secret = isTRUE(spluck(video_data, "secret")),
       is_for_friend = isTRUE(spluck(video_data, "forFriend")),
       is_slides = FALSE,
@@ -189,6 +190,7 @@ parse_item <- function(
       html_status = html_status,
       music = list(NULL),
       challenges = list(NULL),
+      video_is_ad = NA,
       is_secret = NA,
       is_for_friend = NA,
       is_slides = NA,
@@ -336,9 +338,10 @@ parse_user <- function(user_data) {
     purrr::keep_at(c("user", "stats")) |>
     purrr::list_flatten(name_spec = "{inner}") |>
     purrr::list_flatten() |>
-    as_tibble_onerow(.name_repair = clean_names) |>
+    as_tibble_onerow() |>
+    dplyr::rename_with(clean_names) |>
     # for minimal backwards compatibility
-    dplyr::rename(user_name = .data$unique_id, secUid = .data$sec_uid) |>
+    dplyr::rename(user_name = "unique_id", secUid = "sec_uid") |>
     dplyr::mutate(
       create_time = as_datetime(.data$create_time),
       nick_name_modify_time = as_datetime(.data$nick_name_modify_time)

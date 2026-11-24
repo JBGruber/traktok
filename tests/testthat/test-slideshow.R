@@ -6,7 +6,8 @@ item_detail <- '{"statusCode":0,"statusMsg":"","itemInfo":{"itemStruct":{
     {"imageURL":{"urlList":["https://a/1.jpeg","https://b/1.jpeg"]}},
     {"imageURL":{"urlList":["https://a/2.jpeg"]}}
   ]},
-  "music":{"title":"song","playUrl":"https://a/1.mp3"}
+  "music":{"title":"song","playUrl":"https://a/1.mp3"},
+  "isAd":true
 }}}'
 
 test_that("parse_item", {
@@ -24,11 +25,13 @@ test_that("parse_item", {
   expect_equal(df$author_username, "user")
   expect_equal(df$music[[1]]$playUrl, "https://a/1.mp3")
   expect_equal(df$video_status_code, 0L)
+  expect_true(df$video_is_ad)
 
   # no data: same classes, so that rows can be combined either way round
   empty <- parse_item(NULL, "1", "https://www.tiktok.com/@user/photo/1", 200L)
   expect_equal(nrow(empty), 1L)
   expect_true(is.na(empty$is_slides))
+  expect_true(is.na(empty$video_is_ad))
   expect_true(is.na(empty$download_url))
   expect_s3_class(empty$video_timestamp, "POSIXct")
   expect_type(empty$music, "list")

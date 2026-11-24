@@ -7,8 +7,8 @@
 \usage{
 tt_search_api(
   query,
-  start_date = Sys.Date() - 1,
-  end_date = Sys.Date(),
+  start_date = Sys.Date() - 11,
+  end_date = Sys.Date() - 10,
   fields = "all",
   start_cursor = 0L,
   search_id = NULL,
@@ -22,8 +22,8 @@ tt_search_api(
 
 tt_query_videos(
   query,
-  start_date = Sys.Date() - 1,
-  end_date = Sys.Date(),
+  start_date = Sys.Date() - 11,
+  end_date = Sys.Date() - 10,
   fields = "all",
   start_cursor = 0L,
   search_id = NULL,
@@ -41,7 +41,8 @@ tt_query_videos(
 \item{start_date, end_date}{A start and end date to narrow the search
 (required). Can be \code{Date} objects or strings like \code{"20210102"}.
 If they are more than 30 days apart, the search is split into 30 day
-windows (see Details).}
+windows (see Details). The API documentation mentions that posts are only
+available after 48 hours, in reality it is often more.}
 
 \item{fields}{The fields to be returned (defaults to all)}
 

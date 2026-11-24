@@ -84,6 +84,8 @@ The research papers and projects below have used traktok to gather their data:
 1. Donaldson, S. I., La Capria, K., DeJesus, A., Ganz, O., Delnevo, C. D., & Allem, J.-P. (2025). Describing ZYN-Related Content on TikTok: Content Analysis. Nicotine and Tobacco Research, ntaf016. https://doi.org/10.1093/ntr/ntaf016
 1. Peterson-Salahuddin, C. (2025). Teachable moments: TikTok social drama as a site of Black feminist intellectual production. Information, Communication & Society, 28(3), 417–434. https://doi.org/10.1080/1369118X.2024.2388093
 1. Wirz, D. S., & Zai, F. (2025). Infotainment on Social Media: How News Companies Combine Information and Entertainment in News Stories on Instagram and TikTok. Digital Journalism, 13(7), 1249–1270. https://doi.org/10.1080/21670811.2025.2464062
+1. Díaz Andrade, A. P. (2025). The Online Poisoning of the Minds: Misogynistic Radicalization through Social Media. SocArXiv. https://doi.org/10.31235/osf.io/khbaj_v2
+1. Burnley, B. R., & McSweeney, P. (2026). TikToking To Voters? Policy Attention on TikTok During the 2024 U.S. Presidential Election. APSA Preprints. https://doi.org/10.33774/apsa-2026-494b6
 
 
 If you have used traktok in your research paper or project, please extend this list through a Pull Request or create an issue 
