@@ -169,6 +169,10 @@ parse_api_comments <- function(x) {
 #' @return nothing. Prints search results.
 #' @export
 print.tt_results <- function(x, ...) {
-  cli::cat_rule(paste("search id:", cli::col_red(attr(x, "search_id"))))
+  # not all endpoints return a search id (e.g., comments)
+  search_id <- attr(x, "search_id")
+  if (length(search_id) > 0 && !identical(search_id, "")) {
+    cli::cat_rule(paste("search id:", cli::col_red(search_id)))
+  }
   print(tibble::as_tibble(x, ...))
 }
